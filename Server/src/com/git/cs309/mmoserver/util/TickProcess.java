@@ -4,10 +4,7 @@ import java.util.Observable;
 
 import javax.swing.JButton;
 
-import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.entity.characters.user.Rights;
-import com.git.cs309.mmoserver.packets.ServerModuleStatusPacket;
 
 /**
  * 
@@ -23,15 +20,14 @@ import com.git.cs309.mmoserver.packets.ServerModuleStatusPacket;
  *         </p>
  */
 public abstract class TickProcess extends Observable implements Runnable {
-	protected volatile long average = 0;
-	protected volatile int count = 0;
-	protected volatile long cumulative = 0;
-	protected volatile boolean forceStop = false;
+	protected volatile boolean tickFinished = true;
 	protected volatile boolean isStopped = true;
 	protected final String name;
-	protected final JButton restartButton = new JButton("Restart");
-	protected volatile boolean tickFinished = true;
+	protected volatile long cumulative = 0;
+	protected volatile int count = 0;
+	protected volatile long average = 0;
 	protected volatile Thread TickProcessThread = null;
+	protected final JButton restartButton = new JButton("Restart");
 
 	public TickProcess(final String name) {
 		this.name = name;
@@ -39,19 +35,29 @@ public abstract class TickProcess extends Observable implements Runnable {
 		start();
 	}
 
-	public abstract void ensureSafeClose();
-
-	public final void forceStop() {
-		forceStop = true;
-	}
-
 	/**
 	 * Allows access to the average time per tick of this object.
 	 * 
 	 * @return the average tick time.
 	 */
-	public final long getAverageTick() {
+	public long getAverageTick() {
 		return average;
+	}
+
+	/**
+	 * Handles tick averaging.
+	 * 
+	 * @param thisTick
+	 *            time this tick
+	 */
+	protected void handleTickAveraging(long thisTick) {
+		cumulative += thisTick;
+		count++;
+		if (count == 10) {
+			average = cumulative / count;
+			count = 0;
+			cumulative = 0;
+		}
 	}
 
 	/**
@@ -59,7 +65,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 	 * 
 	 * @return
 	 */
-	public final boolean isStopped() {
+	public boolean isStopped() {
 		return isStopped;
 	}
 
@@ -67,9 +73,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 	public final void run() { // Final to ensure that this can't be overriden, to ensure that all extending classes follow the rules.
 		final Object tickNotifier = Main.getTickNotifier(); // Acquire the tickNotifier object from Main.
 		isStopped = false;
-		forceStop = false;
-		System.out.println("Running " + this + "...");
-		while (Main.isRunning() && !forceStop) { // While server is running...
+		while (Main.isRunning()) { // While server is running...
 			try {
 				synchronized (tickNotifier) {
 					try {
@@ -92,12 +96,10 @@ public abstract class TickProcess extends Observable implements Runnable {
 				break;
 			}
 		}
-		ensureSafeClose();
 		tickFinished = true;
 		isStopped = true;
 		setChanged();
 		notifyObservers();
-		System.out.println(this + " has stopped running.");
 	}
 
 	public final void start() {
@@ -108,33 +110,14 @@ public abstract class TickProcess extends Observable implements Runnable {
 		}
 	}
 
-	public final boolean tickFinished() {
+	public boolean tickFinished() {
 		return tickFinished;
 	}
+
+	protected abstract void tickTask();
 
 	@Override
 	public String toString() {
 		return name;
 	}
-
-	/**
-	 * Handles tick averaging.
-	 * 
-	 * @param thisTick
-	 *            time this tick
-	 */
-	protected final void handleTickAveraging(long thisTick) {
-		cumulative += thisTick;
-		count++;
-		if (count == 10) {
-			average = cumulative / count;
-			count = 0;
-			cumulative = 0;
-			Main.getConnectionManager().sendPacketToConnectionsWithRights(
-					new ServerModuleStatusPacket(null, name, average / (Config.MILLISECONDS_PER_TICK * 1000000.0f)),
-					Rights.ADMIN);
-		}
-	}
-
-	protected abstract void tickTask();
 }

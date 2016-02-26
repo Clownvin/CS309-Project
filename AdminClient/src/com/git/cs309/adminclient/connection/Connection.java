@@ -2,9 +2,6 @@ package com.git.cs309.adminclient.connection;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.SocketException;
-
-import javax.swing.JOptionPane;
 
 import com.git.cs309.adminclient.packets.PacketHandler;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
@@ -26,11 +23,7 @@ public class Connection extends AbstractConnection {
 				Packet packet = PacketFactory.buildPacket(StreamUtils.readBlockFromStream(input), this);
 				PacketHandler.handlePacket(packet);
 			} catch (EndOfStreamReachedException e) {
-				JOptionPane.showMessageDialog(null, "The connection has been lost.");
-				System.exit(1);
-			} catch (SocketException e) {
-				JOptionPane.showMessageDialog(null, "The connection has probably been lost.");
-				System.exit(1);
+				System.exit(0);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

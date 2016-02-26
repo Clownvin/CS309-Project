@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.entity.characters.user.Rights;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.packets.PacketHandler;
 import com.git.cs309.mmoserver.packets.PacketType;
@@ -29,21 +27,9 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         work, so it can still take on new connections.
  */
 public final class ConnectionManager extends TickProcess {
-	private final Map<String, Connection> connectionMap = new HashMap<>(); // Could hold both username -> connection and ip -> connection. But will probably only hold ip -> connection, since that's all that's needed.
-	private final List<Connection> connections = new ArrayList<>(Config.MAX_CONNECTIONS);
-	private Object waitObject = new Object();
-
-	public ConnectionManager() {
-		super("ConnectionManager");
-		ConnectionManager predecessor = Main.getConnectionManager();
-		if (predecessor != null) {
-			waitObject = predecessor.waitObject;
-			connectionMap.putAll(predecessor.connectionMap);
-			connections.addAll(predecessor.connections);
-			predecessor.forceStop();
-		}
-		predecessor = null;
-	}
+	private static final ConnectionManager SINGLETON = new ConnectionManager();
+	private static final List<Connection> connections = new ArrayList<>(Config.MAX_CONNECTIONS);
+	private static final Map<String, Connection> connectionMap = new HashMap<>(); // Could hold both username -> connection and ip -> connection. But will probably only hold ip -> connection, since that's all that's needed.
 
 	/**
 	 * Adds a connection to the connection list, so it can be processed over and
@@ -52,19 +38,14 @@ public final class ConnectionManager extends TickProcess {
 	 * @param connection
 	 *            connection to add to list.
 	 */
-	public void addConnection(final Connection connection) {
+	public static void addConnection(final Connection connection) {
 		synchronized (connectionMap) {
-			connectionMap.put(connection.getServerSideIP(), connection); // Add connection to "IP->Connection" map
+			connectionMap.put(connection.getIP(), connection); // Add connection to "IP->Connection" map
 		}
 		synchronized (connections) {
 			connections.add(connection); // Add connection to list.
-			System.out.println("Connection joined: " + connection.getServerSideIP());
+			System.out.println("Connection joined: " + connection.getIP());
 		}
-	}
-
-	@Override
-	public void ensureSafeClose() {
-		//Not required
 	}
 
 	/**
@@ -72,7 +53,7 @@ public final class ConnectionManager extends TickProcess {
 	 * 
 	 * @return true if max capacity has been reached, false if not.
 	 */
-	public synchronized boolean full() {
+	public static synchronized boolean full() {
 		return connections.size() >= Config.MAX_CONNECTIONS;
 	}
 
@@ -84,12 +65,17 @@ public final class ConnectionManager extends TickProcess {
 	 * @return the connection sharing the same IP, or null if one does not
 	 *         exist.
 	 */
-	public synchronized Connection getConnectionForIP(final String ip) {
+	public synchronized static Connection getConnectionForIP(final String ip) {
 		return connectionMap.get(ip);
 	}
 
-	public Object getWaitObject() {
-		return waitObject;
+	/**
+	 * Allows access to the single instance of this class.
+	 * 
+	 * @return the singleton.
+	 */
+	public static ConnectionManager getSingleton() {
+		return SINGLETON;
 	}
 
 	/**
@@ -99,7 +85,7 @@ public final class ConnectionManager extends TickProcess {
 	 *            IP to check if is already connected.
 	 * @return true if the connection map contains IP as a key, false if not.
 	 */
-	public boolean ipConnected(String ip) {
+	public static boolean ipConnected(String ip) {
 		synchronized (connectionMap) {
 			return connectionMap.containsKey(ip);
 		}
@@ -110,16 +96,16 @@ public final class ConnectionManager extends TickProcess {
 	 * 
 	 * @param connection
 	 *            connection to remove.
+	 * @return the same connection.
 	 */
-	public void removeConnection(final Connection connection) {
+	public static Connection removeConnection(final Connection connection) {
 		synchronized (connectionMap) {
-			connectionMap.remove(connection.getServerSideIP());
+			connectionMap.remove(connection.getIP());
 		}
 		synchronized (connections) {
 			connections.remove(connection);
 		}
-		System.out.println("Connection disconnected: " + connection.getServerSideIP());
-		connection.cleanUp();
+		return connection;
 	}
 
 	/**
@@ -127,8 +113,9 @@ public final class ConnectionManager extends TickProcess {
 	 * 
 	 * @param ip
 	 *            IP of connection to remove
+	 * @return the connection for the IP
 	 */
-	public void removeConnection(final String ip) {
+	public static Connection removeConnection(final String ip) {
 		Connection connection = getConnectionForIP(ip);
 		synchronized (connectionMap) {
 			connectionMap.remove(connection);
@@ -136,8 +123,7 @@ public final class ConnectionManager extends TickProcess {
 		synchronized (connections) {
 			connections.remove(connection);
 		}
-		System.out.println("Connection disconnected: " + connection.getServerSideIP());
-		connection.cleanUp();
+		return connection;
 	}
 
 	/**
@@ -146,7 +132,7 @@ public final class ConnectionManager extends TickProcess {
 	 * @param packet
 	 *            packet to send
 	 */
-	public void sendPacketToAllConnections(final Packet packet) {
+	public static void sendPacketToAllConnections(final Packet packet) {
 		synchronized (connections) {
 			for (Connection connection : connections) {
 				if (connection.isLoggedIn())
@@ -155,14 +141,8 @@ public final class ConnectionManager extends TickProcess {
 		}
 	}
 
-	public void sendPacketToConnectionsWithRights(final Packet packet, final Rights rights) {
-		synchronized (connections) {
-			for (Connection connection : connections) {
-				if (connection.isLoggedIn() && (connection.getUser().getRights() == Rights.ADMIN
-						|| (rights == Rights.MOD && connection.getUser().getRights() != Rights.PLAYER)))
-					connection.addOutgoingPacket(packet);
-			}
-		}
+	private ConnectionManager() {
+		super("ConnectionManager");
 	}
 
 	@Override
@@ -171,7 +151,7 @@ public final class ConnectionManager extends TickProcess {
 		synchronized (connections) {
 			for (int i = 0; i < connections.size(); i++) {
 				if (connections.get(i).isDisconnected()) {
-					removeConnection(connections.get(i--));
+					System.out.println("Connection disconnected: " + removeConnection(connections.get(i--)).getIP()); // Send message and remove.
 					continue;
 				}
 				Packet packet = connections.get(i).getPacket();
@@ -180,8 +160,8 @@ public final class ConnectionManager extends TickProcess {
 				}
 			}
 		}
-		synchronized (waitObject) {
-			waitObject.notifyAll(); // Since all connections are waiting on this class's singleton, notifyAll wakes them up so they can start reading packets again.
+		synchronized (SINGLETON) {
+			SINGLETON.notifyAll(); // Since all connections are waiting on this class's singleton, notifyAll wakes them up so they can start reading packets again.
 		}
 		for (Packet packet : packets) {
 			PacketHandler.handlePacket(packet); // Handle all the packets.

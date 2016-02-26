@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,24 +22,20 @@ public abstract class AbstractConnection extends Thread {
 	protected volatile Thread outgoingThread = new Thread() {
 		@Override
 		public void run() {
-			setName(AbstractConnection.this + "'s Output Thread");
 			while (!disconnected && !socket.isClosed()) {
-				synchronized (outgoingPackets) {
-					while (!disconnected && outgoingPackets.size() > 0) {
-						try {
-							StreamUtils.writeBlockToStream(output, outgoingPackets.remove(0).toBytes());
-						} catch (SocketException e) {
-							System.err.println("Connection disconnected while writing to stream");
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
+				while (!disconnected && outgoingPackets.size() > 0) {
 					try {
-
-						outgoingPackets.wait();
-					} catch (InterruptedException e) {
-						//Don't care if it gets interrupted.
+						StreamUtils.writeBlockToStream(output, outgoingPackets.remove(0).toBytes());
+					} catch (IOException e) {
+						e.printStackTrace();
 					}
+				}
+				try {
+					synchronized (outgoingPackets) {
+						outgoingPackets.wait();
+					}
+				} catch (InterruptedException e) {
+					//Don't care if it gets interrupted.
 				}
 			}
 		}
