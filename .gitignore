@@ -1,7 +1,10 @@
 #ignore logs
 /Server/data/logs/
-*.log
 Server/data/logs/
+*.log
+#ignore eclipse data
+.metadata
+.recommenders
 #ignore users
 /Server/data/users/
 Server/data/users/
