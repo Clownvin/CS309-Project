@@ -3,6 +3,7 @@ package com.git.cs309.mmoserver.packets;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
 
 public class AdminCommandPacket extends Packet {
+	//Unused: 4
 	public static final int RESTART_SERVER = 1;
 	public static final int RESTART_CONNECTION_MANAGER = 2;
 	public static final int RESTART_CYCLE_PROCESS_MANAGER = 3;

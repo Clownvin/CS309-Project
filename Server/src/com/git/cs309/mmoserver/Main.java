@@ -1,17 +1,26 @@
 package com.git.cs309.mmoserver;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
 
 import com.git.cs309.mmoserver.connection.ConnectionAcceptor;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
-import com.git.cs309.mmoserver.entity.characters.npc.NPCManager;
+import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
+import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.io.Logger;
+import com.git.cs309.mmoserver.items.ItemFactory;
+import com.git.cs309.mmoserver.map.MapFactory;
+import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.util.TickProcess;
 
 /*
@@ -54,12 +63,6 @@ import com.git.cs309.mmoserver.util.TickProcess;
  */
 public final class Main {
 
-	private static volatile CharacterManager characterManager = null;
-
-	private static volatile ConnectionManager connectionManager = null;
-	private static volatile CycleProcessManager cycleProcessManager = null;
-	private static volatile NPCManager npcManager = null;
-
 	// Is server running.
 	private static volatile boolean running = true;
 
@@ -89,22 +92,6 @@ public final class Main {
 		}
 	}
 
-	public static CharacterManager getCharacterManager() {
-		return characterManager;
-	}
-
-	public static ConnectionManager getConnectionManager() {
-		return connectionManager;
-	}
-
-	public static CycleProcessManager getCycleProcessManager() {
-		return cycleProcessManager;
-	}
-
-	public static NPCManager getNPCManager() {
-		return npcManager;
-	}
-
 	/**
 	 * Getter method for tickCount.
 	 * 
@@ -132,24 +119,8 @@ public final class Main {
 		return running;
 	}
 
-	public static void loadAndStartCharacterManager() {
-		characterManager = new CharacterManager();
-	}
-
-	public static void loadAndStartConnectionManager() {
-		connectionManager = new ConnectionManager();
-	}
-
-	public static void loadAndStartCycleProcessManager() {
-		cycleProcessManager = new CycleProcessManager();
-	}
-
 	//Turns out that using the default system loader will just re-reference already loaded classes. Would need to create and use a different classloader
 	//Will do, if I can find time to do something ridiculous like that. Keeping them like this for time being (not singletons, that is)
-	public static void loadAndStartNPCManager() {
-		npcManager = new NPCManager();
-		npcManager.initialize();
-	}
 
 	/**
 	 * Main method, duh.
@@ -195,14 +166,29 @@ public final class Main {
 	 */
 	private static void loadAndStartClasses() {
 		ModerationHandler.loadModerations();
-		loadAndStartNPCManager();
-		loadAndStartConnectionManager();
-		loadAndStartCycleProcessManager();
-		loadAndStartCharacterManager();
+		try {
+			NPCFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			GameObjectFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			ItemFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		MapFactory.getInstance();
+		MapHandler.getInstance().loadMaps();
+		ConnectionManager.getInstance();
+		CycleProcessManager.getInstance();
+		CharacterManager.getInstance();
 	}
 
 	private static void runServer() {
-		TICK_RELIANT_LIST.clear();
 		running = true;
 		loadAndStartClasses(); // Call initialize block, which will initialize things
 		// that should be initialized before starting server.
@@ -242,10 +228,15 @@ public final class Main {
 			tickTimes += (System.currentTimeMillis() - start);
 			ticks++;
 			tickCount++;
-			if (ticks == Config.TICKS_PER_MINUTE * 5) {
-				System.out.println("Average tick consumption over 5 minutes: "
+			if (ticks == Config.TICKS_PER_MINUTE * Config.STATUS_PRINT_RATE) {
+				System.out.println(" ");
+				System.out.println("Average tick consumption over " + Config.STATUS_PRINT_RATE + " minutes: "
 						+ String.format("%.3f", ((tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) * 100.0f)
 						+ "%.");
+				for (TickProcess process : TICK_RELIANT_LIST) {
+					process.printStatus();
+				}
+				System.out.println(" ");
 				ticks = 0;
 				tickTimes = 0L;
 			}

@@ -3,9 +3,11 @@ package com.git.cs309.mmoserver.entity.characters.user;
 import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
+import com.git.cs309.mmoserver.entity.characters.CharacterManager;
+import com.git.cs309.mmoserver.items.ItemContainer;
+import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 /**
@@ -28,6 +30,7 @@ public class PlayerCharacter extends Character implements Serializable {
 	 */
 	private static final long serialVersionUID = 5948438982722793742L;
 	private boolean created = false;
+	private ItemContainer inventory = new ItemContainer(40);
 
 	private byte gender = -1; // 0 - Male, 1 - Female
 
@@ -69,6 +72,11 @@ public class PlayerCharacter extends Character implements Serializable {
 		this.x = Config.PLAYER_START_X;
 		this.y = Config.PLAYER_START_Y;
 		this.created = false;
+		inventory.deleteAll();
+	}
+	
+	public ItemContainer getInventory() {
+		return inventory;
 	}
 
 	/**
@@ -81,7 +89,7 @@ public class PlayerCharacter extends Character implements Serializable {
 	public void enterGame(final IDTag idTag) {
 		assert created;
 		setIDTag(idTag);
-		Main.getCharacterManager().addCharacter(this);
+		CharacterManager.getInstance().addCharacter(this);
 	}
 
 	/**
@@ -89,12 +97,18 @@ public class PlayerCharacter extends Character implements Serializable {
 	 */
 	public void exitGame() {
 		setIDTag(null);
-		Main.getCharacterManager().removeCharacter(this);
+		CharacterManager.getInstance().removeCharacter(this);
 	}
 
 	@Override
 	public EntityType getEntityType() {
 		return EntityType.PLAYER;
+	}
+
+	@Override
+	public Packet getExtensivePacket() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public byte getGender() {

@@ -1,16 +1,17 @@
 package com.git.cs309.mmoserver.entity;
 
+import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 public abstract class Entity {
 	protected transient IDTag idTag; // Unique identifier
 	protected volatile int x = 0, y = 0, z = 0; // Coordinates
 	protected int entityID = -1;
-	protected transient int instanceNumber = 0;
+	protected transient int instanceNumber = Config.GLOBAL_INSTANCE;
 	protected String name = "Null";
 	protected volatile boolean needsDisposal = false;
-	protected volatile boolean onMap = false;
 
 	public Entity() {
 		instanceNumber = 0;
@@ -23,7 +24,7 @@ public abstract class Entity {
 		this.idTag = idTag;
 		this.entityID = entityID;
 		this.name = name;
-		instanceNumber = 0;
+		instanceNumber = Config.GLOBAL_INSTANCE;
 	}
 
 	public abstract boolean canWalkThrough();
@@ -42,11 +43,13 @@ public abstract class Entity {
 			return false;
 		}
 		Entity entity = (Entity) other;
-		return entity.x == x && entity.y == y && entity.z == z && entity.idTag.equals(idTag)
-				&& name.equals(entity.name);
+		return entity.x == x && entity.y == y && entity.z == z && entity.idTag.equals(idTag) && name.equals(entity.name)
+				&& getEntityType() == entity.getEntityType();
 	}
 
 	public abstract EntityType getEntityType();
+
+	public abstract Packet getExtensivePacket();
 
 	public final int getInstanceNumber() {
 		return instanceNumber;
@@ -85,14 +88,14 @@ public abstract class Entity {
 	}
 
 	public final void setPosition(final int x, final int y, final int z) {
-		MapHandler.moveEntity(instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		MapHandler.getInstance().moveEntity(instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
 	public final void setPosition(final int instanceNumber, final int x, final int y, final int z) {
-		MapHandler.moveEntity(this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		MapHandler.getInstance().moveEntity(this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
 		this.instanceNumber = instanceNumber;
 		this.x = x;
 		this.y = y;

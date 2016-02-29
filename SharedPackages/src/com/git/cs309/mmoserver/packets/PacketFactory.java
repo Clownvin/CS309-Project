@@ -24,8 +24,6 @@ public final class PacketFactory {
 			return new ServerModuleStatusPacket(source, bytes);
 		case PacketType.USER_STATUS_PACKET_BYTE:
 			return new UserStatusPacket(source, bytes);
-		case PacketType.CHARACTER_STATUS_PACKET_BYTE:
-			return new CharacterStatusPacket(source, bytes);
 		case PacketType.ENTITY_CLICK_PACKET_BYTE:
 			return new EntityClickPacket(source, bytes);
 		case PacketType.ENTITY_UPDATE_PACKET_BYTE:
@@ -36,6 +34,18 @@ public final class PacketFactory {
 			return new ExtensiveCharacterPacket(source, bytes);
 		case PacketType.PLAYER_CHARACTER_PACKET_BYTE:
 			return new PlayerCharacterPacket(source, bytes);
+		case PacketType.CHARACTER_STATUS_PACKET_BYTE:
+			return new CharacterStatusPacket(source, bytes);
+		case PacketType.PLAYER_EQUIPMENT_PACKET_BYTE:
+			return new PlayerEquipmentPacket(source, bytes);
+		case PacketType.NEW_MAP_PACKET_BYTE:
+			return new NewMapPacket(source, bytes);
+		case PacketType.SELF_PACKET_BYTE:
+			return new SelfPacket(source, bytes);
+		case PacketType.MOVE_PACKET_BYTE:
+			return new MovePacket(source, bytes);
+		case PacketType.SIMPLE_REQUEST_PACKET_BYTE:
+			return new SimpleRequestPacket(source, bytes);
 		default:
 			System.out.println("No case for type byte: " + bytes[0]);
 			return null;

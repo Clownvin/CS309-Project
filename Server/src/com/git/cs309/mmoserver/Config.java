@@ -29,12 +29,20 @@ public final class Config {
 
 	public static final int MILLISECONDS_PER_SECOND = 1000;
 
+	public static final int STATUS_PRINT_RATE = 10; // Minutes between status prints.
+
 	public static final int TICK_RATE = 125; // Ticks per second. Must divide evenly into 1000 for accurate results. (since it uses integer math, the resulting time calculations will be inaccurate)
 
 	//Desired tick delay
 	public static final long MILLISECONDS_PER_TICK = MILLISECONDS_PER_SECOND / TICK_RATE;
 
-	public static final String NPC_DEFINITION_PATH = "./data/cfg/npc_definitions.cfg";
+	public static final String NPC_DEFINITION_PATH = "./data/cfg/NPCDefinitions.xml";
+
+	public static final String OBJECT_DEFINITION_PATH = "./data/cfg/ObjectDefinitions.xml";
+	
+	public static final String ITEM_DEFINITION_PATH = "./data/cfg/ItemDefinitions.xml";
+
+	public static final String MAP_DEFINITIONS_FOLDER = "./data/map/";
 
 	//Max packets/tick before automatically closes connection.
 	public static final int PACKETS_PER_TICK_BEFORE_KICK = 5;

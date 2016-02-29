@@ -1,9 +1,11 @@
 package com.git.cs309.mmoserver.packets;
 
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.connection.Connection;
+import com.git.cs309.mmoserver.connection.ConnectionManager;
+import com.git.cs309.mmoserver.entity.characters.user.PlayerCharacter;
 import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
+import com.git.cs309.mmoserver.map.MapHandler;
 
 public final class MessageHandler {
 	public static final void handleMessagePacket(MessagePacket messagePacket) {
@@ -17,8 +19,9 @@ public final class MessageHandler {
 		if (lowercaseMessage.startsWith("/p ") || lowercaseMessage.startsWith("/party ")) { // Party messages
 			//TODO Send message to party members only
 		} else if (lowercaseMessage.startsWith("/y ") || lowercaseMessage.startsWith("/yell ")) { // Global (yell) chat
-			Main.getConnectionManager().sendPacketToAllConnections(new MessagePacket(null, MessagePacket.GLOBAL_CHAT,
-					username + ": " + messagePacket.getMessage().replace("/yell ", "").replace("/y ", "")));
+			ConnectionManager.getInstance()
+					.sendPacketToAllConnections(new MessagePacket(null, MessagePacket.GLOBAL_CHAT,
+							username + ": " + messagePacket.getMessage().replace("/yell ", "").replace("/y ", "")));
 		} else if (lowercaseMessage.startsWith("/w ") || lowercaseMessage.startsWith("/whisper ")) { // Whisper chat
 			String[] split = messagePacket.getMessage().split(" ");
 			if (split.length < 2) {
@@ -41,7 +44,14 @@ public final class MessageHandler {
 							username + ": " + messagePacket.getMessage().replace("/w " + otherUsername + " ", "")
 									.replace("/whisper " + otherUsername + " ", "")));
 		} else { // Local chat
-			//TODO Send message to local characters only
+			if (!userConnection.getUser().isInGame()) {
+				return;
+			}
+			PlayerCharacter player = userConnection.getUser().getCurrentCharacter();
+			MapHandler.getInstance()
+					.getMapContainingPosition(player.getInstanceNumber(), player.getX(), player.getY(), player.getZ())
+					.sendPacketToPlayers(new MessagePacket(null, MessagePacket.LOCAL_CHAT,
+							username + ": " + messagePacket.getMessage()));
 		}
 	}
 }

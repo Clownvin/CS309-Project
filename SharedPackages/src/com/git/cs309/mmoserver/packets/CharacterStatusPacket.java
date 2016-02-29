@@ -4,48 +4,36 @@ import com.git.cs309.mmoserver.connection.AbstractConnection;
 import com.git.cs309.mmoserver.util.BinaryOperations;
 
 public class CharacterStatusPacket extends Packet {
-	public static final int PLAYER_CHARACTER_ID = 0; // any character ID not 0 is an NPC
-	private final int health;
-	private final int maxHealth;
-	private final int level;
+	private final int uniqueID;
 	private final int mana;
 	private final int maxMana;
+	private final int health;
+	private final int maxHealth;
 	private final int experience;
 	private final int maxExperience;
-	private final int characterID;
-	private final int uniqueID;
 
-	public CharacterStatusPacket(AbstractConnection source, final byte[] bytes) {
+	public CharacterStatusPacket(AbstractConnection source, byte[] bytes) {
 		super(source);
-		int[] values = BinaryOperations.intArrayFromBytes(bytes, 1);
-		health = values[0];
-		maxHealth = values[1];
-		level = values[2];
-		mana = values[3];
-		maxMana = values[4];
-		experience = values[5];
-		maxExperience = values[6];
-		characterID = values[7];
-		uniqueID = values[8];
+		int[] ints = BinaryOperations.intArrayFromBytes(bytes, 1);
+		this.uniqueID = ints[0];
+		this.mana = ints[1];
+		this.maxMana = ints[2];
+		this.health = ints[3];
+		this.maxHealth = ints[4];
+		this.experience = ints[5];
+		this.maxExperience = ints[6];
 	}
 
-	public CharacterStatusPacket(AbstractConnection source, final int health, final int maxHealth, final int level,
-			final int mana, final int maxMana, final int experience, final int maxExperience, final int characterID,
-			final int uniqueID) {
+	public CharacterStatusPacket(AbstractConnection source, int uniqueID, int mana, int maxMana, int health,
+			int maxHealth, int experience, int maxExperience) {
 		super(source);
-		this.health = health;
-		this.maxHealth = maxHealth;
-		this.level = level;
+		this.uniqueID = uniqueID;
 		this.mana = mana;
 		this.maxMana = maxMana;
+		this.health = health;
+		this.maxHealth = maxHealth;
 		this.experience = experience;
 		this.maxExperience = maxExperience;
-		this.characterID = characterID;
-		this.uniqueID = uniqueID;
-	}
-
-	public int getCharacterID() {
-		return characterID;
 	}
 
 	public int getExperience() {
@@ -54,10 +42,6 @@ public class CharacterStatusPacket extends Packet {
 
 	public int getHealth() {
 		return health;
-	}
-
-	public int getLevel() {
-		return level;
 	}
 
 	public int getMana() {
@@ -87,7 +71,7 @@ public class CharacterStatusPacket extends Packet {
 
 	@Override
 	public int sizeOf() {
-		return 37;
+		return 29;
 	}
 
 	@Override
@@ -95,10 +79,10 @@ public class CharacterStatusPacket extends Packet {
 		byte[] bytes = new byte[sizeOf()];
 		int index = 0;
 		bytes[index++] = getPacketType().getTypeByte();
-		for (byte b : BinaryOperations.toBytes(health, maxHealth, level, mana, maxMana, experience, maxExperience,
-				characterID, uniqueID)) {
+		for (byte b : BinaryOperations.toBytes(uniqueID, mana, maxMana, health, maxHealth, experience, maxExperience)) {
 			bytes[index++] = b;
 		}
 		return bytes;
 	}
+
 }
