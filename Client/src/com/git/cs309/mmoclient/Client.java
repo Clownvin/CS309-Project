@@ -24,8 +24,9 @@ public final class Client {
 			}
 		}
 		try {
-			
-			connection = new Connection(new Socket(debug ? "localhost" : "proj-309-21.cs.iastate.edu", 43594));
+			//to connect localy 
+			connection = new Connection(new Socket("localhost", 43594));
+			//connection = new Connection(new Socket(debug ? "localhost" : "proj-309-21.cs.iastate.edu", 43594));
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, "Failed to connect to the server.");
 			return;

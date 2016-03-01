@@ -24,8 +24,11 @@ import javax.swing.JTextField;
 
 import map.GetMap;
 
+import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.UpdateThread;
 import com.git.cs309.mmoclient.NPC.GetNPC;
+import com.git.cs309.mmoclient.connection.Connection;
+import com.git.cs309.mmoserver.packets.*;
 
 import serverTest.Player;
 import serverTest.ReadMapFile;
@@ -38,14 +41,16 @@ public class mainFrame extends JFrame implements gameConfig{
 	public int xplace;
 	public int yplace;
 	public int direcetion;
+	private final Connection connection;
 	
 	public mainFrame() {
 		//this is the run method
 		try {
 			//initalize the socket
-			socket = new Socket("localhost", 4444);
+			connection = new Connection(new Socket("proj-309-21.cs.iastate.edu", 43594));
+			//socket = new Socket("localhost", 4444);
 			//method to open connection
-			callServer(socket);
+			//callServer(socket);
 			try {
 				init(socket);
 			} catch (Exception e) {
@@ -83,8 +88,8 @@ public class mainFrame extends JFrame implements gameConfig{
 		player.start();
 		
 		//added to send to recive from server
-		Thread t = new Thread(new ServerHandler(socket, xplace, yplace, direcetion));
-		t.start();
+		//Thread t = new Thread(new ServerHandler(socket, xplace, yplace, direcetion));
+		//t.start();
 		
 		
 		UpdateThread ut = new UpdateThread(panel,tpanel);
@@ -108,7 +113,8 @@ public class mainFrame extends JFrame implements gameConfig{
 	public void callServer(Socket socket) throws UnknownHostException, IOException{
 		try {
 			//this is the initial server call to open initial connection
-			clientToServer toServer = new clientToServer("new user", 0, 0, 0);
+			//clientToServer toServer = new clientToServer("new user", 0, 0, 0);
+			//Client.getConnection().addoutgoingpacket(new MessagePacket(null, all variable stuff));
 			ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
 			outStream.writeObject(toServer);
 		} catch (IOException e) {
@@ -118,9 +124,9 @@ public class mainFrame extends JFrame implements gameConfig{
 	
 	class PanelListenner extends KeyAdapter{
 		
+		//get read of keypressed, keep keyReleased
+		
 		public void keyPressed(KeyEvent e){
-			
-			
 			int code = e.getKeyCode();
 			if(tag==1){
 				switch (code) {
@@ -128,7 +134,8 @@ public class mainFrame extends JFrame implements gameConfig{
 					Player.up = true;
 					Player.towards = 1;
 					try {
-						sendTOServer(socket,xplace, yplace, direcetion);
+						//ex send packet
+						Client.getConnection().addOutgoingPacket(new MessagePacket(null, all variable stuff));
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -137,7 +144,7 @@ public class mainFrame extends JFrame implements gameConfig{
 					Player.down = true;
 					Player.towards = 2;
 					try {
-						sendTOServer(socket,xplace, yplace, direcetion);
+						sendTOServer(xplace, yplace, direcetion);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -146,7 +153,7 @@ public class mainFrame extends JFrame implements gameConfig{
 					Player.left = true;
 					Player.towards = 3;
 					try {
-						sendTOServer(socket,xplace, yplace, direcetion);
+						sendTOServer(xplace, yplace, direcetion);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -155,7 +162,7 @@ public class mainFrame extends JFrame implements gameConfig{
 					Player.right = true;
 					Player.towards = 4;
 					try {
-						sendTOServer(socket,xplace, yplace, direcetion);
+						sendTOServer(xplace, yplace, direcetion);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -194,7 +201,7 @@ public class mainFrame extends JFrame implements gameConfig{
 						}
 					}
 					try {
-						sendTOServer(socket,xplace, yplace, direcetion);
+						sendTOServer(xplace, yplace, direcetion);
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -239,16 +246,6 @@ public class mainFrame extends JFrame implements gameConfig{
 			}
 		}
 		
-		public void sendTOServer(Socket socket, int xPosition, int yPosition, int derectionFacing) throws IOException {
-			try {
-				//takes what need to send  to server, makes it into an obejct and sends it across the socket
-				clientToServer toServer = new clientToServer("move", xPosition, yPosition, derectionFacing);
-				ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
-				outStream.writeObject(toServer);
-			} catch (IOException e) {  
-				e.printStackTrace();
-			}
-		} 
 	}
 	
 	class MyPanel extends JPanel{
