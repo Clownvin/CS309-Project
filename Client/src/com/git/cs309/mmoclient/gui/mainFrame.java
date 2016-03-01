@@ -1,6 +1,5 @@
 package com.git.cs309.mmoclient.gui;
 
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -9,10 +8,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 
 import map.GetMap;
 
@@ -26,14 +34,33 @@ public class mainFrame extends JFrame implements gameConfig{
 	static int tag = 1;
 	JPanel panel;
 	JPanel tpanel;
+	public Socket socket;
+	public int xplace;
+	public int yplace;
+	public int direcetion;
 	
 	public mainFrame() {
-		init();
+		//this is the run method
+		try {
+			//initalize the socket
+			socket = new Socket("localhost", 4444);
+			//method to open connection
+			callServer(socket);
+			try {
+				init(socket);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 	
 	
-	public void init(){
+	public void init(Socket socket){
 		this.setTitle(title);
 		this.setSize(frameX, frameY);
 		this.setLayout(null);
@@ -55,6 +82,10 @@ public class mainFrame extends JFrame implements gameConfig{
 		Player player = new Player();
 		player.start();
 		
+		//added to send to recive from server
+		Thread t = new Thread(new ServerHandler(socket, xplace, yplace, direcetion));
+		t.start();
+		
 		
 		UpdateThread ut = new UpdateThread(panel,tpanel);
 		ut.start();
@@ -74,28 +105,60 @@ public class mainFrame extends JFrame implements gameConfig{
 		return tpanel;
 	}
 	
+	public void callServer(Socket socket) throws UnknownHostException, IOException{
+		try {
+			//this is the initial server call to open initial connection
+			clientToServer toServer = new clientToServer("new user", 0, 0, 0);
+			ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
+			outStream.writeObject(toServer);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	class PanelListenner extends KeyAdapter{
 		
 		public void keyPressed(KeyEvent e){
+			
+			
 			int code = e.getKeyCode();
 			if(tag==1){
 				switch (code) {
 				case KeyEvent.VK_UP:
 					Player.up = true;
 					Player.towards = 1;
+					try {
+						sendTOServer(socket,xplace, yplace, direcetion);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 					break;
 				case KeyEvent.VK_DOWN:
 					Player.down = true;
 					Player.towards = 2;
+					try {
+						sendTOServer(socket,xplace, yplace, direcetion);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 					break;
 				case KeyEvent.VK_LEFT:
 					Player.left = true;
 					Player.towards = 3;
+					try {
+						sendTOServer(socket,xplace, yplace, direcetion);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 					break;
 				case KeyEvent.VK_RIGHT:
 					Player.right = true;
 					Player.towards = 4;
+					try {
+						sendTOServer(socket,xplace, yplace, direcetion);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 					break;
 				case KeyEvent.VK_G:
 					if(Player.towards==1){
@@ -130,7 +193,11 @@ public class mainFrame extends JFrame implements gameConfig{
 							tpanel.repaint();
 						}
 					}
-					
+					try {
+						sendTOServer(socket,xplace, yplace, direcetion);
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
 					break;
 
 				default:
@@ -171,6 +238,17 @@ public class mainFrame extends JFrame implements gameConfig{
 				}
 			}
 		}
+		
+		public void sendTOServer(Socket socket, int xPosition, int yPosition, int derectionFacing) throws IOException {
+			try {
+				//takes what need to send  to server, makes it into an obejct and sends it across the socket
+				clientToServer toServer = new clientToServer("move", xPosition, yPosition, derectionFacing);
+				ObjectOutputStream outStream = new ObjectOutputStream(socket.getOutputStream());
+				outStream.writeObject(toServer);
+			} catch (IOException e) {  
+				e.printStackTrace();
+			}
+		} 
 	}
 	
 	class MyPanel extends JPanel{
@@ -209,4 +287,87 @@ public class mainFrame extends JFrame implements gameConfig{
 	public static int getTag() {
 		return tag;
 	}
+	
+	//added bellow
+	
+	class clientToServer implements Serializable
+	{
+		//the object to send to server
+		volatile String whatDo; //calling, move, what tis is for
+		volatile int xPlacement;
+		volatile int yPlacement;
+		volatile int directionFacing;
+		
+		public clientToServer(String whatDoesThisDo, int xplace, int yplace, int direaction){
+			//whereTOTOSERVER=whereTo;
+			whatDo=whatDoesThisDo;
+			xPlacement=xplace;
+			yPlacement=yplace;
+			directionFacing=direaction;
+			
+		}
+		public String whatsThisOBJ()
+		{
+			return whatDo;
+		}
+		public int returnxPlacement()
+		{ 
+			return xPlacement;   
+		}
+		
+		public int returnyPlacement()
+		{ 
+			return yPlacement;   
+		}
+		
+		public int returndirection()
+		{ 
+			return directionFacing;   
+		}
+	}
+
+	class ServerHandler implements Runnable {
+		Socket s; //this clients socket
+
+		int xlocation;
+		int yloaction;
+		int direactionfacing;
+
+		public ServerHandler(Socket socket, int xplace, int yplace, int direaction)
+		{
+			s=socket;
+			xlocation=xplace;
+			yloaction=yplace;
+			direactionfacing=direaction;
+		}  
+	  
+		public void run() {
+			try {
+				while(s.getInputStream()!=null)  
+				{	// 1. USE THE SOCKET TO READ WHAT THE Server IS SENDING
+					try{
+						ObjectInputStream inputFromClient = new ObjectInputStream(s.getInputStream()); 
+						Object obj = new Object();
+						obj = inputFromClient.readObject();
+						if(obj instanceof serverToClient)
+						{
+							xlocation=((serverToClient)obj).returnXPlacemtnt();
+							yloaction=((serverToClient)obj).returnYPlacemtnt();
+							direactionfacing=((serverToClient)obj).returnDirection();
+							//historyTextArea.setText((((serverToClient) obj).returnTextField()).getText());
+						}
+					}
+					catch(ClassNotFoundException e)
+					{
+						e.printStackTrace();
+					} 
+					// 2. PRINT WHAT THE CLIENT SENT
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }
