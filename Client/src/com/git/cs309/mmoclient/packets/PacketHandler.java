@@ -132,7 +132,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 			int PCX= ((PlayerCharacterPacket)packet).getX();
 			int PCY= ((PlayerCharacterPacket)packet).getY();
 			
-			GameGUI.addPlayertoMap(PCBoots, PCCape, PCChestPiece, PCGender,PCGloves, PCGloves, PCHeadPiece, PCHealth, PCLeftHand, PCLeggings, PCLevel, PCMaxHealth, PCName, PCRightHand, PCUniqueID, PCX, PCY); 
+			GameGUI.addPlayertoMap(PCBoots, PCCape, PCChestPiece, PCGender,PCGloves, PCHeadPiece, PCHealth, PCLeftHand, PCLeggings, PCLevel, PCMaxHealth, PCName, PCRightHand, PCUniqueID, PCX, PCY); 
 			//calls function in GameGUI to eddit map
 			throw new RuntimeException("Handle new players here.");
 		case TEST_PACKET:

@@ -32,7 +32,7 @@ public class GameGUI extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 6023633314141474861L;
-	
+	private static ClientPlayer clientPlayer=new ClientPlayer();
 	private static final GameGUI SINGLETON = new GameGUI();
 	private static final Thread repainter = new Thread() {
 		@Override
@@ -107,35 +107,59 @@ public class GameGUI extends JFrame {
 		// TODO Auto-generated method stub
 	}
 	
-	public static void addPlayertoMap(int pCBoots, int pCCape, int pCChestPiece, byte pCGender, int pCGloves, int pCGloves2, int pCHeadPiece, int pCHealth, int pCLeftHand, int pCLeggings, int pCLevel, int pCMaxHealth, String pCName, int pCRightHand, int pCUniqueID, int pCX, int pCY) {
-		// TODO Auto-generated method stub
+	public static void addPlayertoMap(int pCBoots, int pCCape, int pCChestPiece, byte pCGender, int pCGloves, int pCHeadPiece, int pCHealth, int pCLeftHand, int pCLeggings, int pCLevel, int pCMaxHealth, String pCName, int pCRightHand, int pCUniqueID, int pCX, int pCY) {
+		//TODO
+		//send to map,
+		
+		//update local player
+		if (pCUniqueID==clientPlayer.getID())
+		{
+			clientPlayer.setBoots(pCBoots);
+			clientPlayer.setCape(pCCape);
+			clientPlayer.setChestPiece(pCChestPiece);
+			clientPlayer.setGender(pCGender);
+			clientPlayer.setGloves(pCGloves);
+			clientPlayer.setHeadPiece(pCHeadPiece);
+			clientPlayer.setHealth(pCHealth);
+			clientPlayer.setLeftHand(pCLeftHand);
+			clientPlayer.setLeggings(pCLeggings);
+			clientPlayer.setLevel(pCLevel);
+			clientPlayer.setMaxHealth(pCMaxHealth);
+			clientPlayer.setName(pCName);
+			clientPlayer.setRightHand(pCRightHand);
+			clientPlayer.setX(pCX);
+			clientPlayer.setY(pCY);
+		}
+		else
+		{
+			//nothing, its not the clients player
+		}
 	}
 	
 	public static void setID(int theID) {
-		// TODO Auto-generated method stub
+		//make new player here
+		//this is the clients player
+		clientPlayer.setID(theID);
 	}
 	
 	class PanelListenner extends KeyAdapter{
 		
 		//get read of keypressed, keep keyReleased
 		//get my posisiton
-		int myX;
-		int myY;
-		
 		public void keyReleased(KeyEvent e){
 				int code = e.getKeyCode();
 				switch (code) {
 				case KeyEvent.VK_UP:
-					Client.getConnection().addOutgoingPacket(new MovePacket(null, myX,myY));
+					Client.getConnection().addOutgoingPacket(new MovePacket(null, clientPlayer.getX(),clientPlayer.getY()));
 					break;
 				case KeyEvent.VK_DOWN:
-					Client.getConnection().addOutgoingPacket(new MovePacket(null, myX,myY));
+					Client.getConnection().addOutgoingPacket(new MovePacket(null, clientPlayer.getX(),clientPlayer.getY()));
 					break;
 				case KeyEvent.VK_LEFT:
-					Client.getConnection().addOutgoingPacket(new MovePacket(null, myX,myY));
+					Client.getConnection().addOutgoingPacket(new MovePacket(null, clientPlayer.getX(),clientPlayer.getY()));
 					break;
 				case KeyEvent.VK_RIGHT:
-					Client.getConnection().addOutgoingPacket(new MovePacket(null, myX,myY));
+					Client.getConnection().addOutgoingPacket(new MovePacket(null, clientPlayer.getX(),clientPlayer.getY()));
 					break;
 				default:
 					break;
