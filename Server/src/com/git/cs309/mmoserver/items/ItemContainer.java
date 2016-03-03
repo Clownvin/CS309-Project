@@ -1,15 +1,17 @@
 package com.git.cs309.mmoserver.items;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-public final class ItemContainer implements Serializable {
+public class ItemContainer implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1101038885487284304L;
 	private int size;
-	private int count = 0;
-	private  ItemStack[] items;
+	protected int count = 0;
+	protected  ItemStack[] items;
 	
 	public ItemContainer() {
 		
@@ -18,14 +20,45 @@ public final class ItemContainer implements Serializable {
 	public ItemContainer(final int size) {
 		this.size = size;
 		items = new ItemStack[size];
-		for (int i = 0; i < size; i++) {
-			items[i] = null;
-		}
+		clear();
 	}
 	
 	public ItemStack getItemStack(int index) {
 		assert index >= 0 && index < size;
 		return items[index];
+	}
+	
+	public void clear() {
+		for (int i = 0; i < size; i++) {
+			items[i] = null;
+		}
+	}
+	
+	public int slotsLeft() {
+		return size - count;
+	}
+	
+	public List<ItemStack> toList() {
+		List<ItemStack> itemList = new ArrayList<>(count); // Using list because I want to have remove(index)
+		for (ItemStack item : items) {
+			if (item == null) {
+				continue;
+			}
+			itemList.add(item);
+		}
+		return itemList;
+	}
+	
+	public List<ItemStack> removeAllAsList() {
+		List<ItemStack> itemList = new ArrayList<>(count); // Using list because I want to have remove(index)
+		for (ItemStack item : items) {
+			if (item == null) {
+				continue;
+			}
+			itemList.add(item);
+		}
+		clear();
+		return itemList;
 	}
 	
 	public void deleteAll() {

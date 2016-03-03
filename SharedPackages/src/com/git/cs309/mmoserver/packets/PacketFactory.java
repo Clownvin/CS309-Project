@@ -32,8 +32,8 @@ public final class PacketFactory {
 			return new ExtensiveObjectPacket(source, bytes);
 		case PacketType.EXTENSIVE_CHARACTER_PACKET_BYTE:
 			return new ExtensiveCharacterPacket(source, bytes);
-		case PacketType.PLAYER_CHARACTER_PACKET_BYTE:
-			return new PlayerCharacterPacket(source, bytes);
+		case PacketType.EXTENSIVE_PLAYER_CHARACTER_PACKET_BYTE:
+			return new ExtensivePlayerCharacterPacket(source, bytes);
 		case PacketType.CHARACTER_STATUS_PACKET_BYTE:
 			return new CharacterStatusPacket(source, bytes);
 		case PacketType.PLAYER_EQUIPMENT_PACKET_BYTE:
@@ -46,6 +46,14 @@ public final class PacketFactory {
 			return new MovePacket(source, bytes);
 		case PacketType.SIMPLE_REQUEST_PACKET_BYTE:
 			return new SimpleRequestPacket(source, bytes);
+		case PacketType.ITEM_CONTAINER_PACKET_BYTE:
+			return new ItemContainerPacket(source, bytes);
+		case PacketType.CHARACTER_SELECTION_DATA_PACKET_BYTE:
+			return new CharacterSelectionDataPacket(source, bytes);
+		case PacketType.NEW_CHARACTER_DATA_PACKET_BYTE:
+			return new NewCharacterDataPacket(source, bytes);
+		case PacketType.INTERFACE_CLICK_PACKET_BYTE:
+			return new InterfaceClickPacket(source, bytes);
 		default:
 			System.out.println("No case for type byte: " + bytes[0]);
 			return null;

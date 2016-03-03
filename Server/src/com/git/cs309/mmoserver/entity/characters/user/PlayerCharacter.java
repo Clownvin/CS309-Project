@@ -1,14 +1,18 @@
 package com.git.cs309.mmoserver.entity.characters.user;
 
-import java.io.Serializable;
-
 import com.git.cs309.mmoserver.Config;
+import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.cycle.CycleProcess;
+import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.items.ItemContainer;
+import com.git.cs309.mmoserver.items.ItemStack;
+import com.git.cs309.mmoserver.map.Map;
+import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.packets.ExtensivePlayerCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
-import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
 /**
  * 
@@ -20,7 +24,7 @@ import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
  *         their appearance will depend on their gender and their gear.
  *         </p>
  */
-public class PlayerCharacter extends Character implements Serializable {
+public class PlayerCharacter extends Character {
 	//Female state
 	public static final byte FEMALE = 1;
 	//Male state
@@ -31,8 +35,13 @@ public class PlayerCharacter extends Character implements Serializable {
 	private static final long serialVersionUID = 5948438982722793742L;
 	private boolean created = false;
 	private ItemContainer inventory = new ItemContainer(40);
+	private Equipment equipment = new Equipment();
 
 	private byte gender = -1; // 0 - Male, 1 - Female
+	private int eyeColor = 0;
+	private int skinColor = 0;
+	private int hairColor = 0;
+	private int hairStyle = 0;
 
 	public PlayerCharacter() {
 		super(); //Ensure calls constructor
@@ -47,6 +56,22 @@ public class PlayerCharacter extends Character implements Serializable {
 		deleteCharacter();
 	}
 
+	public int getEyeColor() {
+		return eyeColor;
+	}
+
+	public int getSkinColor() {
+		return skinColor;
+	}
+
+	public int getHairColor() {
+		return hairColor;
+	}
+
+	public int getHairStyle() {
+		return hairStyle;
+	}
+
 	/**
 	 * All this method does is make it so this character object is playable. It
 	 * doesn't actually create anything.
@@ -56,10 +81,16 @@ public class PlayerCharacter extends Character implements Serializable {
 	 * @param gender
 	 *            gender of the new character
 	 */
-	public void createCharacter(final String characterName, final byte gender) {
+	public void createCharacter(final String characterName, final byte gender, int eyeColor, int skinColor,
+			int hairColor, int hairStyle) {
 		name = characterName;
 		this.gender = gender;
 		this.created = true;
+		this.eyeColor = eyeColor;
+		this.skinColor = skinColor;
+		this.hairColor = hairColor;
+		this.hairStyle = hairStyle;
+		this.health = 10;
 	}
 
 	/**
@@ -74,7 +105,7 @@ public class PlayerCharacter extends Character implements Serializable {
 		this.created = false;
 		inventory.deleteAll();
 	}
-	
+
 	public ItemContainer getInventory() {
 		return inventory;
 	}
@@ -86,9 +117,10 @@ public class PlayerCharacter extends Character implements Serializable {
 	 * @param idTag
 	 *            the User controlling this characters ID tag, ideally.
 	 */
-	public void enterGame(final IDTag idTag) {
+	public void enterGame(final User user) {
 		assert created;
-		setIDTag(idTag);
+		setIDTag(user.getIdTag());
+		user.getConnection().addOutgoingPacket(getExtensivePacket());
 		CharacterManager.getInstance().addCharacter(this);
 	}
 
@@ -96,8 +128,8 @@ public class PlayerCharacter extends Character implements Serializable {
 	 * Nulls the ID Tag and removes character from manages.
 	 */
 	public void exitGame() {
-		setIDTag(null);
 		CharacterManager.getInstance().removeCharacter(this);
+		setIDTag(null);
 	}
 
 	@Override
@@ -107,8 +139,27 @@ public class PlayerCharacter extends Character implements Serializable {
 
 	@Override
 	public Packet getExtensivePacket() {
-		// TODO Auto-generated method stub
-		return null;
+		ItemStack currEquipment = null;
+		currEquipment = equipment.getEquipment(Equipment.HELMET_SLOT);
+		int helmetId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.CHEST_SLOT);
+		int chestId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.LEGS_SLOT);
+		int legsId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.GLOVES_SLOT);
+		int glovesId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.BOOTS_SLOT);
+		int bootsId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.CAPE_SLOT);
+		int capeId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.RIGHT_HAND);
+		int rightId = currEquipment == null ? -1 : currEquipment.getId();
+		currEquipment = equipment.getEquipment(Equipment.LEFT_HAND);
+		int leftId = currEquipment == null ? -1 : currEquipment.getId();
+		System.out.println(getName()+"'s level: "+getLevel());
+		return new ExtensivePlayerCharacterPacket(null, gender, getUniqueID(), getX(), getY(), getHealth(),
+				getMaxHealth(), getLevel(), helmetId, chestId, leftId, rightId, capeId, legsId, glovesId, bootsId,
+				eyeColor, skinColor, hairColor, hairStyle, name);
 	}
 
 	public byte getGender() {
@@ -130,9 +181,43 @@ public class PlayerCharacter extends Character implements Serializable {
 	}
 
 	@Override
-	public void process() {
-		// TODO Auto-generated method stub
+	protected void characterProcess() {
 
+	}
+
+	@Override
+	protected boolean canWalk() {
+		return true;
+	}
+
+	@Override
+	protected void onDeath() {
+		Map map = MapHandler.getInstance().getMapContainingEntity(PlayerCharacter.this);
+		for (ItemStack stack : inventory.removeAllAsList()) {
+			map.putItemStack(getX(), getY(), stack);
+		}
+		CycleProcessManager.getInstance().addProcess(new CycleProcess() {
+			final long startTick = Main.getTickCount();
+
+			@Override
+			public void end() {
+				isDead = false;
+				health = getMaxHealth();
+				setPosition(Config.GLOBAL_INSTANCE, Config.PLAYER_START_X, Config.PLAYER_START_Y,
+						Config.PLAYER_START_Z);
+			}
+
+			@Override
+			public boolean finished() {
+				return Main.getTickCount() - startTick >= Config.TICKS_BEFORE_PLAYER_RESPAWN;
+			}
+
+			@Override
+			public void process() {
+
+			}
+
+		});
 	}
 
 }

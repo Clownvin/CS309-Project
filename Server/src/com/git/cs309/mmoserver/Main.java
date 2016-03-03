@@ -14,6 +14,7 @@ import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
+import com.git.cs309.mmoserver.entity.characters.npc.dropsystem.DropSystem;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
@@ -65,6 +66,8 @@ public final class Main {
 
 	// Is server running.
 	private static volatile boolean running = true;
+	
+	private static boolean debug = true;
 
 	// Object that all TickProcess objects wait on for tick notification.
 	private static final Object TICK_NOTIFIER = new Object(); // To notify
@@ -77,6 +80,10 @@ public final class Main {
 	// new tick.
 	// Current server ticks count.
 	private static volatile long tickCount = 0; // Tick count.
+	
+	public static boolean isDebug() {
+		return debug;
+	}
 
 	/**
 	 * Can be used to register tick reliants so that server will know to wait
@@ -129,16 +136,15 @@ public final class Main {
 	 * @throws UnknownHostException
 	 */
 	public static void main(String[] args) throws UnknownHostException {
-		System.setOut(Logger.getOutPrintStream()); // Set System out to logger
-													// out
-		System.setErr(Logger.getErrPrintStream());
-		Runtime.getRuntime().addShutdownHook(new Thread() { // Add shutdown hook
-															// that autosaves
-															// users.
+		if (!debug) {
+			System.setOut(Logger.getOutPrintStream());
+			System.setErr(Logger.getErrPrintStream());
+		}
+		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
 				saveEverything();
-				System.out.println("Saved all users before going down.");
+				System.out.println("Saved everything before going down.");
 			}
 		});
 		ConnectionAcceptor.startAcceptor(43594);
@@ -178,6 +184,11 @@ public final class Main {
 		}
 		try {
 			ItemFactory.getInstance().loadDefinitions();
+		} catch (SAXException | IOException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		try {
+			DropSystem.getInstance().loadDrops();
 		} catch (SAXException | IOException | ParserConfigurationException e) {
 			e.printStackTrace();
 		}
@@ -228,7 +239,7 @@ public final class Main {
 			tickTimes += (System.currentTimeMillis() - start);
 			ticks++;
 			tickCount++;
-			if (ticks == Config.TICKS_PER_MINUTE * Config.STATUS_PRINT_RATE) {
+			if (ticks == Config.TICKS_PER_MINUTE * Config.STATUS_PRINT_RATE) { // For visual map, Config.TICKS_PER_WALK / 2
 				System.out.println(" ");
 				System.out.println("Average tick consumption over " + Config.STATUS_PRINT_RATE + " minutes: "
 						+ String.format("%.3f", ((tickTimes / (float) (Config.MILLISECONDS_PER_TICK * ticks))) * 100.0f)
@@ -237,12 +248,13 @@ public final class Main {
 					process.printStatus();
 				}
 				System.out.println(" ");
+				//MapHandler.getInstance().printMaps();
 				ticks = 0;
 				tickTimes = 0L;
 			}
-			//if (timeLeft < 0) {
-			//	System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
-			//}
+			if (timeLeft < 0) {
+				System.err.println("Warning: Server is lagging behind desired tick time " + (-timeLeft) + "ms.");
+			}
 			if (timeLeft < 2) {
 				timeLeft = 2; // Must wait at least a little bit, so that
 								// threads can catch up and wait.

@@ -4,8 +4,10 @@ import java.io.Serializable;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.connection.AbstractConnection;
+import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.packets.MessagePacket;
+import com.git.cs309.mmoserver.packets.SelfPacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 import com.git.cs309.mmoserver.util.WordUtils;
@@ -30,9 +32,14 @@ public final class User implements Serializable {
 	private PlayerCharacter[] playerCharacters = new PlayerCharacter[5]; // Maximum characters per user
 	private String username;
 	private transient Rights userRights = Rights.PLAYER;
+	private transient int creatingCharacterIndex = -1;
 
 	public User() {
 		//For deserialization only
+	}
+	
+	protected IDTag getIdTag() {
+		return idTag;
 	}
 
 	public User(final String username, final String password) {
@@ -45,9 +52,9 @@ public final class User implements Serializable {
 	}
 
 	public void cleanUp() {
-		idTag.returnTag();
 		exitCurrentCharacter();
 		cleanUpCharacters();
+		idTag.returnTag();
 	}
 
 	public void cleanUpCharacters() {
@@ -55,18 +62,35 @@ public final class User implements Serializable {
 			character.cleanUp();
 		}
 	}
+	
+	public void sendSelectionCharacters(AbstractConnection connection) {
+		for (int i = 0; i < playerCharacters.length; i++) {
+			if (!playerCharacters[i].isCreated())
+				continue;
+			connection.addOutgoingPacket(new CharacterSelectionDataPacket(null, i, playerCharacters[i].getEyeColor(), playerCharacters[i].getSkinColor(), playerCharacters[i].getHairColor(), playerCharacters[i].getHairStyle(), playerCharacters[i].getGender(), playerCharacters[i].getName()));
+		}
+	}
+	
+	public void createCharacter(String name, byte gender, int eyeColor, int skinColor, int hairColor, int hairStyle) {
+		assert creatingCharacterIndex != -1;
+		playerCharacters[creatingCharacterIndex].createCharacter(name, gender, eyeColor, skinColor, hairColor, hairStyle);
+		enterGame(creatingCharacterIndex);
+		creatingCharacterIndex = -1;
+	}
 
 	public void enterGame(int characterIndex) {
 		if (!playerCharacters[characterIndex].isCreated()) {
 			connection.addOutgoingPacket(new EventPacket(null, EventPacket.CREATE_CHARACTER));
+			creatingCharacterIndex = characterIndex;
 			return;
 		}
 		if (inGame) {
 			System.err.println("User already in the game.");
 			return;
 		}
+		connection.addOutgoingPacket(new SelfPacket(null, getUniqueID()));
 		connection.addOutgoingPacket(new MessagePacket(null, MessagePacket.GAME_CHAT, Config.ENTER_GAME_MESSAGE));
-		playerCharacters[characterIndex].enterGame(idTag);
+		playerCharacters[characterIndex].enterGame(this);
 		currentCharacter = characterIndex;
 		inGame = true;
 	}

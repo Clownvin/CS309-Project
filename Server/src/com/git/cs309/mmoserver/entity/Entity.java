@@ -1,20 +1,26 @@
 package com.git.cs309.mmoserver.entity;
 
+import java.io.Serializable;
+
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
-public abstract class Entity {
+public abstract class Entity implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4167955698214994437L;
 	protected transient IDTag idTag; // Unique identifier
 	protected volatile int x = 0, y = 0, z = 0; // Coordinates
 	protected int entityID = -1;
 	protected transient int instanceNumber = Config.GLOBAL_INSTANCE;
 	protected String name = "Null";
-	protected volatile boolean needsDisposal = false;
+	protected volatile transient boolean needsDisposal = false;
 
 	public Entity() {
-		instanceNumber = 0;
+		instanceNumber = Config.GLOBAL_INSTANCE;
 	}
 
 	public Entity(final int x, final int y, final int z, final IDTag idTag, final int entityID, final String name) {
@@ -88,14 +94,14 @@ public abstract class Entity {
 	}
 
 	public final void setPosition(final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		MapHandler.getInstance().moveEntity(getUniqueID(), instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
 	public final void setPosition(final int instanceNumber, final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		MapHandler.getInstance().moveEntity(getUniqueID(), this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
 		this.instanceNumber = instanceNumber;
 		this.x = x;
 		this.y = y;

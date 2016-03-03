@@ -18,6 +18,12 @@ public final class MapHandler {
 	private MapHandler() {
 		//Nothing here, since can't load maps because of semantics
 	}
+	
+	public final void printMaps() {
+		for (Map m : maps) {
+			m.printMap();
+		}
+	}
 
 	public final Entity getEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
 		Map map = getMapContainingPosition(instanceNumber, x, y, z);
@@ -33,7 +39,16 @@ public final class MapHandler {
 				return map;
 			}
 		}
-		return null;
+		throw new RuntimeException("No map for position.");
+	}
+	
+	public final Map getMapContainingEntity(final Entity entity) {
+		for (Map map : maps) {
+			if (map.getZ() == entity.getZ() && map.containsPoint(entity.getX(), entity.getY()) && map.getInstanceNumber() == entity.getInstanceNumber()) {
+				return map;
+			}
+		}
+		throw new RuntimeException("Entity is not in a map.");
 	}
 
 	public final void loadMaps() {
@@ -44,17 +59,17 @@ public final class MapHandler {
 		}
 	}
 
-	public final void moveEntity(final int oInstanceNumber, final int oX, final int oY, final int oZ,
+	public final void moveEntity(final int uniqueId, final int oInstanceNumber, final int oX, final int oY, final int oZ,
 			final int dInstanceNumber, final int dX, final int dY, final int dZ) {
 		Map map = getMapContainingPosition(oInstanceNumber, oX, oY, oZ);
 		if (!map.equals(getMapContainingPosition(dInstanceNumber, dX, dY, dZ))) {
 			Map newMap = getMapContainingPosition(dInstanceNumber, dX, dY, dZ);
-			Entity e = map.getEntity(oX, oY);
-			map.putEntity(oX, oY, null);
+			Entity e = map.getEntity(uniqueId, oX, oY);
+			map.removeEntity(oX, oY, e);
 			newMap.putEntity(dX, dY, e);
 			return;
 		}
-		map.moveEntity(oX, oY, dX, dY);
+		map.moveEntity(uniqueId, oX, oY, dX, dY);
 	}
 
 	public final void putEntityAtPosition(final int instanceNumber, final int x, final int y, final int z,
@@ -63,17 +78,17 @@ public final class MapHandler {
 		if (map == null) {
 			return;
 		}
-		assert (map.getEntity(x, y) == null); // Cannot place an entity where there is already an entity
+		assert (map.getEntity(x, y) == null || (map.getEntity(x, y) != null && map.getEntity(x, y).canWalkThrough())); // Cannot place an entity where there is already an entity
 		map.putEntity(x, y, entity);
 	}
 
-	public final void removeEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
+	public final void removeEntityAtPosition(final int instanceNumber, final int x, final int y, final int z, final Entity entity) {
 		Map map = getMapContainingPosition(instanceNumber, x, y, z);
 		if (map == null) {
 			return;
 		}
 		assert (map.getEntity(x, y) != null);
-		map.removeEntity(x, y);
+		map.removeEntity(x, y, entity);
 	}
 
 	final void addMap(Map map) {
