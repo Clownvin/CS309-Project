@@ -15,7 +15,7 @@ import com.git.cs309.mmoserver.util.CycleQueue;
 
 /**
  * 
- * @author Group 21
+ * @author Group 21 
  *
  *         An abstract class representing the basis for all in-game characters,
  *         such as player, npcs, bosses, etc.
@@ -23,7 +23,7 @@ import com.git.cs309.mmoserver.util.CycleQueue;
 public abstract class Character extends Entity {
 	
 	/**
-	 * 
+	 *  
 	 */
 	private static final long serialVersionUID = 4707730413469521334L;
 

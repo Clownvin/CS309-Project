@@ -15,7 +15,7 @@ import com.git.cs309.mmoserver.packets.LoginPacket;
 public class LoginGUI extends JFrame {
 
 	/**
-	 * 
+	 * this is the LoginGUI class
 	 */
 	private static final long serialVersionUID = 1830528029732548694L;
 	private static final LoginGUI SINGLETON = new LoginGUI();
