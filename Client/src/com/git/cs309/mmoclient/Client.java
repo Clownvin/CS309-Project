@@ -22,6 +22,7 @@ public final class Client {
 	private static int selfId = -1;
 	private static Map currentMap = null;
 	private static Self self = null;
+	private static float rotation = 0;
 	
 	public static void main(String[] args) {
 		for (String arg : args) {
@@ -95,5 +96,20 @@ public final class Client {
 	
 	public static Dimension getScreenSize() {
 		return SCREEN_SIZE;
+	}
+
+	/**
+	 * @return the rotation
+	 */
+	public static float getRotation() {
+		return (float) Math.toRadians(rotation);
+	}
+
+	/**
+	 * @param rotation the rotation to set
+	 */
+	public static void addRotation(float rotation) {
+		Client.rotation += rotation;
+		Client.rotation %= 360;
 	}
 }

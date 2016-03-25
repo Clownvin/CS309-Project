@@ -14,4 +14,6 @@ public final class Config {
 	public static final int DEFAULT_SPRITE_WIDTH = 96;
 	
 	public static final int DEFAULT_SPRITE_HEIGHT = 96;
+	
+	public static final float ROTATION_INCREMENT = 1;
 }
