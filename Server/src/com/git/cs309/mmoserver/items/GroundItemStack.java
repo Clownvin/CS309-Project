@@ -31,7 +31,7 @@ public final class GroundItemStack extends Entity {
 		this.map = map;
 	}
 
-	public void addItemStack(ItemStack stack) {
+	public void addItemStack(final ItemStack stack) {
 		groundItems.add(stack);
 		CycleProcessManager.getInstance().addProcess(new CycleProcess() {
 			final long start = Main.getTickCount();

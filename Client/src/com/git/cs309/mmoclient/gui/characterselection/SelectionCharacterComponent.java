@@ -18,7 +18,7 @@ public class SelectionCharacterComponent extends Component {
 	private final SelectionCharacter character;
 	private final int index;
 	
-	public SelectionCharacterComponent(int index) {
+	public SelectionCharacterComponent(final int index) {
 		this.index = index;
 		character = new SelectionCharacter(index);
 		this.addMouseListener(new MouseAdapter() {
