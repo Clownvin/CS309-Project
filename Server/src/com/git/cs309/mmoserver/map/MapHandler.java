@@ -58,6 +58,15 @@ public final class MapHandler {
 			map.loadSpawns();
 		}
 	}
+	
+	public final void loadNonBaseMap()
+	{
+		maps.clear();
+		addMap(MapFactory.getInstance().createMap("pvpArena", Config.GLOBAL_INSTANCE));
+		for (Map map : maps) {
+			map.loadSpawns();
+		}
+	}
 
 	public final void moveEntity(final int uniqueId, final int oInstanceNumber, final int oX, final int oY, final int oZ,
 			final int dInstanceNumber, final int dX, final int dY, final int dZ) {
