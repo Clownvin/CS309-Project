@@ -3,7 +3,10 @@ package com.git.cs309.mmoserver.map;
 import java.io.Serializable;
 import java.util.Collection;
 
-public final class MapDefinition implements Serializable {
+import com.git.cs309.mmoserver.entity.Entity;
+import com.git.cs309.server.map.AbstractMapDefinition;
+
+public final class MapDefinition implements Serializable, AbstractMapDefinition<String, Integer, Entity, Point> {
 	/**
 	 * 
 	 */

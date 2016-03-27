@@ -12,16 +12,20 @@ import org.xml.sax.SAXException;
 import com.git.cs309.mmoserver.connection.ConnectionAcceptor;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
+import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 import com.git.cs309.mmoserver.entity.characters.npc.dropsystem.DropSystem;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
+import com.git.cs309.mmoserver.entity.objects.GameObject;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
+import com.git.cs309.mmoserver.entity.objects.ObjectDefinition;
 import com.git.cs309.mmoserver.io.Logger;
 import com.git.cs309.mmoserver.items.ItemFactory;
 import com.git.cs309.mmoserver.map.MapFactory;
 import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.map.Point;
 import com.git.cs309.mmoserver.util.TickProcess;
 
 /*
@@ -66,7 +70,7 @@ public final class Main {
 
 	// Is server running.
 	private static volatile boolean running = true;
-	
+
 	private static boolean debug = false;
 
 	// Object that all TickProcess objects wait on for tick notification.
@@ -80,7 +84,7 @@ public final class Main {
 	// new tick.
 	// Current server ticks count.
 	private static volatile long tickCount = 0; // Tick count.
-	
+
 	public static boolean isDebug() {
 		return debug;
 	}
@@ -193,7 +197,7 @@ public final class Main {
 			e.printStackTrace();
 		}
 		MapFactory.getInstance();
-		MapHandler.getInstance().loadMaps();
+		this.mapHandler = new MapHandler(new MapFactory(Config.MAP_DEFINITIONS_FOLDER));
 		ConnectionManager.getInstance();
 		CycleProcessManager.getInstance();
 		CharacterManager.getInstance();

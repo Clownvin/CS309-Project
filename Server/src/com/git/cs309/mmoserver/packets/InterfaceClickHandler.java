@@ -2,6 +2,7 @@ package com.git.cs309.mmoserver.packets;
 
 import com.git.cs309.mmoserver.connection.Connection;
 import com.git.cs309.mmoserver.entity.characters.user.User;
+
 @SuppressWarnings("unused")
 public final class InterfaceClickHandler {
 	public static final void handlePacket(final InterfaceClickPacket packet) {
@@ -46,7 +47,7 @@ public final class InterfaceClickHandler {
 		case InterfaceClickPacket.UTILITY_SKILL_3:
 		case InterfaceClickPacket.WEAPON_SWAP:
 		default:
-			System.out.println("No case for interface ID: "+packet.getInterfaceID());
+			System.out.println("No case for interface ID: " + packet.getInterfaceID());
 		}
 	}
 }

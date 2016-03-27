@@ -19,21 +19,21 @@ import com.git.cs309.mmoserver.items.ItemStack;
 
 public final class DropSystem {
 	private static final DropSystem INSTANCE = new DropSystem(Config.NPC_DROPS_PATH);
-	
+
 	public static final DropSystem getInstance() {
 		return INSTANCE;
 	}
-	
+
 	private final String dropDefinitions;
-	
+
 	private final List<Rate> rates = new ArrayList<>();
-	
+
 	private final Map<String, NPCDrops> npcDropMap = new HashMap<>();
-	
+
 	private DropSystem(final String dropDefinitions) {
 		this.dropDefinitions = dropDefinitions;
 	}
-	
+
 	public synchronized final void loadDrops() throws SAXException, IOException, ParserConfigurationException {
 		rates.clear();
 		npcDropMap.clear();
@@ -52,9 +52,9 @@ public final class DropSystem {
 				break;
 			}
 		}
-		System.out.println("Loaded "+npcDropMap.size()+" NPC drops.");
+		System.out.println("Loaded " + npcDropMap.size() + " NPC drops.");
 	}
-	
+
 	public synchronized final List<ItemStack> getDropsForNPC(final String npcName) {
 		NPCDrops drops = npcDropMap.get(npcName.toLowerCase());
 		if (drops == null) {
@@ -62,7 +62,7 @@ public final class DropSystem {
 		}
 		return drops.getDrops();
 	}
-	
+
 	private final Rate getRate(Node node) {
 		NodeList baseNodes = node.getChildNodes();
 		String name = "Null";
@@ -84,7 +84,7 @@ public final class DropSystem {
 		}
 		return new Rate(name, chance);
 	}
-	
+
 	private final NPCDrops getDrops(Node node) {
 		List<RateGroup> groups = new ArrayList<>();
 		for (Rate rate : rates) {
@@ -139,7 +139,7 @@ public final class DropSystem {
 					}
 				}
 				for (RateGroup group : groups) {
-					if(group.getRateName().equalsIgnoreCase(rateName)) {
+					if (group.getRateName().equalsIgnoreCase(rateName)) {
 						group.addToGroup(new Drop(itemName, new Range(minimum, maximum)));
 						break;
 					}

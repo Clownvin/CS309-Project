@@ -30,13 +30,13 @@ public final class PacketHandler extends AbstractPacketHandler {
 		case LOGIN_PACKET:
 			LoginHandler.handlePacket((LoginPacket) packet);
 			break;
-//		case TEST_PACKET:
-//			TestPacket testPacket = (TestPacket) packet;
-//			switch (testPacket.getTest()) {
-//			case 0:
-//				throw new RuntimeException("Just a test.");s
-//			}
-//			break;
+		//		case TEST_PACKET:
+		//			TestPacket testPacket = (TestPacket) packet;
+		//			switch (testPacket.getTest()) {
+		//			case 0:
+		//				throw new RuntimeException("Just a test.");s
+		//			}
+		//			break;
 		case ADMIN_COMMAND_PACKET:
 			CommandHandler.handlePacket(packet);
 			break;
@@ -75,7 +75,8 @@ public final class PacketHandler extends AbstractPacketHandler {
 		case NEW_CHARACTER_DATA_PACKET:
 			NewCharacterDataPacket data = (NewCharacterDataPacket) packet;
 			User user = ((Connection) data.getConnection()).getUser();
-			user.createCharacter(data.getName(), data.getGender(), data.getEyeColor(), data.getSkinColor(), data.getHairColor(), data.getHairStyle());
+			user.createCharacter(data.getName(), data.getGender(), data.getEyeColor(), data.getSkinColor(),
+					data.getHairColor(), data.getHairStyle());
 			break;
 		default:
 			break;

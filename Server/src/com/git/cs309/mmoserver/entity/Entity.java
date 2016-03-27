@@ -2,40 +2,37 @@ package com.git.cs309.mmoserver.entity;
 
 import java.io.Serializable;
 
+import com.git.cs309.server.map.EntityType;
+import com.git.cs309.server.util.OnCreate;
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.map.Point;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
-public abstract class Entity implements Serializable {
+public abstract class Entity extends EntityType<MapHandler, String, Integer, Entity, Point> implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4167955698214994437L;
-	
+
 	public static final int PLAYER_STATIC_ID = 0;
-	
+
 	public static final int GROUND_ITEM_STATIC_ID = 1;
-	
+
 	protected transient IDTag idTag; // Unique identifier
 	protected volatile int x = 0, y = 0, z = 0; // Coordinates
 	protected int entityID = -1;
 	protected transient int instanceNumber = Config.GLOBAL_INSTANCE;
 	protected String name = "Null";
 	protected volatile transient boolean needsDisposal = false;
+	protected volatile transient MapHandler mapHandler;
 
-	public Entity() {
-		instanceNumber = Config.GLOBAL_INSTANCE;
-	}
-
-	public Entity(final int x, final int y, final int z, final IDTag idTag, final int entityID, final String name) {
-		this.x = x;
-		this.y = y;
-		this.z = z;
+	public Entity(final MapHandler mapHandler, final Point position, final IDTag idTag, final int entityID, final String name) {
+		super(mapHandler, position, new String(name + idTag.getID()));
 		this.idTag = idTag;
 		this.entityID = entityID;
 		this.name = name;
-		instanceNumber = Config.GLOBAL_INSTANCE;
 	}
 
 	public abstract boolean canWalkThrough();
@@ -58,7 +55,7 @@ public abstract class Entity implements Serializable {
 				&& getEntityType() == entity.getEntityType();
 	}
 
-	public abstract EntityType getEntityType();
+	public abstract EntityClassification getEntityType();
 
 	public abstract Packet getExtensivePacket();
 
@@ -97,23 +94,37 @@ public abstract class Entity implements Serializable {
 	public final void setInstanceNumber(int instanceNumber) {
 		this.instanceNumber = instanceNumber;
 	}
-
-	public final void setPosition(final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(getUniqueID(), instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
-	public final void setPosition(final int instanceNumber, final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(getUniqueID(), this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
-		this.instanceNumber = instanceNumber;
-		this.x = x;
-		this.y = y;
-		this.z = z;
-	}
-
+	
 	protected final void setIDTag(final IDTag idTag) {
 		this.idTag = idTag;
+	}
+
+	@Override
+	public boolean checkCollision(Entity other) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean checkCollision(Entity other, Point othersUnits) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean withinCollisionRadius(Entity other) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean withinCollisionRadius(Point position) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Integer getCollisionRadius() {
+		return 1;
 	}
 }

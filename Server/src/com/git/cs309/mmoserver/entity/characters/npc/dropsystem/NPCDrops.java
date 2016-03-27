@@ -14,17 +14,17 @@ public final class NPCDrops {
 		public int compare(RateGroup o1, RateGroup o2) {
 			return (int) (o2.getRate() - o1.getRate());
 		}
-		
+
 	};
 	private final String npcName;
 	private final List<RateGroup> groupList = new ArrayList<>();
-	
+
 	public NPCDrops(final String npcName, Collection<RateGroup> groups) {
 		this.npcName = npcName;
 		groupList.addAll(groups);
 		groupList.sort(GROUP_COMPARATOR);
 	}
-	
+
 	public List<ItemStack> getDrops() {
 		List<ItemStack> drops = new ArrayList<>();
 		for (RateGroup group : groupList) {

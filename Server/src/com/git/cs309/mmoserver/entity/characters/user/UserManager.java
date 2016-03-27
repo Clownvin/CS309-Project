@@ -119,7 +119,8 @@ public final class UserManager {
 					"The user \"" + loginPacket.getUsername() + "\" is already logged in.");
 		}
 		if (loginPacket.getUsername().length() > Config.MAX_NAME_LENGTH) {
-			((Connection)loginPacket.getConnection()).addOutgoingPacket(new ErrorPacket(null, ErrorPacket.NAME_TOO_LONG_ERROR, "That name is too long!"));
+			((Connection) loginPacket.getConnection()).addOutgoingPacket(
+					new ErrorPacket(null, ErrorPacket.NAME_TOO_LONG_ERROR, "That name is too long!"));
 		}
 		File userFile = getUserFile(loginPacket.getUsername());
 		User user;

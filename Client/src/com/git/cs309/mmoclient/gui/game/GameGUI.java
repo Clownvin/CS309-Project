@@ -23,42 +23,7 @@ public class GameGUI extends JFrame {
 	
 	private static final GameGUI SINGLETON = new GameGUI();
 	
-	private volatile boolean leftPressed = false;
-	private volatile boolean rightPressed = false;
-	
-	private final Thread cameraThread = new Thread(new Runnable() {
-
-		@Override
-		public void run() {
-			System.out.println("Here");
-			while (true) {
-				synchronized (SINGLETON) {
-					try {
-						SINGLETON.wait(10);
-					} catch (InterruptedException e) {
-					}
-				}
-				while (leftPressed || rightPressed) {
-					System.out.println("Exited Wait & is pressed");
-					if (leftPressed) {
-						Client.addRotation(Config.ROTATION_INCREMENT);
-					}
-					if (rightPressed) {
-						Client.addRotation(Config.ROTATION_INCREMENT);
-					}
-					GameGUI.this.repaint();
-					try {
-						Thread.sleep(5);
-					} catch (InterruptedException e) {
-					}
-				}
-			}
-		}
-		
-	});
-	
 	private GameGUI() {
-		cameraThread.start();
 		addComponentListener(new ComponentAdapter() {
 
 			@Override

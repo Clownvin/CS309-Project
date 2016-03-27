@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.entity.EntityType;
+import com.git.cs309.mmoserver.entity.EntityClassification;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.util.TickProcess;
 
@@ -40,7 +40,7 @@ public final class CharacterManager extends TickProcess {
 	public void addCharacter(final Character character) { // Add new character to characterSet
 		synchronized (characterSet) {
 			characterSet.add(character);
-			MapHandler.getInstance().putEntityAtPosition(character.getInstanceNumber(), character.getX(),
+			mapHandler.putEntityAtPosition(character.getInstanceNumber(), character.getX(),
 					character.getY(), character.getZ(), character);
 		}
 	}

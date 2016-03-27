@@ -1,5 +1,5 @@
 package com.git.cs309.mmoserver.entity;
 
-public enum EntityType {
+public enum EntityClassification {
 	NPC, OBJECT, PLAYER, GROUND_ITEM;
 }

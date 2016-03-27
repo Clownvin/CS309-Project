@@ -27,6 +27,7 @@ import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
 import com.git.cs309.mmoclient.gui.interfaces.GameInterface;
 import com.git.cs309.mmoclient.gui.interfaces.RightClickOptionsInterface;
 import com.git.cs309.mmoclient.entity.EntityType;
+import com.git.cs309.mmoserver.packets.EntityClickPacket;
 import com.git.cs309.mmoserver.packets.MovePacket;
 
 public class ViewPanel extends JPanel {
@@ -42,25 +43,7 @@ public class ViewPanel extends JPanel {
 	
 	private Image offscreenImage = null;
 	
-	private final Thread autoturnThread = new Thread(new Runnable() {
-
-		@Override
-		public void run() {
-			while (true) {
-				try {
-					Thread.sleep(15);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-				Client.addRotation(Config.ROTATION_INCREMENT);
-				ViewPanel.getInstance().getInstance().repaint();
-			}
-		}
-		
-	});
-	
 	private ViewPanel() {
-		autoturnThread.start();
 		this.setLayout(null);
 		this.add(ChatBox.getInstance());
 		this.setBackground(new Color(0, 0, 0, 0.0f));
@@ -108,7 +91,12 @@ public class ViewPanel extends JPanel {
 					options.add("Cancel");
 					addInterface(new RightClickOptionsInterface(e.getX(), e.getY(), options.toArray(new String[options.size()])));
 				} else {
-					Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
+					Entity[] entities = Client.getMap().getEntities(gameX, gameY);
+					if (entities.length > 0) {
+						Client.getConnection().addOutgoingPacket(new EntityClickPacket(null, entities[0].getStaticID(), entities[0].getUniqueID(), gameX, gameY, 0));
+					} else {
+						Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
+					}
 				}
 				ViewPanel.this.repaint();
 			}

@@ -18,8 +18,9 @@ public final class ItemDefinition implements Serializable {
 	private final int level;
 	private final String itemName;
 	private final boolean stackable;
-	
-	public ItemDefinition(final String itemName, final int id, final int price, final int strength, final int defence, final int level, final CombatStyle style, final EquipmentSlot slot, final boolean stackable) {
+
+	public ItemDefinition(final String itemName, final int id, final int price, final int strength, final int defence,
+			final int level, final CombatStyle style, final EquipmentSlot slot, final boolean stackable) {
 		this.itemName = itemName;
 		this.id = id;
 		this.price = price;
