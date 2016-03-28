@@ -1,5 +1,6 @@
 package com.git.cs309.serverscript.core.action;
 
+import com.git.cs309.serverscript.core.ScriptArguments;
 import com.git.cs309.serverscript.core.ScriptEnvironment;
 import com.git.cs309.serverscript.types.ScriptObject;
 
@@ -21,13 +22,7 @@ public class Store extends Action {
 			for (int i = 1; i < methodSplit.length; i++) {
 				String methodName = methodSplit[i].substring(0, methodSplit[i].indexOf('('));
 				String pre = methodSplit[i].replace(methodName, "");
-				String[] stringArguments = pre.substring(pre.indexOf("(") + 1, pre.lastIndexOf(")")).replace(")", "")
-						.split(",");
-				Object[] arguments = new Object[stringArguments.length];
-				int index = 0;
-				for (String argument : stringArguments) {
-					arguments[index++] = environment.getCurrentFrame().getObject(argument.trim());
-				}
+				ScriptArguments arguments = new ScriptArguments(pre, environment);
 				try {
 					if (i == methodSplit.length - 1) {
 						value = new ScriptObject(object.invoke(methodName, arguments));
