@@ -10,8 +10,8 @@ public class SpriteAnimation {
 	        int mousePreDiffX = 0;
 			int mousePreDiffY = 0;
 			int towards = 0;
-			int px = 0;
-			int py = 0;
+			int px = 2;
+			int py = 2;
 			java.awt.Image image = null;
 	        if(mousePreDiffX == 0&&mousePreDiffY ==0){
 				if(towards==1){

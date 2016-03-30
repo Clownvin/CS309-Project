@@ -56,7 +56,7 @@ public final class GroundItemStack extends Entity {
 		map.itemStackChanged(x, y);
 	}
 
-	public void addItemStack(ItemStack stack, boolean despawns) {
+	public void addItemStack(final ItemStack stack, boolean despawns) {
 		groundItems.add(stack);
 		if (despawns)
 			CycleProcessManager.getInstance().addProcess(new CycleProcess() {

@@ -103,6 +103,7 @@ public abstract class Entity extends Component {
 	}
 
 	public final void setPosition(final int x, final int y) {
+		//Animation walk = new Animation(uniqueId, this.x, this.y, x, y);
 		//TODO handle walking
 		this.x = x;
 		this.y = y;
