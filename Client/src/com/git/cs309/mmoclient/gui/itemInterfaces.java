@@ -1,14 +1,9 @@
-import com.git.cs309.mmoserver.combat.CombatStyle;
-import com.git.cs309.mmoserver.items.EquipmentSlot;
-
-
-
 public class itemInterfaces {
 	
 	private static final long serialVersionUID = -506002191290787674L;
 	private final int price;
-	private final CombatStyle style;
-	private final EquipmentSlot slot;
+	private final int CombatStyle;
+	private final int EquipmentSlot;
 	private final int id;
 	private final int strength;
 	private final int defence;
@@ -26,8 +21,8 @@ public class itemInterfaces {
 	/**
 	 * @return the style
 	 */
-	public CombatStyle getStyle() {
-		return style;
+	public int getCombatStyle() {
+		return CombatStyle;
 	}
 
 	/**
@@ -68,8 +63,8 @@ public class itemInterfaces {
 	/**
 	 * @return the slot
 	 */
-	public EquipmentSlot getSlot() {
-		return slot;
+	public int getEquipmentSlot() {
+		return EquipmentSlot;
 	}
 
 	/**
