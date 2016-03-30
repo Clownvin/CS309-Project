@@ -3,7 +3,6 @@ package com.git.cs309.mmoserver.map;
 import java.util.Queue;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.util.CycleQueue;
 import com.git.cs309.mmoserver.util.MathUtils;
 
@@ -125,9 +124,6 @@ public final class PathFinder {
 				}
 			}
 			if (closestDistance == grid.length * 2) {
-				if (Main.isDebug()) {
-					System.err.println("Error: Returned walking queue because no tile was found in step");
-				}
 				return new CycleQueue<Tile>(0);
 			}
 			walkingQueue.add(new Tile(tX + map.getXOrigin(), tY + map.getYOrigin()));

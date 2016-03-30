@@ -4,9 +4,10 @@ import java.awt.EventQueue;
 import java.util.Queue;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.Server;
 import com.git.cs309.mmoserver.combat.CombatManager;
 import com.git.cs309.mmoserver.entity.Entity;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.Map;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.map.PathFinder;
@@ -49,7 +50,7 @@ public abstract class Character extends Entity {
 
 			@Override
 			public void run() {
-				CharacterManager.getInstance().addCharacter(Character.this);
+				ModuleManager.getModule(CharacterManager.class).addCharacter(Character.this);
 			}
 
 		});
@@ -123,8 +124,8 @@ public abstract class Character extends Entity {
 		if (!walking && !walkingQueue.isEmpty()) {
 			walking = true;
 		}
-		if (walking && !walkingQueue.isEmpty() && Main.getTickCount() - walkingTick >= Config.TICKS_PER_WALK) {
-			walkingTick = Main.getTickCount();
+		if (walking && !walkingQueue.isEmpty() && ModuleManager.getModule(Server.class).getTickCount() - walkingTick >= Config.TICKS_PER_WALK) {
+			walkingTick = ModuleManager.getModule(Server.class).getTickCount();
 			Tile t = walkingQueue.remove();
 			setPosition(t.getX(), t.getY(), getZ());
 		}

@@ -17,13 +17,24 @@ public abstract class Module extends GlobalScriptVariable {
 		}
 	}
 	
-	public final Object invoke(final String methodName, final Object...arguments) {
+	@SuppressWarnings("unchecked")
+	public final <T> T invoke(final String methodName, final Object...arguments) {
 		Method method = methodMap.get(methodName);
 		try {
-			return method.invoke(this, arguments);
+			return (T) method.invoke(this, arguments);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 			e.printStackTrace();
 		}
-		return new Object();
+		return (T) new Object();
+	}
+	
+	public final <T> T invoke(final Class<T> cls, final String methodName, final Object...arguments) {
+		Method method = methodMap.get(methodName);
+		try {
+			return cls.cast(method.invoke(this, arguments));
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return cls.cast(new Object());
 	}
 }

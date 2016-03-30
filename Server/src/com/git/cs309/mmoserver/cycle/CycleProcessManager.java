@@ -18,17 +18,12 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         if a condition is met.
  */
 public final class CycleProcessManager extends TickProcess {
-	private static final CycleProcessManager INSTANCE = new CycleProcessManager();
-
-	public static final CycleProcessManager getInstance() {
-		return INSTANCE;
-	}
 
 	private final Set<CycleProcess> processes = new HashSet<>(); // Set of processes.
 
 	//Private so that only this class can access constructor.
-	private CycleProcessManager() {
-		super("CycleProcessManager");
+	public CycleProcessManager() {
+		
 	}
 
 	/**
@@ -66,5 +61,10 @@ public final class CycleProcessManager extends TickProcess {
 			}
 			processes.removeAll(removalList);
 		}
+	}
+
+	@Override
+	public String getVariableName() {
+		return "CycleProcessManager";
 	}
 }

@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.Server;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.entity.EntityType;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.Map;
 import com.git.cs309.mmoserver.packets.GroundItemsPacket;
 import com.git.cs309.mmoserver.packets.Packet;
@@ -33,8 +34,9 @@ public final class GroundItemStack extends Entity {
 
 	public void addItemStack(ItemStack stack) {
 		groundItems.add(stack);
-		CycleProcessManager.getInstance().addProcess(new CycleProcess() {
-			final long start = Main.getTickCount();
+		ModuleManager.getModule(CycleProcessManager.class).addProcess(new CycleProcess() {
+			final Server server = ModuleManager.getModule(Server.class);
+			final long start = server.getTickCount();
 
 			@Override
 			public void end() {
@@ -44,7 +46,7 @@ public final class GroundItemStack extends Entity {
 
 			@Override
 			public boolean finished() {
-				return Main.getTickCount() - start >= Config.TICKS_TILL_ITEM_DESPAWN;
+				return server.getTickCount() - start >= Config.TICKS_TILL_ITEM_DESPAWN;
 			}
 
 			@Override
@@ -59,8 +61,9 @@ public final class GroundItemStack extends Entity {
 	public void addItemStack(ItemStack stack, boolean despawns) {
 		groundItems.add(stack);
 		if (despawns)
-			CycleProcessManager.getInstance().addProcess(new CycleProcess() {
-				final long start = Main.getTickCount();
+			ModuleManager.getModule(CycleProcessManager.class).addProcess(new CycleProcess() {
+				final Server server = ModuleManager.getModule(Server.class);
+				final long start = server.getTickCount();
 
 				@Override
 				public void end() {
@@ -70,7 +73,7 @@ public final class GroundItemStack extends Entity {
 
 				@Override
 				public boolean finished() {
-					return Main.getTickCount() - start >= Config.TICKS_TILL_ITEM_DESPAWN;
+					return server.getTickCount() - start >= Config.TICKS_TILL_ITEM_DESPAWN;
 				}
 
 				@Override

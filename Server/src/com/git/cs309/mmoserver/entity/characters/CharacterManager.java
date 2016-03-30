@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.util.TickProcess;
 
@@ -17,16 +16,11 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         TickProcess implementation that manages all Character objects.
  */
 public final class CharacterManager extends TickProcess {
-	private static final CharacterManager INSTANCE = new CharacterManager();
-
-	public static final CharacterManager getInstance() {
-		return INSTANCE;
-	}
 
 	private final Set<Character> characterSet = new HashSet<>(); // All registered characters
 
-	private CharacterManager() {
-		super("CharacterManager");
+	public CharacterManager() {
+		
 	}
 
 	/**
@@ -90,7 +84,12 @@ public final class CharacterManager extends TickProcess {
 
 	@Override
 	protected void tickTask() {
-		processCharacters(Main.getTickCount() % Config.TICKS_PER_REGEN == 0); // Process characters.
+		processCharacters(server.getTickCount() % Config.TICKS_PER_REGEN == 0); // Process characters.
+	}
+
+	@Override
+	public String getVariableName() {
+		return "CharacterManager";
 	}
 
 }

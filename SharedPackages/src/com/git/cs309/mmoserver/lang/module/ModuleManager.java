@@ -2,34 +2,52 @@ package com.git.cs309.mmoserver.lang.module;
 
 import java.util.HashMap;
 
-import com.git.cs309.mmoserver.script.GlobalScriptVariable;
-import com.git.cs309.mmoserver.script.JavaScriptEngine;
-
-public final class ModuleManager extends GlobalScriptVariable {
-	private static final ModuleManager INSTANCE = new ModuleManager();
-	private static final HashMap<String, Module> moduleMap = new HashMap<>();
+public final class ModuleManager extends Module {
+	private static final HashMap<String, Module> moduleMapByName = new HashMap<>();
+	private static final HashMap<Class<? extends Module>, Module> moduleMapByClass = new HashMap<>();
 	private static String projectBase = "";
+	private static final ModuleManager INSTANCE = new ModuleManager();
 	
 	private ModuleManager() {
-		super(JavaScriptEngine.getScriptEngine());
+		moduleMapByName.put(getVariableName(), this);
+		moduleMapByClass.put(ModuleManager.class, this);
 	}
 	
 	public static final ModuleManager getInstance() {
 		return INSTANCE;
 	}
 	
-	public final Module getModule(final String moduleName) {
-		if (moduleMap.containsKey(moduleName)) {
-			return moduleMap.get(moduleName);
+	public static final <T> T getModule(final String moduleName, final Class<T> cls) {
+		if (moduleMapByName.containsKey(moduleName)) {
+			return cls.cast(moduleMapByName.get(moduleName));
 		}
 		try {
 			Module module = (Module) ClassLoader.getSystemClassLoader().loadClass(projectBase+moduleName).newInstance();
-			moduleMap.put(moduleName, module);
-			return module;
+			moduleMapByName.put(moduleName, module);
+			return cls.cast(module);
 		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return (Module) new Object();
+		return cls.cast(new Object());
+	}
+	
+	public static final <T extends Module> T getModule(final Class<T> cls) {
+		if (moduleMapByClass.containsKey(cls)) {
+			return cls.cast(moduleMapByClass.get(cls));
+		}
+		try {
+			Module module = (Module) cls.newInstance();
+			moduleMapByClass.put(cls, module);
+			moduleMapByName.put(cls.getName().replace(projectBase, ""), module);
+			return cls.cast(module);
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return cls.cast(new Object());
+	}
+	
+	public static final void setProjectBase(final String newProjectBase) {
+		projectBase = newProjectBase;
 	}
 
 	@Override

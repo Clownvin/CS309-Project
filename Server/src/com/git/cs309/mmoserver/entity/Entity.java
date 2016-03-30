@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.lang.AnnotationWrapper;
 import com.git.cs309.mmoserver.lang.OnClose;
+import com.git.cs309.mmoserver.lang.OnGarbageCollection;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
@@ -123,8 +124,11 @@ public abstract class Entity extends AnnotationWrapper implements Serializable {
 		this.idTag = idTag;
 	}
 	
+	/**
+	 * Blah blah blah. Yea, finalizers are dangerous
+	 */
 	public void finalize() {
-		for (Method method : this.getAnnotatedMethod(OnClose.class)) {
+		for (Method method : this.getAnnotatedMethod(OnGarbageCollection.class)) {
 			try {
 				method.invoke(this, new Object[] {});
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

@@ -1,7 +1,7 @@
 package com.git.cs309.mmoserver.entity.characters.npc;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.Server;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.EntityType;
@@ -13,6 +13,7 @@ import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
 import com.git.cs309.mmoserver.entity.characters.npc.dropsystem.DropSystem;
 import com.git.cs309.mmoserver.items.ItemStack;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.Map;
 import com.git.cs309.mmoserver.map.MapHandler;
 import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
@@ -150,9 +151,10 @@ public class NPC extends Character {
 			map.putItemStack(getX(), getY(), stack);
 		}
 		if (isAutoRespawn()) {
-			CycleProcessManager.getInstance().addProcess(new CycleProcess() {
-				final long startTick = Main.getTickCount();
-				long currentTick = Main.getTickCount();
+			ModuleManager.getModule(CycleProcessManager.class).addProcess(new CycleProcess() {
+				final Server server = ModuleManager.getModule("Server", Server.class);
+				final long startTick = server.getTickCount();
+				long currentTick = server.getTickCount();
 
 				@Override
 				public void end() {
@@ -167,7 +169,7 @@ public class NPC extends Character {
 
 				@Override
 				public void process() {
-					currentTick = Main.getTickCount();
+					currentTick = server.getTickCount();
 				}
 
 			});

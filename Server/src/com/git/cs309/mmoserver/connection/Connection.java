@@ -6,6 +6,7 @@ import java.net.Socket;
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
@@ -105,7 +106,7 @@ public class Connection extends AbstractConnection {
 
 	@Override
 	public void iterationStartBlock() {
-		Object waitObject = ConnectionManager.getInstance().getWaitObject();
+		Object waitObject = ModuleManager.getModule(ConnectionManager.class).getWaitObject();
 		synchronized (waitObject) {
 			try {
 				waitObject.wait(); // Wait for connection manager to notify us of new tick.
