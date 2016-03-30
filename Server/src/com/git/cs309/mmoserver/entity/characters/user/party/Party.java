@@ -18,7 +18,7 @@ public final class Party {
 		assert !partyFull();
 		partyMembers.add(user);
 	}
-
+	
 	public Collection<User> getPartyMembers() {
 		return partyMembers;
 	}

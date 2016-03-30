@@ -17,19 +17,19 @@ import com.git.cs309.mmoserver.util.WordUtils;
 
 public final class ItemFactory {
 	private static final ItemFactory INSTANCE = new ItemFactory(Config.ITEM_DEFINITION_PATH);
-
+	
 	public static final ItemFactory getInstance() {
 		return INSTANCE;
 	}
-
+	
 	private final String definitionPath;
 	private final HashMap<String, ItemDefinition> definitionsForName = new HashMap<>();
 	private final HashMap<Integer, ItemDefinition> definitionsForID = new HashMap<>();
-
+	
 	private ItemFactory(final String definitionPath) {
 		this.definitionPath = definitionPath;
 	}
-
+	
 	public synchronized void loadDefinitions() throws SAXException, IOException, ParserConfigurationException {
 		definitionsForName.clear();
 		definitionsForID.clear();
@@ -127,8 +127,7 @@ public final class ItemFactory {
 						e.printStackTrace();
 					}
 				}
-				ItemDefinition definition = new ItemDefinition(WordUtils.capitalizeText(name), id, price, strength,
-						defence, level, style, slot, stackable);
+				ItemDefinition definition = new ItemDefinition(WordUtils.capitalizeText(name), id, price, strength, defence, level, style, slot, stackable);
 				definitionsForName.put(definition.getItemName().toLowerCase(), definition);
 				definitionsForID.put(definition.getId(), definition);
 				break;
@@ -136,35 +135,35 @@ public final class ItemFactory {
 		}
 		System.out.println("Loaded " + definitionsForName.size() + " Item definitions.");
 	}
-
+	
 	public synchronized final ItemStack createItemStack(final String itemName) {
 		ItemDefinition definition = definitionsForName.get(itemName);
 		if (definition == null) {
-			throw new RuntimeException("No item definition for item: " + itemName);
+			throw new RuntimeException("No item definition for item: "+itemName);
 		}
 		return new ItemStack(definition);
 	}
-
+	
 	public synchronized final ItemStack createItemStack(final String itemName, final int count) {
 		ItemDefinition definition = definitionsForName.get(itemName);
 		if (definition == null) {
-			throw new RuntimeException("No item definition for item: " + itemName);
+			throw new RuntimeException("No item definition for item: "+itemName);
 		}
 		return new ItemStack(definition, count);
 	}
-
+	
 	public synchronized final ItemStack createItemStack(final int itemId) {
 		ItemDefinition definition = definitionsForID.get(itemId);
 		if (definition == null) {
-			throw new RuntimeException("No item definition for item: " + itemId);
+			throw new RuntimeException("No item definition for item: "+itemId);
 		}
 		return new ItemStack(definition);
 	}
-
+	
 	public synchronized final ItemStack createItemStack(final int itemId, final int count) {
 		ItemDefinition definition = definitionsForID.get(itemId);
 		if (definition == null) {
-			throw new RuntimeException("No item definition for item: " + itemId);
+			throw new RuntimeException("No item definition for item: "+itemId);
 		}
 		return new ItemStack(definition, count);
 	}

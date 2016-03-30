@@ -8,12 +8,12 @@ import com.git.cs309.mmoserver.util.CycleQueue;
 import com.git.cs309.mmoserver.util.MathUtils;
 
 public final class PathFinder {
-
+	
 	public static final int START = 0;
 	public static final int EMPTY = -1;
 	public static final int CANT_WALK = -2;
 	public static final int DESTINATION = -3;
-
+	
 	public static final class Tile {
 		private final int x, y;
 
@@ -46,27 +46,14 @@ public final class PathFinder {
 	}
 
 	//Uses an implementation of Lee's algorithm
-	private static final Queue<Tile> getPath(final Map map, int x1, int y1, int x2, int y2) {
+	private static final Queue<Tile> getPath(final Map map, final int x1, final int y1, final int x2, final int y2) {
 		int[][] grid = map.getPathingMap();
 		int originX = (x1 - map.getXOrigin());
 		int originY = (y1 - map.getYOrigin());
-		if (grid[x2 - map.getXOrigin()][y2 - map.getYOrigin()] != EMPTY) {
-			boolean found = false;
-			for (int x = x2 - 1; x < x2 + 2; x++) {
-				for (int y = y2 - 1; y < y2 + 2; y++) {
-					if (grid[x2 - map.getXOrigin()][y2 - map.getYOrigin()] == EMPTY
-							&& MathUtils.distance(x1, y1, x, y) <= MathUtils.distance(x1, y1, x2, y2)) {
-						x2 = x;
-						y2 = y;
-						found = true;
-					}
-				}
-			}
-			if (!found) {
-				return new CycleQueue<Tile>(0);
-			}
+		if (grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] != EMPTY) {
+			return new CycleQueue<Tile>(0);
 		}
-		grid[x2 - map.getXOrigin()][y2 - map.getYOrigin()] = DESTINATION;
+		grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] = DESTINATION;
 		grid[originX][originY] = START;
 		boolean stop = false;
 		int sX;
@@ -78,7 +65,7 @@ public final class PathFinder {
 		int eX2;
 		int eY2;
 		int step;
-		for (step = 0; !stop && step < Config.MAX_WALKING_DISTANCE; step++) {
+		for (step = 0; !stop && step < Config.MAX_WALKING_DISTANCE ; step++) {
 			sX = originX - step;
 			sY = originY - step;
 			eX = originX + step;
@@ -126,8 +113,7 @@ public final class PathFinder {
 			closestDistance = grid.length * 2;
 			for (int x = lX - 1; x <= lX + 1; x++) {
 				for (int y = lY - 1; y <= lY + 1; y++) {
-					if (x < 0 || x >= grid.length || y < 0 || y >= grid[x].length || grid[x][y] > step
-							|| grid[x][y] < 0) {
+					if (x < 0 || x >= grid.length || y < 0 || y >= grid[x].length || grid[x][y] > step || grid[x][y] < 0) {
 						continue;
 					}
 					distance = MathUtils.distance(x, y, originX, originY);

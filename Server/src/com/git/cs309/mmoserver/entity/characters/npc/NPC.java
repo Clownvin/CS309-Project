@@ -4,7 +4,7 @@ import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
-import com.git.cs309.mmoserver.entity.EntityClassification;
+import com.git.cs309.mmoserver.entity.EntityType;
 /**
  *
  * @author Group 21
@@ -62,16 +62,16 @@ public class NPC extends Character {
 		this.instanceNumber = instanceNumber;
 		this.autoRespawn = autoRespawn;
 	}
-
+	
 	public void handleNearbyCharacter(Character character) {
-		if (definition.aggressive() && character.getEntityType() == EntityClassification.PLAYER) {
-
+		if(definition.aggressive() && character.getEntityType() == EntityType.PLAYER) {
+			
 		}
 	}
 
 	@Override
-	public EntityClassification getEntityType() {
-		return EntityClassification.NPC;
+	public EntityType getEntityType() {
+		return EntityType.NPC;
 	}
 
 	@Override
@@ -117,9 +117,9 @@ public class NPC extends Character {
 
 	@Override
 	protected void characterProcess() {
-
+		
 	}
-
+	
 	@Override
 	public void handleWalking() {
 		super.handleWalking();
@@ -156,8 +156,8 @@ public class NPC extends Character {
 
 				@Override
 				public void end() {
-					NPCFactory.getInstance().createNPC(NPC.this.getName(), NPC.this.getSpawnX(), NPC.this.getY(),
-							NPC.this.getZ(), NPC.this.getInstanceNumber());
+					NPCFactory.getInstance().createNPC(NPC.this.getName(), NPC.this.getSpawnX(), NPC.this.getY(), NPC.this.getZ(),
+							NPC.this.getInstanceNumber());
 				}
 
 				@Override

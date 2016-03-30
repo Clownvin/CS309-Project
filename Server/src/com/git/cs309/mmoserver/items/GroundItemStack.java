@@ -8,9 +8,8 @@ import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.Entity;
-import com.git.cs309.mmoserver.entity.EntityClassification;
+import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.map.Map;
-import com.git.cs309.mmoserver.map.Point;
 import com.git.cs309.mmoserver.packets.GroundItemsPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
@@ -23,8 +22,8 @@ public final class GroundItemStack extends Entity {
 	private final List<ItemStack> groundItems;
 	private final Map map;
 
-	public GroundItemStack(Point point, Map map) {
-		super(point, ClosedIDSystem.getTag(), Entity.GROUND_ITEM_STATIC_ID, "GroundItemStack");
+	public GroundItemStack(int x, int y, Map map) {
+		super (x, y, map.getZ(), ClosedIDSystem.getTag(), Entity.GROUND_ITEM_STATIC_ID, "GroundItemStack");
 		groundItems = new ArrayList<ItemStack>();
 		this.instanceNumber = map.getInstanceNumber();
 		this.x = x;
@@ -109,8 +108,8 @@ public final class GroundItemStack extends Entity {
 	}
 
 	@Override
-	public EntityClassification getEntityType() {
-		return EntityClassification.GROUND_ITEM;
+	public EntityType getEntityType() {
+		return EntityType.GROUND_ITEM;
 	}
 
 	@Override

@@ -1,10 +1,12 @@
 package com.git.cs309.mmoserver;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.script.ScriptException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
@@ -12,20 +14,17 @@ import org.xml.sax.SAXException;
 import com.git.cs309.mmoserver.connection.ConnectionAcceptor;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
-import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.entity.characters.npc.NPCFactory;
 import com.git.cs309.mmoserver.entity.characters.npc.dropsystem.DropSystem;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
-import com.git.cs309.mmoserver.entity.objects.GameObject;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
-import com.git.cs309.mmoserver.entity.objects.ObjectDefinition;
 import com.git.cs309.mmoserver.io.Logger;
 import com.git.cs309.mmoserver.items.ItemFactory;
 import com.git.cs309.mmoserver.map.MapFactory;
 import com.git.cs309.mmoserver.map.MapHandler;
-import com.git.cs309.mmoserver.map.Point;
+import com.git.cs309.mmoserver.script.JavaScriptEngine;
 import com.git.cs309.mmoserver.util.TickProcess;
 
 /*
@@ -70,7 +69,7 @@ public final class Main {
 
 	// Is server running.
 	private static volatile boolean running = true;
-
+	
 	private static boolean debug = false;
 
 	// Object that all TickProcess objects wait on for tick notification.
@@ -84,7 +83,7 @@ public final class Main {
 	// new tick.
 	// Current server ticks count.
 	private static volatile long tickCount = 0; // Tick count.
-
+	
 	public static boolean isDebug() {
 		return debug;
 	}
@@ -138,8 +137,10 @@ public final class Main {
 	 * 
 	 * @param args
 	 * @throws UnknownHostException
+	 * @throws ScriptException 
+	 * @throws FileNotFoundException 
 	 */
-	public static void main(String[] args) throws UnknownHostException {
+	public static void main(String[] args) throws UnknownHostException, FileNotFoundException, ScriptException {
 		if (!debug) {
 			System.setOut(Logger.getOutPrintStream());
 			System.setErr(Logger.getErrPrintStream());
@@ -152,6 +153,8 @@ public final class Main {
 			}
 		});
 		ConnectionAcceptor.startAcceptor(43594);
+		JavaScriptEngine.setVariable("out", System.out);
+		JavaScriptEngine.runScript("./data/scripts/serverstart.js");
 		while (true) {
 			runServer();
 			try {
@@ -197,7 +200,7 @@ public final class Main {
 			e.printStackTrace();
 		}
 		MapFactory.getInstance();
-		this.mapHandler = new MapHandler(new MapFactory(Config.MAP_DEFINITIONS_FOLDER));
+		MapHandler.getInstance().loadMaps();
 		ConnectionManager.getInstance();
 		CycleProcessManager.getInstance();
 		CharacterManager.getInstance();

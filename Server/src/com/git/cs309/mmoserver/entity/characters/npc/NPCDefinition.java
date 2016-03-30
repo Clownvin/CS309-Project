@@ -39,8 +39,7 @@ public final class NPCDefinition {
 	private final CombatStyle combatStyle;
 
 	public NPCDefinition(final String name, final int id, final int maxHealth, final int strength, final int accuracy,
-			final int defence, final int level, final boolean autoRespawn, final int respawnTimer,
-			final boolean canWalk, final boolean aggressive, final CombatStyle combatStyle) {
+			final int defence, final int level, final boolean autoRespawn, final int respawnTimer, final boolean canWalk, final boolean aggressive, final CombatStyle combatStyle) {
 		this.name = name;
 		this.id = id;
 		this.maxHealth = maxHealth;
@@ -99,7 +98,7 @@ public final class NPCDefinition {
 	public boolean canWalk() {
 		return canWalk;
 	}
-
+	
 	public boolean aggressive() {
 		return aggressive;
 	}

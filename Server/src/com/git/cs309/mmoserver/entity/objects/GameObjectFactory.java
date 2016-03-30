@@ -12,7 +12,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.map.Point;
 import com.git.cs309.mmoserver.util.WordUtils;
 
 public final class GameObjectFactory {
@@ -30,21 +29,22 @@ public final class GameObjectFactory {
 		this.definitionPath = definitionPath;
 	}
 
-	public synchronized final GameObject createGameObject(final int id, final Point point,
+	public synchronized final GameObject createGameObject(final int id, final int x, final int y, final int z,
 			final int instanceNumber) {
 		ObjectDefinition definition = definitionsByID.get(id);
 		if (definition == null) {
 			throw new RuntimeException("No definition for object with ID: " + id);
 		}
-		return new GameObject(null, definition, point); //TODO Add map handler stuff
+		return new GameObject(definition, x, y, z, instanceNumber);
 	}
 
-	public synchronized final GameObject createGameObject(final String name, final Point point) {
+	public synchronized final GameObject createGameObject(final String name, final int x, final int y, final int z,
+			final int instanceNumber) {
 		ObjectDefinition definition = definitionsByName.get(name.toLowerCase());
 		if (definition == null) {
 			throw new RuntimeException("No definition for object with name: " + name);
 		}
-		return new GameObject(null, definition, point);
+		return new GameObject(definition, x, y, z, instanceNumber);
 	}
 
 	public synchronized final void loadDefinitions() throws SAXException, IOException, ParserConfigurationException {
@@ -83,8 +83,7 @@ public final class GameObjectFactory {
 						e.printStackTrace();
 					}
 				}
-				ObjectDefinition definition = new ObjectDefinition(WordUtils.capitalizeText(name), id, walkable,
-						serverOnly);
+				ObjectDefinition definition = new ObjectDefinition(WordUtils.capitalizeText(name), id, walkable, serverOnly);
 				definitionsByName.put(definition.getObjectName().toLowerCase(), definition);
 				definitionsByID.put(definition.getObjectID(), definition);
 				break;

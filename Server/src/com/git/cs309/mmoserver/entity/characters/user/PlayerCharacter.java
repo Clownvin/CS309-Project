@@ -4,7 +4,7 @@ import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
-import com.git.cs309.mmoserver.entity.EntityClassification;
+import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.items.ItemContainer;
@@ -133,8 +133,8 @@ public class PlayerCharacter extends Character {
 	}
 
 	@Override
-	public EntityClassification getEntityType() {
-		return EntityClassification.PLAYER;
+	public EntityType getEntityType() {
+		return EntityType.PLAYER;
 	}
 
 	@Override

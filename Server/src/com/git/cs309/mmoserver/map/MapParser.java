@@ -23,7 +23,6 @@ public final class MapParser {
 			this.type = type;
 		}
 	}
-
 	//Reserved Characters:
 	public static final char EMPTY_SPACE = ' ';
 	public static final char COORDINATE_SEPARATOR = '|';

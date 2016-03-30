@@ -11,33 +11,33 @@ public class ItemContainer implements Serializable {
 	private static final long serialVersionUID = 1101038885487284304L;
 	private int size;
 	protected int count = 0;
-	protected ItemStack[] items;
-
+	protected  ItemStack[] items;
+	
 	public ItemContainer() {
-
+		
 	}
-
+	
 	public ItemContainer(final int size) {
 		this.size = size;
 		items = new ItemStack[size];
 		clear();
 	}
-
+	
 	public ItemStack getItemStack(int index) {
 		assert index >= 0 && index < size;
 		return items[index];
 	}
-
+	
 	public void clear() {
 		for (int i = 0; i < size; i++) {
 			items[i] = null;
 		}
 	}
-
+	
 	public int slotsLeft() {
 		return size - count;
 	}
-
+	
 	public List<ItemStack> toList() {
 		List<ItemStack> itemList = new ArrayList<>(count); // Using list because I want to have remove(index)
 		for (ItemStack item : items) {
@@ -48,7 +48,7 @@ public class ItemContainer implements Serializable {
 		}
 		return itemList;
 	}
-
+	
 	public List<ItemStack> removeAllAsList() {
 		List<ItemStack> itemList = new ArrayList<>(count); // Using list because I want to have remove(index)
 		for (ItemStack item : items) {
@@ -60,13 +60,13 @@ public class ItemContainer implements Serializable {
 		clear();
 		return itemList;
 	}
-
+	
 	public void deleteAll() {
 		for (int i = 0; i < size; i++) {
 			items[i] = null;
 		}
 	}
-
+	
 	public void addItemStack(ItemStack newStack) {
 		assert !full() && newStack != null;
 		if (newStack.isStackable() && getIndexOfId(newStack.getId()) != -1) {
@@ -75,7 +75,7 @@ public class ItemContainer implements Serializable {
 		}
 		items[getFirstEmptyIndex()] = newStack;
 	}
-
+	
 	public void removeItem(int itemId, int count) {
 		assert hasItemId(itemId) && items[getIndexOfId(itemId)].getCount() >= count;
 		int index = getIndexOfId(itemId);
@@ -84,11 +84,11 @@ public class ItemContainer implements Serializable {
 			items[index] = null;
 		}
 	}
-
+	
 	public boolean full() {
 		return count == size;
 	}
-
+	
 	public boolean hasItemId(int itemId) {
 		for (int i = 0; i < size; i++) {
 			if (items[i] != null && items[i].getId() == itemId) {
@@ -97,7 +97,7 @@ public class ItemContainer implements Serializable {
 		}
 		return false;
 	}
-
+	
 	public int getFirstEmptyIndex() {
 		for (int i = 0; i < size; i++) {
 			if (items[i] == null) {
@@ -106,7 +106,7 @@ public class ItemContainer implements Serializable {
 		}
 		return -1;
 	}
-
+	
 	public int getIndexOfId(int itemId) {
 		for (int i = 0; i < size; i++) {
 			if (items[i] != null && items[i].getId() == itemId) {

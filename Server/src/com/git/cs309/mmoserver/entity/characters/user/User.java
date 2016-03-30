@@ -37,7 +37,7 @@ public final class User implements Serializable {
 	public User() {
 		//For deserialization only
 	}
-
+	
 	protected IDTag getIdTag() {
 		return idTag;
 	}
@@ -62,22 +62,18 @@ public final class User implements Serializable {
 			character.cleanUp();
 		}
 	}
-
+	
 	public void sendSelectionCharacters(AbstractConnection connection) {
 		for (int i = 0; i < playerCharacters.length; i++) {
 			if (!playerCharacters[i].isCreated())
 				continue;
-			connection.addOutgoingPacket(new CharacterSelectionDataPacket(null, i, playerCharacters[i].getEyeColor(),
-					playerCharacters[i].getSkinColor(), playerCharacters[i].getHairColor(),
-					playerCharacters[i].getHairStyle(), playerCharacters[i].getGender(),
-					playerCharacters[i].getName()));
+			connection.addOutgoingPacket(new CharacterSelectionDataPacket(null, i, playerCharacters[i].getEyeColor(), playerCharacters[i].getSkinColor(), playerCharacters[i].getHairColor(), playerCharacters[i].getHairStyle(), playerCharacters[i].getGender(), playerCharacters[i].getName()));
 		}
 	}
-
+	
 	public void createCharacter(String name, byte gender, int eyeColor, int skinColor, int hairColor, int hairStyle) {
 		assert creatingCharacterIndex != -1;
-		playerCharacters[creatingCharacterIndex].createCharacter(name, gender, eyeColor, skinColor, hairColor,
-				hairStyle);
+		playerCharacters[creatingCharacterIndex].createCharacter(name, gender, eyeColor, skinColor, hairColor, hairStyle);
 		enterGame(creatingCharacterIndex);
 		creatingCharacterIndex = -1;
 	}

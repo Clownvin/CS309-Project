@@ -16,8 +16,7 @@ public final class LoginHandler {
 			} else {
 				loginPacket.getConnection()
 						.addOutgoingPacket(new EventPacket(loginPacket.getConnection(), EventPacket.LOGIN_SUCCESS));
-				((Connection) loginPacket.getConnection()).getUser()
-						.sendSelectionCharacters(loginPacket.getConnection());
+				((Connection)loginPacket.getConnection()).getUser().sendSelectionCharacters(loginPacket.getConnection());
 			}
 		} catch (UserAlreadyLoggedInException e) {
 			loginPacket.getConnection()

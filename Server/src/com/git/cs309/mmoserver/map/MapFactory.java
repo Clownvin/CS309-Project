@@ -4,17 +4,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 
-import com.git.cs309.mmoserver.entity.Entity;
-import com.git.cs309.server.map.AbstractMapFactory;
+import com.git.cs309.mmoserver.Config;
 
-public final class MapFactory implements AbstractMapFactory<MapDefinition, String, Integer, Map, Entity, Point> {
+public final class MapFactory {
+	private static final MapFactory INSTANCE = new MapFactory(Config.MAP_DEFINITIONS_FOLDER);
+
+	public static final MapFactory getInstance() {
+		return INSTANCE;
+	}
 
 	private final HashMap<String, MapDefinition> mapDefinitions = new HashMap<>();
 	private final String mapFolder;
 
-	public MapFactory(final String mapFolder) {
+	private MapFactory(final String mapFolder) {
 		this.mapFolder = mapFolder;
-		loadMapDefinitions();
+		loadDefinitions();
 	}
 
 	public synchronized final Map createMap(final String mapName, final int instanceNumber) {
@@ -24,15 +28,8 @@ public final class MapFactory implements AbstractMapFactory<MapDefinition, Strin
 		}
 		return new Map(definition, instanceNumber);
 	}
-	
-	@Override
-	public Map createMap(String key) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public void loadMapDefinitions() {
+	public synchronized void loadDefinitions() {
 		mapDefinitions.clear();
 		File folder = new File(mapFolder);
 		for (File mapFile : folder.listFiles()) {

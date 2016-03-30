@@ -6,8 +6,7 @@ public final class ObjectDefinition {
 	private final boolean walkable;
 	private final boolean serverOnly;
 
-	public ObjectDefinition(final String objectName, final int objectID, final boolean walkable,
-			final boolean serverOnly) {
+	public ObjectDefinition(final String objectName, final int objectID, final boolean walkable, final boolean serverOnly) {
 		this.objectID = objectID;
 		this.objectName = objectName;
 		this.walkable = walkable;

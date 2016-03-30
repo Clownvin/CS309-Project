@@ -22,14 +22,14 @@ import com.git.cs309.mmoserver.util.CycleQueue;
  *         such as player, npcs, bosses, etc.
  */
 public abstract class Character extends Entity {
-
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4707730413469521334L;
 
 	public static final int NO_OPPONENT = -1;
-
+	
 	//Current health.
 	protected volatile int health;
 	protected transient volatile boolean isDead = false; //true is dead
@@ -38,6 +38,10 @@ public abstract class Character extends Entity {
 	protected transient volatile boolean walking = false;
 	protected transient volatile boolean inCombat = false;
 	protected transient volatile int opponentId = -1;
+
+	public Character() {
+		super();
+	}
 
 	public Character(final int x, final int y, final int z, final IDTag idTag, final int entityID, final String name) {
 		super(x, y, z, idTag, entityID, name);
@@ -50,7 +54,7 @@ public abstract class Character extends Entity {
 
 		});
 	}
-
+	
 	public void resetCombat() {
 		inCombat = false;
 		opponentId = NO_OPPONENT;
@@ -84,7 +88,7 @@ public abstract class Character extends Entity {
 	public int getHealth() {
 		return health;
 	}
-
+	
 	public boolean isWalking() {
 		return walking;
 	}
@@ -101,17 +105,17 @@ public abstract class Character extends Entity {
 		isDead = true;
 		onDeath();
 	}
-
+	
 	public final void walkTo(int x, int y) {
 		Map map = MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ());
 		if (map.containsPoint(x, y))
 			walkingQueue = PathFinder.getPathToPoint(map, getX(), getY(), x, y);
 	}
-
+	
 	protected abstract void onDeath();
-
+	
 	protected abstract boolean canWalk();
-
+	
 	protected void handleWalking() {
 		if (!canWalk() || walkingQueue == null) {
 			return;
@@ -128,7 +132,7 @@ public abstract class Character extends Entity {
 			walking = false;
 		}
 	}
-
+	
 	public void setOponentId(final int opponentId) {
 		this.opponentId = opponentId;
 		if (opponentId == NO_OPPONENT) {
@@ -137,7 +141,7 @@ public abstract class Character extends Entity {
 			inCombat = true;
 		}
 	}
-
+	
 	protected abstract void characterProcess();
 
 	public final void process() {
