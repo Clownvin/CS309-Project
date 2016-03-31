@@ -107,14 +107,18 @@ public abstract class Entity extends AnnotationWrapper implements Serializable {
 	}
 
 	public final void setPosition(final int x, final int y, final int z) {
-		ModuleManager.getModule(MapManager.class).moveEntity(getUniqueID(), instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		if (!ModuleManager.getModule(MapManager.class).moveEntity(getUniqueID(), instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z)) {
+			return;
+		}
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
 	public final void setPosition(final int instanceNumber, final int x, final int y, final int z) {
-		ModuleManager.getModule(MapManager.class).moveEntity(getUniqueID(), this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		if (!ModuleManager.getModule(MapManager.class).moveEntity(getUniqueID(), this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z)) {
+			return;
+		}
 		this.instanceNumber = instanceNumber;
 		this.x = x;
 		this.y = y;

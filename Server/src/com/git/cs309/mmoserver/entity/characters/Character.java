@@ -39,6 +39,7 @@ public abstract class Character extends Entity {
 	protected transient volatile boolean walking = false;
 	protected transient volatile boolean inCombat = false;
 	protected transient volatile int opponentId = -1;
+	protected transient volatile Runnable onFinishedWalking = null;
 
 	public Character() {
 		super();
@@ -131,7 +132,15 @@ public abstract class Character extends Entity {
 		}
 		if (walking && walkingQueue.isEmpty()) {
 			walking = false;
+			if (onFinishedWalking != null) {
+				onFinishedWalking.run();
+				onFinishedWalking = null;
+			}
 		}
+	}
+	
+	public void setOnFinishedWalking(final Runnable onFinishedWalking) {
+		this.onFinishedWalking = onFinishedWalking;
 	}
 	
 	public void setOponentId(final int opponentId) {

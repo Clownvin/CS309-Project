@@ -53,9 +53,6 @@ public final class MapManager extends Module {
 	public final void loadMaps() {
 		maps.clear();
 		addMap(MapFactory.getInstance().createMap("island", Config.GLOBAL_INSTANCE));
-		for (Map map : maps) {
-			map.loadSpawns();
-		}
 	}
 	
 	public final Map createInstanceMap(int instanceNumber, String mapName) {
@@ -66,7 +63,7 @@ public final class MapManager extends Module {
 		return map;
 	}
 
-	public final void moveEntity(final int uniqueId, final int oInstanceNumber, final int oX, final int oY, final int oZ,
+	public final boolean moveEntity(final int uniqueId, final int oInstanceNumber, final int oX, final int oY, final int oZ,
 			final int dInstanceNumber, final int dX, final int dY, final int dZ) {
 		Map map = getMapContainingPosition(oInstanceNumber, oX, oY, oZ);
 		if (!map.equals(getMapContainingPosition(dInstanceNumber, dX, dY, dZ))) {
@@ -74,9 +71,13 @@ public final class MapManager extends Module {
 			Entity e = map.getEntity(uniqueId, oX, oY);
 			map.removeEntity(oX, oY, e);
 			newMap.putEntity(dX, dY, e);
-			return;
+			return true;
 		}
-		map.moveEntity(uniqueId, oX, oY, dX, dY);
+		if (map.walkable(dX, dY)) {
+			map.moveEntity(uniqueId, oX, oY, dX, dY);
+			return true;
+		}
+		return false;
 	}
 
 	public final void putEntityAtPosition(final int instanceNumber, final int x, final int y, final int z,
@@ -102,6 +103,7 @@ public final class MapManager extends Module {
 			return;
 		}
 		maps.add(map);
+		map.loadSpawns();
 	}
 
 	final void removeMap(Map map) {
