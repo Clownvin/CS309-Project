@@ -8,7 +8,8 @@ import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.lang.AnnotationWrapper;
 import com.git.cs309.mmoserver.lang.OnClose;
 import com.git.cs309.mmoserver.lang.OnGarbageCollection;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
+import com.git.cs309.mmoserver.map.MapManager;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
@@ -106,14 +107,14 @@ public abstract class Entity extends AnnotationWrapper implements Serializable {
 	}
 
 	public final void setPosition(final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(getUniqueID(), instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		ModuleManager.getModule(MapManager.class).moveEntity(getUniqueID(), instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
 	public final void setPosition(final int instanceNumber, final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(getUniqueID(), this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		ModuleManager.getModule(MapManager.class).moveEntity(getUniqueID(), this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
 		this.instanceNumber = instanceNumber;
 		this.x = x;
 		this.y = y;

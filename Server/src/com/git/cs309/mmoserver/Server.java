@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.script.ScriptException;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
@@ -22,7 +23,7 @@ import com.git.cs309.mmoserver.items.ItemFactory;
 import com.git.cs309.mmoserver.lang.module.Module;
 import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.MapFactory;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.map.MapManager;
 import com.git.cs309.mmoserver.script.JavaScriptEngine;
 import com.git.cs309.mmoserver.util.TickProcess;
 
@@ -140,7 +141,7 @@ public class Server extends Module {
 			e.printStackTrace();
 		}
 		MapFactory.getInstance();
-		MapHandler.getInstance().loadMaps();
+		ModuleManager.getModule(MapManager.class).loadMaps();
 		ModuleManager.getModule(ConnectionManager.class);
 		ModuleManager.getModule(CycleProcessManager.class);
 		ModuleManager.getModule(CharacterManager.class);
@@ -150,6 +151,11 @@ public class Server extends Module {
 		running = true;
 		loadAndStartClasses(); // Call initialize block, which will initialize things
 		// that should be initialized before starting server.
+		try {
+			JavaScriptEngine.invokeFunction("dumpVariables", new Object[] {});
+		} catch (NoSuchMethodException | ScriptException e1) {
+			e1.printStackTrace();
+		}
 		System.out.println("Starting server...");
 		int ticks = 0;
 		long tickTimes = 0L;

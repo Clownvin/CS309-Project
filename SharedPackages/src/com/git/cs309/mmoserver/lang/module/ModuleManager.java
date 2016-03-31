@@ -17,15 +17,15 @@ public final class ModuleManager extends Module {
 		return INSTANCE;
 	}
 	
-	public static final <T> T getModule(final String moduleName, final Class<T> cls) {
+	public static final <T extends Module> T getModule(final String moduleName, final Class<T> cls) {
 		if (moduleMapByName.containsKey(moduleName)) {
 			return cls.cast(moduleMapByName.get(moduleName));
 		}
 		try {
-			Module module = (Module) ClassLoader.getSystemClassLoader().loadClass(projectBase+moduleName).newInstance();
+			T module = cls.newInstance();
 			moduleMapByName.put(moduleName, module);
 			return cls.cast(module);
-		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+		} catch (InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return cls.cast(new Object());

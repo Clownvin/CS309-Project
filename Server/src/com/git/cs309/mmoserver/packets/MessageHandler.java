@@ -6,7 +6,7 @@ import com.git.cs309.mmoserver.entity.characters.user.PlayerCharacter;
 import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
 import com.git.cs309.mmoserver.lang.module.ModuleManager;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.map.MapManager;
 
 public final class MessageHandler {
 	public static final void handlePacket(MessagePacket messagePacket) {
@@ -48,7 +48,7 @@ public final class MessageHandler {
 				return;
 			}
 			PlayerCharacter player = userConnection.getUser().getCurrentCharacter();
-			MapHandler.getInstance()
+			ModuleManager.getModule(MapManager.class)
 					.getMapContainingPosition(player.getInstanceNumber(), player.getX(), player.getY(), player.getZ())
 					.sendPacketToPlayers(new MessagePacket(null, MessagePacket.LOCAL_CHAT,
 							username + ": " + messagePacket.getMessage()));

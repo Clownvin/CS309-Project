@@ -12,7 +12,7 @@ import com.git.cs309.mmoserver.items.ItemStack;
 import com.git.cs309.mmoserver.lang.OnClose;
 import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.Map;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.map.MapManager;
 import com.git.cs309.mmoserver.packets.ExtensivePlayerCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 
@@ -194,7 +194,7 @@ public class PlayerCharacter extends Character {
 
 	@Override
 	protected void onDeath() {
-		Map map = MapHandler.getInstance().getMapContainingEntity(PlayerCharacter.this);
+		Map map = ModuleManager.getModule(MapManager.class).getMapContainingEntity(PlayerCharacter.this);
 		for (ItemStack stack : inventory.removeAllAsList()) {
 			map.putItemStack(getX(), getY(), stack);
 		}

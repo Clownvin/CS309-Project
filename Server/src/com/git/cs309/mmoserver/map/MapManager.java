@@ -5,18 +5,14 @@ import java.util.Set;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.entity.Entity;
+import com.git.cs309.mmoserver.lang.module.Module;
 
-public final class MapHandler {
-	private static final MapHandler INSTANCE = new MapHandler();
-
-	public static final MapHandler getInstance() {
-		return INSTANCE;
-	}
+public final class MapManager extends Module {
 
 	private final Set<Map> maps = new HashSet<>();
 
-	private MapHandler() {
-		//Nothing here, since can't load maps because of semantics
+	public MapManager() {
+		
 	}
 
 	public final Entity getEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
@@ -34,6 +30,15 @@ public final class MapHandler {
 			}
 		}
 		throw new RuntimeException("No map for position.");
+	}
+	
+	public final boolean mapExists(final int instanceNumber, final String mapName) {
+		for (Map map : maps) {
+			if (map.getInstanceNumber() == instanceNumber && map.getName().equals(mapName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	public final Map getMapContainingEntity(final Entity entity) {
@@ -102,5 +107,10 @@ public final class MapHandler {
 	final void removeMap(Map map) {
 		if (maps.contains(map))
 			maps.remove(map);
+	}
+
+	@Override
+	public String getVariableName() {
+		return "MapManager";
 	}
 }

@@ -16,6 +16,7 @@ import com.git.cs309.mmoserver.entity.objects.GameObject;
 import com.git.cs309.mmoserver.entity.objects.GameObjectFactory;
 import com.git.cs309.mmoserver.items.GroundItemStack;
 import com.git.cs309.mmoserver.items.ItemStack;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.packets.EntityUpdatePacket;
 import com.git.cs309.mmoserver.packets.NewMapPacket;
 import com.git.cs309.mmoserver.packets.Packet;
@@ -37,7 +38,7 @@ public final class Map {
 		groundItems = new GroundItemStack[definition.getWidth()][definition.getHeight()];
 		setMapToNulls();
 		setItemsToNulls();
-		MapHandler.getInstance().addMap(this);
+		ModuleManager.getModule(MapManager.class).addMap(this);
 	}
 	
 	public int[][] getPathingMap() {
@@ -137,6 +138,10 @@ public final class Map {
 	public int getZ() {
 		return definition.getZ();
 	}
+	
+	public String getName() {
+		return definition.getMapName();
+	}
 
 	public void moveEntity(final int uniqueId, final int oX, final int oY, final int dX, final int dY) {
 		assert containsPoint(oX, oY) && containsPoint(dX, dY) && walkable(dX, dY);
@@ -225,7 +230,7 @@ public final class Map {
 		}
 		if (playerSet.size() == 0 && instanceNumber != Config.GLOBAL_INSTANCE) {
 			cleanUp();
-			MapHandler.getInstance().removeMap(this);
+			ModuleManager.getModule(MapManager.class).removeMap(this);
 		}
 	}
 	
@@ -286,7 +291,7 @@ public final class Map {
 		}
 	}
 
-	void loadSpawns() {
+	public void loadSpawns() {
 		for (Spawn spawn : definition.getSpawns()) {
 			switch (spawn.getType()) {
 			case Spawn.CHARACTER:

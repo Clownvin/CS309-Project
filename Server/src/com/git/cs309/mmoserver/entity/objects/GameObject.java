@@ -2,7 +2,8 @@ package com.git.cs309.mmoserver.entity.objects;
 
 import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.entity.EntityType;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
+import com.git.cs309.mmoserver.map.MapManager;
 import com.git.cs309.mmoserver.packets.ExtensiveObjectPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
@@ -18,7 +19,7 @@ public class GameObject extends Entity {
 		super(x, y, z, ClosedIDSystem.getTag(), z, definition.getObjectName());
 		this.instanceNumber = instanceNumber;
 		this.definition = definition;
-		MapHandler.getInstance().putEntityAtPosition(instanceNumber, x, y, z, this);
+		ModuleManager.getModule(MapManager.class).putEntityAtPosition(instanceNumber, x, y, z, this);
 	}
 
 	@Override

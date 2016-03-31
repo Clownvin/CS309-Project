@@ -15,7 +15,7 @@ import com.git.cs309.mmoserver.entity.characters.npc.dropsystem.DropSystem;
 import com.git.cs309.mmoserver.items.ItemStack;
 import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.Map;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.map.MapManager;
 import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
@@ -146,7 +146,7 @@ public class NPC extends Character {
 
 	@Override
 	protected void onDeath() {
-		Map map = MapHandler.getInstance().getMapContainingEntity(this);
+		Map map = ModuleManager.getModule(MapManager.class).getMapContainingEntity(this);
 		for (ItemStack stack : DropSystem.getInstance().getDropsForNPC(getName())) {
 			map.putItemStack(getX(), getY(), stack);
 		}
