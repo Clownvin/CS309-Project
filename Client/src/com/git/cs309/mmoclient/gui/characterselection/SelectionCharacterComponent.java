@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.ImageIcon;
+
 import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 import com.git.cs309.mmoserver.packets.InterfaceClickPacket;
@@ -51,9 +53,11 @@ public class SelectionCharacterComponent extends Component {
 	
 	@Override
 	public void paint(Graphics g) {
-		g.setColor(Color.BLACK);
-		g.drawRect(0, 0, getWidth(), getHeight());
+		ImageIcon icon0 = new ImageIcon("data/sprites/gui/f.pvr.ccz.png"); 
+		g.drawImage(icon0.getImage(), 0, 0, getWidth(), getHeight(), 2, 10, 570, 590, null);
 		if (character.hasCharacter()) {
+			ImageIcon icon1 = new ImageIcon("data/sprites/playerStop.png");
+			g.drawImage(icon1.getImage(), getWidth()/2-50, getHeight()/2-50, getWidth()/2+50, getHeight()/2+50, 0, 0, 96, 96, null);
 			g.drawString(character.getName(), getWidth() / 4, getHeight() / 4 );
 		}
 	}
