@@ -1,5 +1,6 @@
 package com.git.cs309.mmoclient.gui.characterselection;
 
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 
@@ -30,6 +31,12 @@ public class CharacterSelectionGUI extends JFrame {
 			components[i] = new SelectionCharacterComponent(i);
 			add(components[i]);
 		}
+	}
+	
+	@Override
+	public void paint(Graphics g) {
+		//Do paint background
+		super.paint(g);
 	}
 	
 	public void updateComponents(CharacterSelectionDataPacket packet) {
