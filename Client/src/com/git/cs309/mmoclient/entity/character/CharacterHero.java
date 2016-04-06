@@ -3,12 +3,6 @@ package com.git.cs309.mmoclient.entity.character;
 import javafx.animation.Animation;
 
 
-
-/**
- * 
- * @author Michel Montenegro
- * 
- */
 public class CharacterHero {
 	private Animation playerDireita;
 	private Animation playerEsquerda;
