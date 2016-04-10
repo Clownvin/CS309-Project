@@ -127,8 +127,28 @@ public class GameGUI extends JFrame {
 			clientPlayer.setMaxHealth(pCMaxHealth);
 			clientPlayer.setName(pCName);
 			clientPlayer.setRightHand(pCRightHand);
-			clientPlayer.setX(pCX);
-			clientPlayer.setY(pCY);
+			if(pCX !=  clientPlayer.getX())
+			{
+				//graphics
+				//TODO
+				clientPlayer.setX(pCX);
+				clientPlayer.setY(pCY);
+				
+			}
+			else if(pCY !=  clientPlayer.getY())
+			{
+				//graphics
+				//TODO
+				clientPlayer.setX(pCX);
+				clientPlayer.setY(pCY);
+			}
+			else
+			{
+				clientPlayer.setX(pCX);
+				clientPlayer.setY(pCY);
+			}
+			//clientPlayer.setX(pCX);
+			//clientPlayer.setY(pCY);
 		}
 		else
 		{
