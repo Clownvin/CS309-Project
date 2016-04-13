@@ -138,6 +138,7 @@ public class GameGUI extends JFrame {
 			else if(pCY !=  clientPlayer.getY())
 			{
 				//graphics
+				
 				//TODO
 				clientPlayer.setX(pCX);
 				clientPlayer.setY(pCY);
