@@ -1,5 +1,7 @@
 package com.git.cs309.mmoclient.gui;
 
+import java.util.ArrayList;
+
 public class ClientPlayer {
 	int NO_GEAR = 0; // No gear in the slot with this value
 	byte gender; //male=0, female=1
@@ -18,6 +20,7 @@ public class ClientPlayer {
 	int gloves;
 	int boots;
 	String name;
+	ArrayList<ItemDefinition> inventoryItems = new ArrayList<ItemDefinition>(0);
 
 	public void setID(int theID) {
 		uniqueID=theID;
@@ -145,6 +148,31 @@ public class ClientPlayer {
 
 	public int getY() {
 		return y;
+	}
+	
+	public void addItem(ItemDefinition itemToAdd)
+	{
+		inventoryItems.add(itemToAdd);
+	}
+	
+	public void addItemToIndex(int index, ItemDefinition itemToAdd)
+	{
+		inventoryItems.set(index, itemToAdd);
+	}
+	
+	public ItemDefinition getItem(int indexOfItem)
+	{
+		return inventoryItems.get(indexOfItem);
+	}
+	
+	public void removeItem(int index)
+	{
+		inventoryItems.set(index, null);
+	}
+	
+	public String getItemName(int index)
+	{
+		return inventoryItems.get(index).getItemName();
 	}
 
 }
