@@ -9,7 +9,7 @@ public class ClientShop {
 	private final String shopName;
 	private final int id;
 	//private item[] shopItems; //change to array list
-	ArrayList<ItemDefinition> shopItems = new ArrayList<ItemDefinition>(0);
+	ArrayList<ItemStack> shopItems = new ArrayList<ItemStack>(0);
 	
 	//murchents can have multiple shops and
 	//several murchents could access the same shop 
@@ -29,17 +29,17 @@ public class ClientShop {
 		return id;
 	}
 	
-	public void addItem(ItemDefinition itemToAdd)
+	public void addItem(ItemStack itemToAdd)
 	{
 		shopItems.add(itemToAdd);
 	}
 	
-	public void addItemToIndex(int index, ItemDefinition itemToAdd)
+	public void addItemToIndex(int index, ItemStack itemToAdd)
 	{
 		shopItems.set(index, itemToAdd);
 	}
 	
-	public ItemDefinition getItem(int indexOfItem)
+	public ItemStack getItem(int indexOfItem)
 	{
 		return shopItems.get(indexOfItem);
 	}

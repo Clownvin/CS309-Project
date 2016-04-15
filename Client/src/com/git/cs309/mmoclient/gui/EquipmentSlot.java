@@ -1,4 +1,4 @@
-package com.git.cs309.mmoclient.items;
+package com.git.cs309.mmoclient.gui;
 
 import com.git.cs309.mmoserver.packets.ItemContainerPacket;
 

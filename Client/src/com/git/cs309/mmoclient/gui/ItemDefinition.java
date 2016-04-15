@@ -1,4 +1,4 @@
-package com.git.cs309.mmoclient.items;
+package com.git.cs309.mmoclient.gui;
 
 import java.io.Serializable;
 

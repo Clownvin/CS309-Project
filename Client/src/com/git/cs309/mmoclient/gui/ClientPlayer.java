@@ -20,7 +20,7 @@ public class ClientPlayer {
 	int gloves;
 	int boots;
 	String name;
-	ArrayList<ItemDefinition> inventoryItems = new ArrayList<ItemDefinition>(0);
+	ArrayList<ItemStack> inventoryItems = new ArrayList<ItemStack>(0);
 
 	public void setID(int theID) {
 		uniqueID=theID;
@@ -150,17 +150,17 @@ public class ClientPlayer {
 		return y;
 	}
 	
-	public void addItem(ItemDefinition itemToAdd)
+	public void addItem(ItemStack itemToAdd)
 	{
 		inventoryItems.add(itemToAdd);
 	}
 	
-	public void addItemToIndex(int index, ItemDefinition itemToAdd)
+	public void addItemToIndex(int index, ItemStack itemToAdd)
 	{
 		inventoryItems.set(index, itemToAdd);
 	}
 	
-	public ItemDefinition getItem(int indexOfItem)
+	public ItemStack getItem(int indexOfItem)
 	{
 		return inventoryItems.get(indexOfItem);
 	}

@@ -1,4 +1,4 @@
-package com.git.cs309.mmoclient.items;
+package com.git.cs309.mmoclient.gui;
 
 public final class ItemStack {
 	private final ItemDefinition definition;

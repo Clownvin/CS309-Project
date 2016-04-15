@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class ClientSchopGIUI extends JPanel{
+public class ClientShopGUI extends JPanel{
 	
 	private static final ClientShopGUI SINGLETON = new ClientShopGUI();
 	
