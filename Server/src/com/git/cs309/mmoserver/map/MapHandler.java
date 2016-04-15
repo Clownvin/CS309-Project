@@ -18,12 +18,6 @@ public final class MapHandler {
 	private MapHandler() {
 		//Nothing here, since can't load maps because of semantics
 	}
-	
-	public final void printMaps() {
-		for (Map m : maps) {
-			m.printMap();
-		}
-	}
 
 	public final Entity getEntityAtPosition(final int instanceNumber, final int x, final int y, final int z) {
 		Map map = getMapContainingPosition(instanceNumber, x, y, z);
@@ -59,13 +53,12 @@ public final class MapHandler {
 		}
 	}
 	
-	public final void loadNonBaseMap()
-	{
-		maps.clear();
-		addMap(MapFactory.getInstance().createMap("pvpArena", Config.GLOBAL_INSTANCE));
-		for (Map map : maps) {
-			map.loadSpawns();
+	public final Map createInstanceMap(int instanceNumber, String mapName) {
+		Map map = MapFactory.getInstance().createMap(mapName, instanceNumber);
+		if (map == null) {
+			throw new RuntimeException("No map definition for map name \""+mapName+"\"");
 		}
+		return map;
 	}
 
 	public final void moveEntity(final int uniqueId, final int oInstanceNumber, final int oX, final int oY, final int oZ,
@@ -87,7 +80,6 @@ public final class MapHandler {
 		if (map == null) {
 			return;
 		}
-		assert (map.getEntity(x, y) == null || (map.getEntity(x, y) != null && map.getEntity(x, y).canWalkThrough())); // Cannot place an entity where there is already an entity
 		map.putEntity(x, y, entity);
 	}
 
@@ -108,8 +100,7 @@ public final class MapHandler {
 	}
 
 	final void removeMap(Map map) {
-		assert maps.contains(map);
-		maps.remove(map);
-		map.cleanUp();
+		if (maps.contains(map))
+			maps.remove(map);
 	}
 }

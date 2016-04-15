@@ -120,8 +120,8 @@ public class PlayerCharacter extends Character {
 	public void enterGame(final User user) {
 		assert created;
 		setIDTag(user.getIdTag());
-		user.getConnection().addOutgoingPacket(getExtensivePacket());
 		CharacterManager.getInstance().addCharacter(this);
+		user.getConnection().addOutgoingPacket(getExtensivePacket());
 	}
 
 	/**
@@ -156,7 +156,6 @@ public class PlayerCharacter extends Character {
 		int rightId = currEquipment == null ? -1 : currEquipment.getId();
 		currEquipment = equipment.getEquipment(Equipment.LEFT_HAND);
 		int leftId = currEquipment == null ? -1 : currEquipment.getId();
-		System.out.println(getName()+"'s level: "+getLevel());
 		return new ExtensivePlayerCharacterPacket(null, gender, getUniqueID(), getX(), getY(), getHealth(),
 				getMaxHealth(), getLevel(), helmetId, chestId, leftId, rightId, capeId, legsId, glovesId, bootsId,
 				eyeColor, skinColor, hairColor, hairStyle, name);

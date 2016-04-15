@@ -2,19 +2,28 @@ package com.git.cs309.mmoclient.packets;
 
 import javax.swing.JOptionPane;
 
-import com.git.cs309.mmoclient.gui.CharactorSelect;
-import com.git.cs309.mmoclient.gui.GameGUI;
-import com.git.cs309.mmoclient.gui.LoginGUI;
+import com.git.cs309.mmoclient.Client;
+import com.git.cs309.mmoclient.entity.character.npc.NPCFactory;
+import com.git.cs309.mmoclient.entity.character.player.PlayerCharacter;
+import com.git.cs309.mmoclient.entity.character.player.Self;
+import com.git.cs309.mmoclient.entity.object.GameObjectFactory;
+import com.git.cs309.mmoclient.gui.characterselection.CharacterSelectionGUI;
+import com.git.cs309.mmoclient.gui.game.GameGUI;
+import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
+import com.git.cs309.mmoclient.gui.login.LoginGUI;
+import com.git.cs309.mmoclient.map.MapFactory;
 import com.git.cs309.mmoserver.packets.AbstractPacketHandler;
+import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
+import com.git.cs309.mmoserver.packets.EntityUpdatePacket;
 import com.git.cs309.mmoserver.packets.ErrorPacket;
+import com.git.cs309.mmoserver.packets.MessagePacket;
+import com.git.cs309.mmoserver.packets.NewCharacterDataPacket;
+import com.git.cs309.mmoserver.packets.NewMapPacket;
+import com.git.cs309.mmoserver.packets.EventPacket;
 import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
 import com.git.cs309.mmoserver.packets.ExtensiveObjectPacket;
-import com.git.cs309.mmoserver.packets.MessagePacket;
-import com.git.cs309.mmoserver.packets.EventPacket;
-import com.git.cs309.mmoserver.packets.NewMapPacket;
+import com.git.cs309.mmoserver.packets.ExtensivePlayerCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
-import com.git.cs309.mmoserver.packets.PacketType;
-import com.git.cs309.mmoserver.packets.PlayerCharacterPacket;
 import com.git.cs309.mmoserver.packets.SelfPacket;
 
 public final class PacketHandler extends AbstractPacketHandler {
@@ -31,12 +40,12 @@ public final class PacketHandler extends AbstractPacketHandler {
 
 	@Override
 	public void handlePacketBlock(Packet packet) {
-		packet.getConnection().getPacket(); // to remove packet, since it doesn't do it itself
+		packet = packet.getConnection().getPacket(); // to remove packet, since it doesn't do it itself
 		switch (packet.getPacketType()) {
 		case MESSAGE_PACKET:
 			MessagePacket messagePacket = (MessagePacket) packet;
-			throw new RuntimeException("Handle messages here.");
-			//break; Uncomment this after removing exception.
+			ChatBox.getInstance().addMessage(messagePacket.getMessage());
+			break;
 		case ERROR_PACKET:
 			ErrorPacket errorPacket = (ErrorPacket) packet;
 			switch (errorPacket.getErrorCode()) {
@@ -44,6 +53,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 				System.out.println("Recieved error from server: "+errorPacket.getErrorMessage());
 				break;
 			case ErrorPacket.LOGIN_ERROR:
+			case ErrorPacket.NAME_TOO_LONG_ERROR:
 				JOptionPane.showMessageDialog(null, "Error: "+errorPacket.getErrorMessage());
 				break;
 			default:
@@ -57,130 +67,88 @@ public final class PacketHandler extends AbstractPacketHandler {
 			switch (eventPacket.getEventCode()) {
 			case EventPacket.LOGIN_SUCCESS:
 				LoginGUI.getSingleton().setVisible(false);
-				CharactorSelect.getSingleton().setVisible(true);
+				CharacterSelectionGUI.getSingleton().setVisible(true);
 				break;
-				
-				//throw new RuntimeException("Set your charactor select GUI to visible here.");
-				
-				//Character select screen.sevisable(true);/
-				//	have blacnk
-				//over in caharactor select handler eddit charactor select screen
-				//then i send packet (interface click packet) for what charactor
-				//then i recive on of two packets
-				//	new charactor
-				//	enter game  (self packet) //set once ever
-				//		wait for new map packet and
-				//			initalize map
-				//			recive 3 types of packets (have them update maps)
-				//				spam me with packets
-				//				extensive stuff packets (and player charactor)
-				//
-				//when recive update entity update packet (or extensive)
-				
-				
-				//throw new RuntimeException("Set your Game GUI to visible here.");
-				//GameGUI.getSingleton().setVisible(true);
-				//break; //YOU'RE gunna need to uncomment this once you remove the exception
+			case EventPacket.CREATE_CHARACTER:
+				packet.getConnection().addOutgoingPacket(new NewCharacterDataPacket(null, 0, 0, 0, 0, NewCharacterDataPacket.MALE, JOptionPane.showInputDialog("Enter a name for this character:")));
+				break;
 			default:
 				System.err.println("No case for event code: "+eventPacket.getEventCode());
 				break;
 			}
 			break;
-		case ENTITY_UPDATE_PACKET:
-			//This packet means that something has happened to an entity that already exists.
-			GameGUI.entityUpdate();
-			throw new RuntimeException("Handle updating entities here");
-		case EXTENSIVE_CHARACTER_PACKET:
-			//This packet is telling the client that there is a new character that needs to be managed by the client.
-			//calls function in GameGUI to eddit map
-			int ExtCharcharacterID = ((ExtensiveCharacterPacket)packet).getCharacterID();
-			String ExtCharcharacterName = ((ExtensiveCharacterPacket)packet).getCharacterName();
-			int ExtCharhealth = ((ExtensiveCharacterPacket)packet).getHealth();
-			int ExtCharmaxHealth = ((ExtensiveCharacterPacket)packet).getMaxHealth();
-			int ExtCharuniqueID = ((ExtensiveCharacterPacket)packet).getUniqueID();
-			int ExtCharx = ((ExtensiveCharacterPacket)packet).getX();
-			int ExtChary = ((ExtensiveCharacterPacket)packet).getY();
-			
-			GameGUI.addCharactertoMap(ExtCharcharacterID,ExtCharcharacterName,ExtCharhealth,ExtCharmaxHealth,ExtCharuniqueID,ExtCharx,ExtChary);
+		case EXTENSIVE_PLAYER_CHARACTER_PACKET:
+			ExtensivePlayerCharacterPacket extensivePlayerCharacterPacket = (ExtensivePlayerCharacterPacket) packet;
+			if (extensivePlayerCharacterPacket.getUniqueID() == Client.getSelfId()) {
+				Self self = new Self(extensivePlayerCharacterPacket);
+				Client.setSelf(self);
+				Client.getMap()
+				.putEntity(self);
+			} else {
+				Client.getMap().putEntity(new PlayerCharacter(extensivePlayerCharacterPacket));
+			}
 			break;
-		case EXTENSIVE_OBJECT_PACKET:
-			int ExtObjstaticID=((ExtensiveObjectPacket)packet).getStaticID();
-			int ExtObjuniqueID=((ExtensiveObjectPacket)packet).getUniqueID();
-			int ExtObjx=((ExtensiveObjectPacket)packet).getX();
-			int ExtObjy=((ExtensiveObjectPacket)packet).getY();
-			//TODO
-			//this bellow does not exist in packet but name is in packet
-			String ExtObjname=((ExtensiveObjectPacket)packet).getObjectName();
-			GameGUI.addObjecttoMap(ExtObjstaticID, ExtObjuniqueID, ExtObjx, ExtObjy, ExtObjname);
-			//calls function in GameGUI to eddit map
-			break;
-		case PLAYER_CHARACTER_PACKET:
-			int PCBoots = ((PlayerCharacterPacket)packet).getBoots();
-			int PCCape = ((PlayerCharacterPacket)packet).getCape();
-			int PCChestPiece = ((PlayerCharacterPacket)packet).getChestPiece();
-			byte PCGender = ((PlayerCharacterPacket)packet).getGender();
-			int PCGloves = ((PlayerCharacterPacket)packet).getGloves();
-			int PCHeadPiece = ((PlayerCharacterPacket)packet). getHeadPiece();
-			int PCHealth = ((PlayerCharacterPacket)packet).getHealth();
-			int PCLeftHand = ((PlayerCharacterPacket)packet).getLeftHand();
-			int PCLeggings = ((PlayerCharacterPacket)packet).getLeggings();
-			int PCLevel = ((PlayerCharacterPacket)packet).getLevel();
-			int PCMaxHealth= ((PlayerCharacterPacket)packet).getMaxHealth();
-			String PCName= ((PlayerCharacterPacket)packet).getName();
-			int PCRightHand= ((PlayerCharacterPacket)packet).getRightHand();
-			int PCUniqueID= ((PlayerCharacterPacket)packet).getUniqueID();
-			int PCX= ((PlayerCharacterPacket)packet).getX();
-			int PCY= ((PlayerCharacterPacket)packet).getY();
-			
-			GameGUI.addPlayertoMap(PCBoots, PCCape, PCChestPiece, PCGender,PCGloves, PCHeadPiece, PCHealth, PCLeftHand, PCLeggings, PCLevel, PCMaxHealth, PCName, PCRightHand, PCUniqueID, PCX, PCY); 
-			//calls function in GameGUI to eddit map
-			throw new RuntimeException("Handle new players here.");
 		case TEST_PACKET:
 			System.out.println("No code for test packet");
 			break;
-		case ADMIN_COMMAND_PACKET:
-			break;
 		case CHARACTER_STATUS_PACKET:
 			break;
-		case ENTITY_CLICK_PACKET:
+		case ENTITY_UPDATE_PACKET:
+			EntityUpdatePacket entityUpdate = (EntityUpdatePacket) packet;
+			if (entityUpdate.getUniqueID() == Client.getSelfId()) {
+				switch (entityUpdate.getArgs()) {
+				case EntityUpdatePacket.MOVED:
+					Client.getSelf().setPosition(entityUpdate.getX(), entityUpdate.getY());
+					break;
+				}
+			} else {
+				switch (entityUpdate.getArgs()) {
+				case EntityUpdatePacket.MOVED:
+					Client.getMap().getEntity(entityUpdate.getUniqueID()).setPosition(entityUpdate.getX(), entityUpdate.getY());
+					break;
+				case EntityUpdatePacket.REMOVED:
+					Client.getMap().removeEntity(entityUpdate.getX(), entityUpdate.getY());
+					break;
+				}
+			}
 			break;
-		case INTERFACE_CLICK_PACKET:
+		case EXTENSIVE_CHARACTER_PACKET:
+			Client.getMap().putEntity(NPCFactory.getInstance().createNPC((ExtensiveCharacterPacket) packet));
+			break;
+		case EXTENSIVE_OBJECT_PACKET:
+			Client.getMap().putEntity(GameObjectFactory.getInstance().createGameObject((ExtensiveObjectPacket) packet));
 			break;
 		case ITEM_CONTAINER_PACKET:
 			break;
-		case LOGIN_PACKET:
-			//from server to client
-			break;
-		case MOVE_PACKET:
-			break;
 		case NEW_MAP_PACKET:
-			String mapName= ((NewMapPacket)packet).getMapName();
-			GameGUI.initalizeMap(mapName);
-			//map_name
-			//load map
-			break;
-		case NULL_PACKET:
-			//something f'ed up
+			NewMapPacket newMapPacket = (NewMapPacket) packet;
+			Client.setMap(MapFactory.getInstance().createMap(newMapPacket.getMapName()));
 			break;
 		case PLAYER_EQUIPMENT_PACKET:
 			break;
 		case SELF_PACKET:
-			//send the  client ID, 
-			//i am using this area to transition from 
-			//	(new charactor or charactor select) to GameGUI
-			int ID = ((SelfPacket)packet).getUniqueID();
-			CharactorSelect.getSingleton().setVisible(false);
-			//make new charactor .getSingleton().setVisible(false);
-			GameGUI.setID(ID);
+			SelfPacket selfPacket = (SelfPacket) packet;
+			Client.setSelfId(selfPacket.getUniqueID());
+			CharacterSelectionGUI.getSingleton().setVisible(false);
 			GameGUI.getSingleton().setVisible(true);
 			break;
-		case SERVER_MODULE_STATUS_PACKET:
+		case CHARACTER_SELECTION_DATA_PACKET:
+			CharacterSelectionGUI.getSingleton().updateComponents((CharacterSelectionDataPacket) packet); 
+			CharacterSelectionGUI.getSingleton().repaint();
 			break;
+		//NOT HANDLED BY CLIENT
+		case LOGIN_PACKET:
+		case MOVE_PACKET:
+		case NEW_CHARACTER_DATA_PACKET:
+		case SERVER_MODULE_STATUS_PACKET:
+		case SIMPLE_REQUEST_PACKET:
+		case NULL_PACKET:
+		case INTERFACE_CLICK_PACKET:
+		case ENTITY_CLICK_PACKET:
+		case ADMIN_COMMAND_PACKET:
 		case USER_STATUS_PACKET:
 			break;
-		//case for reciving charactors to select
 		default:
-			System.err.println("No case for packet type: "+packet.getPacketType());
 			break;
 		}
 	}
