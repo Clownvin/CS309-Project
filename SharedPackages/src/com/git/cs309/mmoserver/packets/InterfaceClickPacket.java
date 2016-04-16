@@ -4,6 +4,14 @@ import com.git.cs309.mmoserver.connection.AbstractConnection;
 import com.git.cs309.mmoserver.util.BinaryOperations;
 
 public class InterfaceClickPacket extends Packet {
+	/*
+	 * Usage example:
+	 * new InterfaceClickPacket(InterfaceClickPacket.MENU_CLICK, InterfaceClickPacket.DUNGEON_MENU, InterfaceClickPacket.JOIN_PVP, InterfaceClickPacket.BLANK);
+	 */
+	//Use BLANK when there aren't any requirements for an argument.
+	public static final int BLANK = -1;
+	/*         Interface IDs          */
+	//For joining game, CHARACTER_#_SLOT interfaceIDs relate to character selection panels.
 	public static final int CHARACTER_1_SLOT = 0;
 	public static final int CHARACTER_2_SLOT = 1;
 	public static final int CHARACTER_3_SLOT = 2;
@@ -12,6 +20,7 @@ public class InterfaceClickPacket extends Packet {
 	//public static final int CONFIRM_CHARACTER_CREATION = 5;
 	public static final int OKAY_BUTTON = 6;
 	public static final int CANCEL_BUTTON = 7;
+	//We're probably not going to use these next 10
 	public static final int SKILL_ACTION_1 = 8;
 	public static final int SKILL_ACTION_2 = 9;
 	public static final int SKILL_ACTION_3 = 10;
@@ -29,6 +38,24 @@ public class InterfaceClickPacket extends Packet {
 	public static final int ITEM_CLICK = 22;
 	public static final int MENU_CLICK = 23;
 	public static final int WEAPON_SWAP = 24;
+	
+	/*       Arguments       */
+	//For MENU_CLICK argument 1
+	public static final int DUNGEON_MENU = 0;
+	public static final int PARTY_MENU = 1;
+	//For MENU_CLICK argument 2
+	public static final int JOIN_PVP = 0;
+	public static final int JOIN_DUNGEON = 1;
+	public static final int JOIN_PARTY = 2;
+	
+	public static final int INVITE_TO_PARTY = 3;
+	public static final int JOIN_INVITE = 4;
+	public static final int LEAVE_PARTY = 5;
+	//For MENU_CLICK argument 3 if PARTY_MENU,
+	//use the uniqueID of the player you want to invite, otherwise leave blank (-1)
+	
+	
+	
 	private final int interfaceID;
 	private final int clickArgs1;
 	private final int clickArgs2;

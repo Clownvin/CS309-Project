@@ -12,6 +12,7 @@ import com.git.cs309.mmoserver.map.Map;
 import com.git.cs309.mmoserver.map.MapManager;
 import com.git.cs309.mmoserver.map.PathFinder;
 import com.git.cs309.mmoserver.map.PathFinder.Tile;
+import com.git.cs309.mmoserver.packets.CharacterStatusPacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 import com.git.cs309.mmoserver.util.CycleQueue;
 
@@ -69,6 +70,8 @@ public abstract class Character extends Entity {
 		}
 		onDeath();
 	}
+	
+	public abstract CharacterStatusPacket getCharacterStatusPacket();
 
 	public void applyRegen(int regenAmount) {
 		if (isDead) {

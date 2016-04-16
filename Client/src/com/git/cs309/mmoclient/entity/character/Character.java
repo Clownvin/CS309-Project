@@ -1,10 +1,5 @@
 package com.git.cs309.mmoclient.entity.character;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-
-import com.git.cs309.mmoclient.Config;
 import com.git.cs309.mmoclient.entity.Entity;
 
 /**

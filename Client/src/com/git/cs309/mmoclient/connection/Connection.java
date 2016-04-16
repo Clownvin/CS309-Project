@@ -10,7 +10,7 @@ import com.git.cs309.mmoserver.packets.Packet;
 public class Connection extends AbstractConnection {
 
 	/**
-	 * Encapsulate a {@java.net.Socket} into a Connection container object.
+	 * Encapsulate a {@link java.net.Socket} into a Connection container object.
 	 * @param socket the socket to be encapsulated.
 	 * @throws IOException if any IOException occurs with the socket while getting it's attributes.
 	 */
