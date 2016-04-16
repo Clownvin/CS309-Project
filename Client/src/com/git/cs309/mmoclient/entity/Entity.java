@@ -20,9 +20,9 @@ public abstract class Entity extends Component {
 	 */
 	private static final long serialVersionUID = 4656689876001467423L;
 	protected volatile int x = 0, y = 0; // Coordinates
-	protected int entityID = -1;
-	protected final int uniqueId;
-	protected String name = "Null";
+	protected int entityID = -1; // Entity ID, player = 0
+	protected final int uniqueId; // Unique ID for this entity. Used to tell entities apart.
+	protected String name = "Null"; //Name of the entity or player ("Rock", "Tree", "Sally", etc)
 
 	public Entity(final int x, final int y, final int uniqueId, final int entityID, final String name) {
 		this.x = x;
