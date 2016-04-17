@@ -12,25 +12,47 @@ import com.git.cs309.mmoclient.entity.character.player.Self;
 import com.git.cs309.mmoclient.items.ItemContainer;
 
 public class EquitmentGUI  extends JPanel{
-	private static final DungionGUI SINGLETON = new DungionGUI();
-	static JFrame frame = new JFrame("self equitment");
+	private static final EquitmentGUI INSTANCE = new EquitmentGUI();
+	//will be given list of dungion names 
+	
+	public static final EquitmentGUI getInstance() {
+		return INSTANCE;
+	}
 	
 	public EquitmentGUI()
 	{
-		frame.setSize(400, 400);
-		frame.getContentPane().add(createPanel());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(400, 400);
+		this.add(createPanel());
+		
+		final ItemContainer inventoryStack=new ItemContainer();
+		//inventoryStack=Self.getEquipment();
+		int invSize=inventoryStack.getFirstEmptyIndex();
+		
+		String [] data;
+		data= new String[invSize];
+		
+		for(int i=0; i< invSize; i++)
+		{
+			data[i]=inventoryStack.getItemStack(i).getItemName();;
+		}
+		
+		//Create a JList 
+		JList <String>myList = new JList<String>(data);
+		JScrollPane scrollPane = new JScrollPane(myList);
+		this.add(scrollPane);
+		
 		
 		//this.setLayout(null);
 		//this.setOpaque(false);
-		frame.setLayout(null);
-		frame.setVisible(true);
+		this.setLayout(null);
+		this.setVisible(true);
 	}
 	
 	public JPanel createPanel(){
 		
 		JPanel panel = new JPanel();
-		ItemContainer inventoryStack=Self.getEquipment();
+		final ItemContainer inventoryStack=new ItemContainer();
+		//inventoryStack=Self.getEquipment();
 		int invSize=inventoryStack.getFirstEmptyIndex();
 		
 		String [] data;

@@ -8,30 +8,44 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.entity.character.player.Self;
 import com.git.cs309.mmoclient.items.ItemContainer;
 
-public class PlayerInvintoryGUI {
+public class PlayerInvintoryGUI extends JPanel{
 	private static final PlayerInvintoryGUI SINGLETON = new PlayerInvintoryGUI();
-	static JFrame frame = new JFrame("inventory");
-	
 	
 	public PlayerInvintoryGUI()
 	{
-		frame.setSize(400, 400);
-		frame.getContentPane().add(createPanel());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(400, 400);
+		
+		ItemContainer inventoryStack=Client.getSelf().getInventory();
+		int invSize=inventoryStack.getFirstEmptyIndex();
+		
+		String [] data;
+		data= new String[invSize];
+		
+		for(int i=0; i< invSize; i++)
+		{
+			data[i]=inventoryStack.getItemStack(i).getItemName();;
+		}
+		
+		//Create a JList 
+		JList <String>myList = new JList<String>(data);
+		JScrollPane scrollPane = new JScrollPane(myList);
+		this.add(scrollPane);
+		
 		
 		//this.setLayout(null);
 		//this.setOpaque(false);
-		frame.setLayout(null);
-		frame.setVisible(true);
+		this.setLayout(null);
+		this.setVisible(true);
 	}
 	
 	public JPanel createPanel(){
 		
 		JPanel panel = new JPanel();
-		ItemContainer inventoryStack=Self.getInventory();
+		ItemContainer inventoryStack=Client.getSelf().getInventory();
 		int invSize=inventoryStack.getFirstEmptyIndex();
 		
 		String [] data;
@@ -51,10 +65,10 @@ public class PlayerInvintoryGUI {
 	}
 	
 	public void show(){
-		frame.setPreferredSize(new Dimension(500, 500));
+		this.setPreferredSize(new Dimension(500, 500));
 	}
 	
 	public void hide(){
-		frame.setPreferredSize(new Dimension(0, 0));
+		this.setPreferredSize(new Dimension(0, 0));
 	}
 }

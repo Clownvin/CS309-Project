@@ -1,50 +1,46 @@
 package com.git.cs309.mmoclient.gui.interfaces;
 
-import java.awt.Dimension;
-
 import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 
 public class DungionGUI extends JPanel{
-	private static final DungionGUI SINGLETON = new DungionGUI();
-	static JFrame frame = new JFrame("dungions");
+	private static final DungionGUI INSTANCE = new DungionGUI();
 	//will be given list of dungion names 
+	
+	public static final DungionGUI getInstance() {
+		return INSTANCE;
+	}
 	
 	public DungionGUI() {
 		//JFrame frame = new JFrame("Simple List Example");
-		frame.setSize(400, 400);
-		frame.getContentPane().add(createPanel());
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
-		//this.setLayout(null);
-		//this.setOpaque(false);
-		frame.setLayout(null);
-		frame.setVisible(true);
-	}
-	
-	private static JPanel createPanel(){
-		
-		JPanel panel = new JPanel();
+		this.setSize(400, 400);
 		
 		//Create a JList 
 		String [] data = {"abc","def","ghi"}; //get list of dungion names
 		JList <String>myList = new JList<String>(data);
 		JScrollPane scrollPane = new JScrollPane(myList);
-		panel.add(scrollPane);
 		
-		return panel;
 		
+		
+		
+		
+		this.add(scrollPane);
+		
+		
+		//this.setLayout(null);
+		//this.setOpaque(false);
+		this.setLayout(null);
+		this.setVisible(true);
 	}
 	
 	public void show(){
-		frame.setVisible(true);
+		this.setVisible(true);
 	}
 	
 	public void hide(){
-		frame.setVisible(false);
+		this.setVisible(false);
 	}
 	
 	
