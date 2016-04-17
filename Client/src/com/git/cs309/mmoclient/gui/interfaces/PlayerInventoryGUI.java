@@ -2,18 +2,20 @@ package com.git.cs309.mmoclient.gui.interfaces;
 
 import java.awt.Dimension;
 
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextField;
 
 import com.git.cs309.mmoclient.Client;
-import com.git.cs309.mmoclient.entity.character.player.Self;
 import com.git.cs309.mmoclient.items.ItemContainer;
 
 public class PlayerInventoryGUI extends JPanel{
-	private static final PlayerInventoryGUI SINGLETON = new PlayerInventoryGUI();
+	private static final PlayerInventoryGUI INSTANCE = new PlayerInventoryGUI();
+	
+	public static final PlayerInventoryGUI getInstance() {
+		return INSTANCE;
+	}
+	
 	
 	public PlayerInventoryGUI()
 	{

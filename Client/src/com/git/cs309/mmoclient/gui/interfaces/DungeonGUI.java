@@ -1,6 +1,5 @@
 package com.git.cs309.mmoclient.gui.interfaces;
 
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;

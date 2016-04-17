@@ -2,15 +2,11 @@ package com.git.cs309.mmoclient.gui.interfaces;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.git.cs309.mmoclient.Client;
-import com.git.cs309.mmoserver.packets.LoginPacket;
 public class PlayerTradedGUI extends JPanel{
 	
 	private static final PlayerTradedGUI INSTANCE = new PlayerTradedGUI();
@@ -31,7 +27,6 @@ public class PlayerTradedGUI extends JPanel{
 				//text field for what of your items
 		//two buttons (yes/no)
 		
-		JPanel panel = new JPanel();
 		JButton yesButton = new JButton("yes");
 		this.add(yesButton);
 		yesButton.addActionListener(new ActionListener() {
@@ -45,8 +40,8 @@ public class PlayerTradedGUI extends JPanel{
 		});
 		
 		JButton noButton = new JButton("no");
-		this.add(yesButton);
-		yesButton.addActionListener(new ActionListener() {
+		this.add(noButton);
+		noButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				hide();
 			}

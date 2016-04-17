@@ -1,6 +1,5 @@
 package com.git.cs309.mmoclient.gui.interfaces;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.git.cs309.mmoclient.items.ItemStack;

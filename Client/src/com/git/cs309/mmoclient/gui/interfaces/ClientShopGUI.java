@@ -3,19 +3,12 @@ package com.git.cs309.mmoclient.gui.interfaces;
 import java.awt.Dimension;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import com.git.cs309.mmoclient.gui.interfaces.ClientShop;
 import com.git.cs309.mmoclient.items.ItemStack;
