@@ -5,15 +5,15 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-public class DungionGUI extends JPanel{
-	private static final DungionGUI INSTANCE = new DungionGUI();
+public class DungeonGUI extends JPanel{
+	private static final DungeonGUI INSTANCE = new DungeonGUI();
 	//will be given list of dungion names 
 	
-	public static final DungionGUI getInstance() {
+	public static final DungeonGUI getInstance() {
 		return INSTANCE;
 	}
 	
-	public DungionGUI() {
+	public DungeonGUI() {
 		//JFrame frame = new JFrame("Simple List Example");
 		this.setSize(400, 400);
 		

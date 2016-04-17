@@ -8,18 +8,24 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.entity.character.player.Self;
 import com.git.cs309.mmoclient.items.ItemContainer;
 
-public class PlayerInvintoryGUI extends JPanel{
-	private static final PlayerInvintoryGUI SINGLETON = new PlayerInvintoryGUI();
+public class EquipmentGUI  extends JPanel{
+	private static final EquipmentGUI INSTANCE = new EquipmentGUI();
+	//will be given list of dungion names 
 	
-	public PlayerInvintoryGUI()
+	public static final EquipmentGUI getInstance() {
+		return INSTANCE;
+	}
+	
+	public EquipmentGUI()
 	{
 		this.setSize(400, 400);
+		this.add(createPanel());
 		
-		ItemContainer inventoryStack=Client.getSelf().getInventory();
+		final ItemContainer inventoryStack=new ItemContainer();
+		//inventoryStack=Self.getEquipment();
 		int invSize=inventoryStack.getFirstEmptyIndex();
 		
 		String [] data;
@@ -45,7 +51,8 @@ public class PlayerInvintoryGUI extends JPanel{
 	public JPanel createPanel(){
 		
 		JPanel panel = new JPanel();
-		ItemContainer inventoryStack=Client.getSelf().getInventory();
+		final ItemContainer inventoryStack=new ItemContainer();
+		//inventoryStack=Self.getEquipment();
 		int invSize=inventoryStack.getFirstEmptyIndex();
 		
 		String [] data;

@@ -24,14 +24,12 @@ public class ClientShopGUI extends JPanel{
 	
 	int shopID;
 	ClientShop guiShop;
-	static PlayerInvintoryGUI playInvGUI = new PlayerInvintoryGUI();
 	
 	public ClientShopGUI(String shopName, int shopID)
 	{
 		this.setSize(400, 400);
 		ClientShop guiShop=new ClientShop(shopName, shopID);
 		
-		playInvGUI.show();
 		JTextArea nameOfShop = new JTextArea(guiShop.getName());
 		this.add(nameOfShop);
 		

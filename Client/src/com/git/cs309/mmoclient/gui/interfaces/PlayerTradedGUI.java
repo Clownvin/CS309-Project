@@ -10,11 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.git.cs309.mmoclient.Client;
-import com.git.cs309.mmoclient.gui.interfaces.PlayerInvintoryGUI;
 import com.git.cs309.mmoserver.packets.LoginPacket;
 public class PlayerTradedGUI extends JPanel{
 	
-	static PlayerInvintoryGUI playInvGUI = new PlayerInvintoryGUI();
 	private static final PlayerTradedGUI INSTANCE = new PlayerTradedGUI();
 	
 	public static final PlayerTradedGUI getInstance() {
@@ -29,7 +27,6 @@ public class PlayerTradedGUI extends JPanel{
 	{
 		this.setSize(400, 400);
 		
-		playInvGUI.show();
 		//show player inventory
 				//text field for what of your items
 		//two buttons (yes/no)
