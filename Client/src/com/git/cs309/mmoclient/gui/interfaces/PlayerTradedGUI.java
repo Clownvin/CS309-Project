@@ -5,7 +5,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import com.git.cs309.mmoclient.Client;
+import com.git.cs309.mmoclient.items.ItemContainer;
 
 public class PlayerTradedGUI extends JPanel{
 	
@@ -17,42 +22,77 @@ public class PlayerTradedGUI extends JPanel{
 	
 	JButton yesButton = new JButton("yes");
 	JButton noButton = new JButton("no");
+	//player 1
+	//player2
 	
 	
 	public PlayerTradedGUI()
-	{
+	{		
 		this.setSize(400, 400);
 		
-		//show player inventory
-				//text field for what of your items
-		//two buttons (yes/no)
+		JTextArea nameOfShop = new JTextArea("trading with player");
+		this.add(nameOfShop);
 		
-		JButton yesButton = new JButton("yes");
-		this.add(yesButton);
-		yesButton.addActionListener(new ActionListener() {
+		ItemContainer inventoryStack1=Client.getSelf().getInventory();
+		int playerinvSize1=inventoryStack1.getFirstEmptyIndex();
+		
+		//TODO
+		ItemContainer inventoryStack2;
+		int playerinvSize2=inventoryStack2.getFirstEmptyIndex();
+		 
+		JTextArea otherPlayerArea= new JTextArea();//PLAYER 2 inventory
+		for(int i=0; i<playerinvSize2; i++)
+		{
+			//TODO
+			otherPlayerArea.append();
+		}
+		JScrollPane otherSidescrollPane = new JScrollPane(otherPlayerArea);
+		otherSidescrollPane.setBounds(0,0,150,400); //left side of screen
+		this.add(otherSidescrollPane);
+		
+		JTextArea ClientArea= new JTextArea();//PLAYER 1 inventory (CLIENT)
+		for(int i=0; i<playerinvSize1; i++)
+		{
+			Client.getSelf().getInventory().getItemStack(i).getItemName();
+		} 
+		JScrollPane ClientplayerSidescrollPane = new JScrollPane(ClientArea);//player inventory 
+		ClientplayerSidescrollPane.setBounds(250,0,400,150); //right side of screen
+		this.add(ClientplayerSidescrollPane);
+		
+		JTextField whatItemToBuy =new JTextField("whatItem");
+		this.add(whatItemToBuy);
+		
+		JTextField whatItemToSell =new JTextField("whatItem");
+		this.add(whatItemToSell);
+		
+		JButton acceptButton = new JButton("accept");
+		acceptButton.setBounds(150,0,100,100);
+		this.add(acceptButton);
+		acceptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//send info to server
+				//such as whatItemToBuy and whatItemToSell
 				//TODO
-				//ex from loging 
-				//Client.getConnection().addOutgoingPacket(new LoginPacket(stuff));
-				hide();
 			}
 		});
 		
-		JButton noButton = new JButton("no");
-		this.add(noButton);
-		noButton.addActionListener(new ActionListener() {
+		JButton declineButton = new JButton("decline");
+		acceptButton.setBounds(150,100,100,100);
+		this.add(declineButton);
+		declineButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				hide();
 			}
 		});
 		
-		JTextField whatItem= new JTextField();//by row number
-		whatItem.setText("what row number of item to trade");
-		this.add(whatItem);
 		
-		//this.setLayout(null);
-		//this.setOpaque(false);
+		JTextArea amountArea = new JTextArea("amount of transaction");
+		acceptButton.setBounds(150,200,200,100);
+		this.add(amountArea);
+		
+		
+		this.setLayout(null);
+		this.setVisible(true);
 	}
 	
 	public void show(){

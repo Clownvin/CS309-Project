@@ -29,7 +29,7 @@ public class PlayerInventoryGUI extends JPanel{
 		
 		for(int i=0; i< invSize; i++)
 		{
-			data[i]=inventoryStack.getItemStack(i).getItemName();;
+			data[i]=inventoryStack.getItemStack(i).getItemName();
 		}
 		
 		//Create a JList 
