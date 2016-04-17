@@ -10,7 +10,7 @@ import javax.swing.JTextField;
 
 public class DungionGUI extends JPanel{
 	private static final DungionGUI SINGLETON = new DungionGUI();
-	static JFrame frame = new JFrame("Simple List Example");
+	static JFrame frame = new JFrame("dungions");
 	//will be given list of dungion names 
 	
 	public DungionGUI() {
@@ -30,7 +30,7 @@ public class DungionGUI extends JPanel{
 		JPanel panel = new JPanel();
 		
 		//Create a JList 
-		String [] data = {"abc","def","ghi"};
+		String [] data = {"abc","def","ghi"}; //get list of dungion names
 		JList <String>myList = new JList<String>(data);
 		JScrollPane scrollPane = new JScrollPane(myList);
 		panel.add(scrollPane);
@@ -40,11 +40,11 @@ public class DungionGUI extends JPanel{
 	}
 	
 	public void show(){
-		this.setVisible(true);
+		frame.setVisible(true);
 	}
 	
 	public void hide(){
-		this.setVisible(false);
+		frame.setVisible(false);
 	}
 	
 	

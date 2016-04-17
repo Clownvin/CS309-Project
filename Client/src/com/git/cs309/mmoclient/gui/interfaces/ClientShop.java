@@ -3,9 +3,11 @@ package com.git.cs309.mmoclient.gui.interfaces;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import com.git.cs309.mmoclient.items.ItemStack;
+
 public class ClientShop {
 	
-	private static final long serialVersionUID;
+	//private static final long serialVersionUID;
 	private final String shopName;
 	private final int id;
 	//private item[] shopItems; //change to array list
@@ -14,7 +16,7 @@ public class ClientShop {
 	//murchents can have multiple shops and
 	//several murchents could access the same shop 
 	
-	public ClientShop(final String shopName, final int id) {
+	public ClientShop(String shopName, int id) {
 		this.shopName = shopName;
 		this.id = id;
 	}
@@ -52,6 +54,11 @@ public class ClientShop {
 	public String getItemName(int index)
 	{
 		return shopItems.get(index).getItemName();
+	}
+	
+	public int getNumberOfItems()
+	{
+		return shopItems.size();
 	}
 	
 	
