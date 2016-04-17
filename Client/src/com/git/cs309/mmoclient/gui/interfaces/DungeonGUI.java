@@ -22,9 +22,6 @@ public class DungeonGUI extends JPanel{
 		JScrollPane scrollPane = new JScrollPane(myList);
 		
 		
-		
-		
-		
 		this.add(scrollPane);
 		
 		
