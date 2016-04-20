@@ -12,6 +12,12 @@ public final class Sprite {
 		this.spriteName = spriteName;
 	}
 	
+	public BufferedImage getImage(int x, int y) {
+		int width = this.spriteImage.getWidth() / 4;
+		int height = this.spriteImage.getHeight() / 4;
+		return spriteImage.getSubimage(x * width, y * width, width, height);
+	}
+	
 	public final Image getImage() {
 		return spriteImage;
 	}

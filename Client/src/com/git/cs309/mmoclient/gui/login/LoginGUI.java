@@ -49,7 +49,7 @@ public final class LoginGUI extends JFrame implements ActionListener{
 			System.exit(0);
 			}
 		});*/
-		pack();
+		//pack();
 	}
 	
 	public static LoginGUI getSingleton() {

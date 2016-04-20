@@ -31,7 +31,27 @@ import com.git.cs309.mmoserver.packets.MovePacket;
 public class ViewPanel extends JPanel {
 	public static final Color WATER_COLOR = new Color(40, 40, 240);
 	
+	
+	private static final Thread PAINT_THREAD = new Thread(new Runnable() {
+
+		@Override
+		public void run() {
+			while (true) {
+				synchronized (INSTANCE) {
+					INSTANCE.repaint();
+				}
+				try {
+					Thread.sleep(16);
+				} catch (InterruptedException e) {
+					// Can just ignore this
+				}
+			}
+		}
+		
+	});
+	
 	private static final ViewPanel INSTANCE = new ViewPanel();
+
 	
 	public static final ViewPanel getInstance() {
 		return INSTANCE;
@@ -44,6 +64,7 @@ public class ViewPanel extends JPanel {
 	private ViewPanel() {
 		this.setLayout(null);
 		this.add(ChatBox.getInstance());
+		//this.add();
 		this.setBackground(new Color(0, 0, 0, 0.0f));
 		addMouseListener(new MouseAdapter() {
 			@Override
@@ -78,6 +99,7 @@ public class ViewPanel extends JPanel {
 		});
 		Component chatBox = ChatBox.getInstance();
 		ChatBox.getInstance().setLocation(0, getHeight() - chatBox.getHeight());
+		PAINT_THREAD.start();
 	}
 	
 	public void addInterface(GameInterface newInterface) {

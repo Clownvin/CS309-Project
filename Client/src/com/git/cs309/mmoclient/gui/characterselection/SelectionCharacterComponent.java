@@ -9,13 +9,14 @@ import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JPanel;
 
 import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 import com.git.cs309.mmoserver.packets.InterfaceClickPacket;
 
-public class SelectionCharacterComponent extends Component {
+public class SelectionCharacterComponent extends JPanel {
 	/**
 	 * 
 	 */
@@ -27,6 +28,7 @@ public class SelectionCharacterComponent extends Component {
 		this.index = index;
 		character = new SelectionCharacter(index);
 		JButton loginButton = new JButton("Log in");
+		this.add(loginButton);
 		
 		this.addMouseListener(new MouseAdapter() {
 			@Override

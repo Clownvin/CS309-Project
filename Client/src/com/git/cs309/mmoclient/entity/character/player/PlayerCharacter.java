@@ -46,7 +46,7 @@ public class PlayerCharacter extends Character {
 	
 	@Override
 	public Sprite getSprite() {
-		return SpriteDatabase.getInstance().getSprite("tempplayer");
+		return SpriteDatabase.getInstance().getSprite("playerrun");
 	}
 
 	public int getEyeColor() {
