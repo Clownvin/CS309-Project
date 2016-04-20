@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 
 import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.items.ItemContainer;
+import com.git.cs309.mmoserver.packets.InterfaceClickPacket;
 
 public class PlayerTradedGUI extends JPanel{
 	
@@ -36,19 +37,10 @@ public class PlayerTradedGUI extends JPanel{
 		ItemContainer inventoryStack1=Client.getSelf().getInventory();
 		int playerinvSize1=inventoryStack1.getFirstEmptyIndex();
 		
-		//TODO
-		ItemContainer inventoryStack2;
-		int playerinvSize2=inventoryStack2.getFirstEmptyIndex();
-		 
-		JTextArea otherPlayerArea= new JTextArea();//PLAYER 2 inventory
-		for(int i=0; i<playerinvSize2; i++)
-		{
-			//TODO
-			otherPlayerArea.append();
-		}
-		JScrollPane otherSidescrollPane = new JScrollPane(otherPlayerArea);
-		otherSidescrollPane.setBounds(0,0,150,400); //left side of screen
-		this.add(otherSidescrollPane);
+
+		//JScrollPane otherSidescrollPane = new JScrollPane(otherPlayerArea);
+		//otherSidescrollPane.setBounds(0,0,150,400); //left side of screen
+		//this.add(otherSidescrollPane);
 		
 		JTextArea ClientArea= new JTextArea();//PLAYER 1 inventory (CLIENT)
 		for(int i=0; i<playerinvSize1; i++)
@@ -72,6 +64,7 @@ public class PlayerTradedGUI extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				//send info to server
 				//such as whatItemToBuy and whatItemToSell
+				Client.getConnection().addOutgoingPacket(new InterfaceClickPacket(null, null));
 				//TODO
 			}
 		});

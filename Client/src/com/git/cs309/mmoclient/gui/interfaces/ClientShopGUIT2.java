@@ -17,6 +17,8 @@ import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.gui.interfaces.ClientShop;
 import com.git.cs309.mmoclient.items.ItemContainer;
 import com.git.cs309.mmoclient.items.ItemStack;
+import com.git.cs309.mmoserver.packets.InterfaceClickPacket;
+import com.git.cs309.mmoserver.packets.LoginPacket;
 
 public class ClientShopGUIT2 extends JPanel{
 	
@@ -73,6 +75,7 @@ public class ClientShopGUIT2 extends JPanel{
 		acceptButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//send info to server
+				Client.getConnection().addOutgoingPacket(new InterfaceClickPacket(null, null));
 				//such as whatItemToBuy and whatItemToSell
 				//TODO
 			}
