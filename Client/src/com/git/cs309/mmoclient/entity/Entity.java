@@ -12,6 +12,7 @@ import com.git.cs309.mmoclient.Config;
 import com.git.cs309.mmoclient.graphics.Sprite;
 import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoclient.gui.game.ViewPanel;
+import com.git.cs309.mmoclient.entity.character.Character;
 
 public abstract class Entity extends Component {
 	
@@ -26,6 +27,7 @@ public abstract class Entity extends Component {
 	protected int previousX = 0;
 	protected int previousY = 0;
 	protected int direction = 3;
+	protected int stop = 1;
 
 	public Entity(final int x, final int y, final int uniqueId, final int entityID, final String name) {
 		this.x = x;
@@ -62,29 +64,47 @@ public abstract class Entity extends Component {
 				}*/
 				if(getEntityType() == EntityType.PLAYER){
 					long a =System.currentTimeMillis();
+					Character b = (Character) this;
 					if(direction == 3){
-						if((a/200%2)==0){
+						if(b.isWalking()==false){
 							g.drawImage(sprite.getImage(0,3), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
 						}else{
-							g.drawImage(sprite.getImage(2,3), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							if((a/400%2)==0){
+								g.drawImage(sprite.getImage(1,3), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}else{
+								g.drawImage(sprite.getImage(3,3), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}
 						}
 					}else if(direction == 2){
-						if((a/200%2)==0){
-							g.drawImage(sprite.getImage(1,2), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+						if(b.isWalking()==false){
+							g.drawImage(sprite.getImage(0,2), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
 						}else{
-							g.drawImage(sprite.getImage(3,2), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							if((a/400%2)==0){
+								g.drawImage(sprite.getImage(1,2), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}else{
+								g.drawImage(sprite.getImage(3,2), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}
 						}
+						
 					}else if(direction == 1){
-						if((a/200%2)==0){
-							g.drawImage(sprite.getImage(1,0), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+						if(b.isWalking()==false){
+							g.drawImage(sprite.getImage(0,0), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
 						}else{
-							g.drawImage(sprite.getImage(3,0), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							if((a/400%2)==0){
+								g.drawImage(sprite.getImage(1,0), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}else{
+								g.drawImage(sprite.getImage(3,0), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}
 						}
 					}if(direction == 4){
-						if((a/200%2)==0){
-							g.drawImage(sprite.getImage(1,1), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+						if(b.isWalking()==false){
+							g.drawImage(sprite.getImage(0,1), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
 						}else{
-							g.drawImage(sprite.getImage(3,1), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							if((a/400%2)==0){
+								g.drawImage(sprite.getImage(1,1), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}else{
+								g.drawImage(sprite.getImage(3,1), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}
 						}
 					}	
 				}else{
@@ -138,9 +158,14 @@ public abstract class Entity extends Component {
 		return y;
 	}
 
-	public final void setPosition(final int x, final int y) {
+	public void setPosition(final int x, final int y) {
 		//Animation walk = new Animation(uniqueId, this.x, this.y, x, y);
 		//TODO handle walking
+		if(this.x == x&&this.y == y){
+			stop =1;
+		}else{
+			stop =0;
+		}
 		previousX = this.x;
 		previousY = this.y;
 		this.x = x;
@@ -184,6 +209,7 @@ public abstract class Entity extends Component {
 				direction = 3;
 			}
 		}
+		
 		//this.lastTime = System.currentTimeMillis();
 		//ViewPanel.getInstance().repaint();
 	}
