@@ -16,6 +16,7 @@ import com.git.cs309.mmoserver.items.ItemStack;
 import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.Map;
 import com.git.cs309.mmoserver.map.MapManager;
+import com.git.cs309.mmoserver.packets.CharacterStatusPacket;
 import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
@@ -174,6 +175,12 @@ public class NPC extends Character {
 
 			});
 		}
+	}
+
+	@Override
+	public CharacterStatusPacket getCharacterStatusPacket() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

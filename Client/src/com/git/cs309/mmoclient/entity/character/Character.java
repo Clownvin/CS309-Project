@@ -18,6 +18,18 @@ public abstract class Character extends Entity {
 
 	public static final int NO_OPPONENT = -1;
 	
+	private final Runnable walkingRunnable = new Runnable() {
+
+		@Override
+		public void run() {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+			}
+		}
+		
+	};
+	
 	//Current health.
 	protected volatile int health = 0;
 	protected volatile int maxHealth = 0;
@@ -75,6 +87,13 @@ public abstract class Character extends Entity {
 		} else {
 			inCombat = true;
 		}
+	}
+	
+	@Override
+	public void setPosition(final int x, final int y) {
+		super.setPosition(x, y);
+		walking = true;
+		new Thread(walkingRunnable).start();
 	}
 
 }
