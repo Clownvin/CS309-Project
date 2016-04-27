@@ -3,8 +3,6 @@ package com.git.cs309.mmoclient.graphics;
 import java.awt.Graphics;
 import java.awt.*;
 
-import com.sun.medialib.mlib.Image;
-
 public class SpriteAnimation {
 	 public static void draw(Graphics g){  
 	        int mousePreDiffX = 0;

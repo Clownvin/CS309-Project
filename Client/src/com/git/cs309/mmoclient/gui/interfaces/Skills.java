@@ -30,7 +30,7 @@ public final class Skills extends Component {
 	
 	public Skills(final int index){
 		this.index = index;
-		skill = new SkillBox(index);
+		skill = null;//new SkillBox(index);
 		
 		this.addMouseListener(new MouseAdapter() {
 			@Override
