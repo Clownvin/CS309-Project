@@ -92,6 +92,14 @@ public abstract class Character extends Entity {
 		}
 	}
 	
+	public int getOpponentId() {
+		return this.opponentId;
+	}
+	
+	public boolean isInCombat(){
+		return inCombat;
+	}
+	
 	public final void setPosition(final int x, final int y) {
 		super.setPosition(x, y);
 		walking = true;

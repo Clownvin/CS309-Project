@@ -64,9 +64,57 @@ public abstract class Entity extends Component {
 				}*/
 				if(getEntityType() == EntityType.PLAYER){
 					long a =System.currentTimeMillis();
-					Character b = (Character) this;
+					Character player = (Character) this;
+					if(player.isInCombat()==true){
+						if (getEntityType() == EntityType.NPC || getEntityType() == EntityType.PLAYER) {
+							Character character = (Character) this;
+							if (character.isInCombat() && character.getOpponentId() != Character.NO_OPPONENT) {
+								Entity opponent = Client.getMap().getEntity(character.getOpponentId());
+								if(x-opponent.x>0){
+									if(y-opponent.y>0){
+										if((x-opponent.x)>=(y-opponent.y)){
+											direction = 2;
+										}else{
+											direction = 1;
+										}
+									}else if(y-opponent.y<0){
+										if((x-opponent.x)>=(opponent.y-y)){
+											direction = 2;
+										}else{
+											direction = 3;
+										}
+									}else{
+										direction = 2;
+									}
+								}else if(x-opponent.x<0){
+									if(y-opponent.y>0){
+										if((opponent.x-x)>=(y-opponent.y)){
+											direction = 4;
+										}else{
+											direction = 1;
+										}
+									}else if(y-opponent.y<0){
+										if((opponent.x-x)>=(opponent.y-y)){
+											direction = 4;
+										}else{
+											direction = 3;
+										}
+									}else{
+										direction = 4;
+									}
+								}else{
+									if(y-opponent.y>0){
+										direction = 1;
+									}else if(y-opponent.y<0){
+										direction = 3;
+									}
+								}
+								g.drawString("In Combat", 0, 0);
+							}
+						}
+					}
 					if(direction == 3){
-						if(b.isWalking()==false){
+						if(player.isWalking()==false){
 							g.drawImage(sprite.getImage(0,3), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
 						}else{
 							if((a/400%2)==0){
@@ -76,7 +124,7 @@ public abstract class Entity extends Component {
 							}
 						}
 					}else if(direction == 2){
-						if(b.isWalking()==false){
+						if(player.isWalking()==false){
 							g.drawImage(sprite.getImage(0,2), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
 						}else{
 							if((a/400%2)==0){
@@ -87,7 +135,7 @@ public abstract class Entity extends Component {
 						}
 						
 					}else if(direction == 1){
-						if(b.isWalking()==false){
+						if(player.isWalking()==false){
 							g.drawImage(sprite.getImage(0,0), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
 						}else{
 							if((a/400%2)==0){
@@ -97,7 +145,7 @@ public abstract class Entity extends Component {
 							}
 						}
 					}if(direction == 4){
-						if(b.isWalking()==false){
+						if(player.isWalking()==false){
 							g.drawImage(sprite.getImage(0,1), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
 						}else{
 							if((a/400%2)==0){
@@ -109,6 +157,12 @@ public abstract class Entity extends Component {
 					}	
 				}else{
 					g.drawImage(sprite.getImage(), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+				}
+				if (getEntityType() == EntityType.NPC || getEntityType() == EntityType.PLAYER) {
+					Character character = (Character) this;
+					if (character.isInCombat() && character.getOpponentId() != Character.NO_OPPONENT) {
+						Entity opponent = Client.getMap().getEntity(character.getOpponentId());
+					}
 				}
 		} else {
 			g.setColor(Color.BLACK);
