@@ -23,6 +23,8 @@ import com.git.cs309.mmoclient.entity.character.Character;
 import com.git.cs309.mmoclient.graphics.Sprite;
 import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
+import com.git.cs309.mmoclient.gui.interfaces.DungeonGUI;
+import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
 import com.git.cs309.mmoclient.gui.interfaces.GameInterface;
 import com.git.cs309.mmoclient.gui.interfaces.RightClickOptionsInterface;
 import com.git.cs309.mmoclient.entity.EntityType;
@@ -44,6 +46,14 @@ public class ViewPanel extends JPanel {
 	private ViewPanel() {
 		this.setLayout(null);
 		this.add(ChatBox.getInstance());
+		//PlayerInventoryGUI playGUI = new PlayerInventoryGUI();
+		//this.add(playGUI);
+		//DungeonGUI playGUI = new DungeonGUI();
+		//this.add(playGUI);
+		this.add(DungeonGUI.getInstance());
+		DungeonGUI.getInstance().hide();
+		//this.add(PlayerInventoryGUI.getInstance());
+		//PlayerInventoryGUI.getInstance().show();
 		this.setBackground(new Color(0, 0, 0, 0.0f));
 		addMouseListener(new MouseAdapter() {
 			@Override
@@ -66,6 +76,11 @@ public class ViewPanel extends JPanel {
 						} else {
 							options.add(entity.getName());
 						}
+						if(entity.getStaticID()== 2)
+						{
+							DungeonGUI.getInstance().show();
+							//System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+						}
 					}
 					options.add("Walk here");
 					options.add("Cancel");
@@ -78,6 +93,10 @@ public class ViewPanel extends JPanel {
 		});
 		Component chatBox = ChatBox.getInstance();
 		ChatBox.getInstance().setLocation(0, getHeight() - chatBox.getHeight());
+	
+		//PlayerInventoryGUI playerGUIInv =  new PlayerInventoryGUI();
+		//playerGUIInv.getInstance();
+		//playerGUIInv.getInstance().setLocation(0, getHeight() - chatBox.getHeight());
 	}
 	
 	public void addInterface(GameInterface newInterface) {

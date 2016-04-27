@@ -8,6 +8,7 @@ import java.awt.event.ComponentEvent;
 import javax.swing.JFrame;
 
 import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
+import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
 
 public class GameGUI extends JFrame {
 
@@ -26,6 +27,11 @@ public class GameGUI extends JFrame {
 				Component chatBox = ChatBox.getInstance();
 				Component viewPanel = ViewPanel.getInstance();
 				ChatBox.getInstance().setLocation(0, viewPanel.getHeight() - chatBox.getHeight());
+				
+				//Component PlayerInventoryGUI = PlayerInventoryGUI.getInstance();
+				//PlayerInventoryGUI playGUI = new PlayerInventoryGUI();
+				//PlayerInventoryGUI.getInstance().setLocation(0, viewPanel.getHeight() - 400);
+				//PlayerInventoryGUI.getInstance().show();
 			}
 			
 		});

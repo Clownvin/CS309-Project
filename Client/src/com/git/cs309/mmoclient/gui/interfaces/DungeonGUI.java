@@ -1,5 +1,7 @@
 package com.git.cs309.mmoclient.gui.interfaces;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -7,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoserver.packets.InterfaceClickPacket;
@@ -21,7 +24,14 @@ public class DungeonGUI extends JPanel{
 	
 	public DungeonGUI() {
 		//JFrame frame = new JFrame("Simple List Example");
-		this.setSize(400, 400);
+		//Color background = new Color(153, 102, 51, 0x7F);
+		//this.setBackground(background);
+		this.setSize(200, 200);
+		this.setLocation(200, 200);
+		this.setLayout(null);
+		
+		JTextField messageArea = new JTextField("dungeon");
+		this.add(messageArea);
 		
 		//Create a JList 
 		//String [] data = {Island,"def","ghi"}; //get list of dungion names
@@ -39,20 +49,20 @@ public class DungeonGUI extends JPanel{
 		this.add(mainIsland);
 		//TODO add other maps as buttons here
 		
-		
-		
 		//this.setLayout(null);
 		//this.setOpaque(false);
-		this.setLayout(null);
+		//this.setLayout(null);
 		this.setVisible(true);
 	}
 	
+	
+	
 	public void show(){
-		this.setVisible(true);
+		this.setSize(new Dimension(200, 200));
 	}
 	
 	public void hide(){
-		this.setVisible(false);
+		this.setSize(new Dimension(0, 0));
 	}
 	
 	

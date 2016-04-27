@@ -2,8 +2,11 @@ package com.git.cs309.mmoclient.gui.login;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
 import javax.swing.*;
+
 import com.git.cs309.mmoclient.Client;
+import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
 import com.git.cs309.mmoserver.packets.LoginPacket;
 
 public final class LoginGUI extends JFrame {

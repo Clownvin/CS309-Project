@@ -5,6 +5,7 @@ import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
+import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
 import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 
 public class CharacterSelectionGUI extends JFrame {

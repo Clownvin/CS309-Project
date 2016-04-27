@@ -10,8 +10,11 @@ import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import com.git.cs309.mmoclient.Client;
 import com.git.cs309.mmoclient.gui.interfaces.ClientShop;
 import com.git.cs309.mmoclient.items.ItemStack;
+import com.git.cs309.mmoserver.packets.InterfaceClickPacket;
+import com.git.cs309.mmoserver.packets.LoginPacket;
 
 public class ClientShopGUI extends JPanel{
 	
@@ -47,6 +50,7 @@ public class ClientShopGUI extends JPanel{
 				//send info to server
 				//such as whatItemToBuy and whatItemToSell
 				//TODO
+				Client.getConnection().addOutgoingPacket(new InterfaceClickPacket(null, null));
 			}
 		});
 		

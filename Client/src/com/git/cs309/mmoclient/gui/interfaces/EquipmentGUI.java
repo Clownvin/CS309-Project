@@ -1,5 +1,6 @@
 package com.git.cs309.mmoclient.gui.interfaces;
 
+import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JList;
@@ -18,7 +19,10 @@ public class EquipmentGUI  extends JPanel{
 	
 	public EquipmentGUI()
 	{
+		Color background = new Color(153, 102, 51, 0x7F);
+		this.setBackground(background);
 		this.setSize(400, 400);
+		
 		this.add(createPanel());
 		
 		final ItemContainer inventoryStack=new ItemContainer();

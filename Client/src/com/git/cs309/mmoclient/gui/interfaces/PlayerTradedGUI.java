@@ -1,4 +1,5 @@
 package com.git.cs309.mmoclient.gui.interfaces;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,7 +30,10 @@ public class PlayerTradedGUI extends JPanel{
 	
 	public PlayerTradedGUI()
 	{		
+		Color background = new Color(153, 102, 51, 0x7F);
+		this.setBackground(background);
 		this.setSize(400, 400);
+		
 		
 		JTextArea nameOfShop = new JTextArea("trading with player");
 		this.add(nameOfShop);
