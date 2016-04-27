@@ -38,7 +38,6 @@ public class CharacterSelectionGUI extends JFrame {
 		//Do paint background
 		super.paint(g);
 	}
-	
 	public void updateComponents(CharacterSelectionDataPacket packet) {
 		components[packet.getIndex()].updateSelectionCharacter(packet);
 		this.repaint();

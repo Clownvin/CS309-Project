@@ -3,6 +3,7 @@ package com.git.cs309.mmoserver.items;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import com.git.cs309.mmoserver.packets.ItemContainerPacket;
 
 public class ItemContainer implements Serializable {
 	/**
@@ -105,6 +106,16 @@ public class ItemContainer implements Serializable {
 			}
 		}
 		return -1;
+	}
+	
+	public ItemContainerPacket getPacket(final byte type) {
+		int[] itemIds = new int[size];
+		int[] itemAmounts = new int[size];
+		for (int i = 0; i < size; i++) {
+			itemIds[i] = items[i].getId();
+			itemAmounts[i] = items[i].getCount();
+		}
+		return new ItemContainerPacket(null, type, count, itemIds, itemAmounts);
 	}
 	
 	public int getIndexOfId(int itemId) {

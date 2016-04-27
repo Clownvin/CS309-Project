@@ -1,13 +1,13 @@
 package com.git.cs309.mmoserver.util;
 
-import java.util.Observable;
-
 import javax.swing.JButton;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.Server;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.entity.characters.user.Rights;
+import com.git.cs309.mmoserver.lang.module.Module;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.packets.ServerModuleStatusPacket;
 
 /**
@@ -23,7 +23,7 @@ import com.git.cs309.mmoserver.packets.ServerModuleStatusPacket;
  *         intensive.
  *         </p>
  */
-public abstract class TickProcess extends Observable implements Runnable {
+public abstract class TickProcess extends Module implements Runnable {
 	protected volatile long average = 0;
 	protected volatile int count = 0;
 	protected volatile long cumulative = 0;
@@ -33,10 +33,12 @@ public abstract class TickProcess extends Observable implements Runnable {
 	protected final JButton restartButton = new JButton("Restart");
 	protected volatile boolean tickFinished = true;
 	protected volatile Thread TickProcessThread = null;
+	protected final Server server;
 
-	public TickProcess(final String name) {
-		this.name = name;
-		Main.addTickProcess(this);
+	public TickProcess() {
+		this.server = ModuleManager.getModule(Server.class);
+		this.name = getVariableName();
+		server.addTickProcess(this);
 		start();
 	}
 
@@ -68,11 +70,11 @@ public abstract class TickProcess extends Observable implements Runnable {
 
 	@Override
 	public final void run() { // Final to ensure that this can't be overriden, to ensure that all extending classes follow the rules.
-		final Object tickNotifier = Main.getTickNotifier(); // Acquire the tickNotifier object from Main.
+		final Object tickNotifier = server.getTickNotifier(); // Acquire the tickNotifier object from Main.
 		isStopped = false;
 		forceStop = false;
 		println("Running " + this + "...");
-		while (Main.isRunning() || !forceStop) { // While server is running...
+		while (server.isRunning() || !forceStop) { // While server is running...
 			try {
 				synchronized (tickNotifier) {
 					try {
@@ -82,14 +84,10 @@ public abstract class TickProcess extends Observable implements Runnable {
 					}
 					tickFinished = false;
 				}
-				setChanged();
-				notifyObservers();
 				long start = System.nanoTime();
 				tickTask(); // Perform task
 				handleTickAveraging(System.nanoTime() - start);
 				tickFinished = true;
-				setChanged();
-				notifyObservers();
 			} catch (Exception e) {
 				println("Here");
 				e.printStackTrace();
@@ -99,8 +97,6 @@ public abstract class TickProcess extends Observable implements Runnable {
 		ensureSafeClose();
 		tickFinished = true;
 		isStopped = true;
-		setChanged();
-		notifyObservers();
 		println(this + " has stopped running.");
 	}
 
@@ -134,7 +130,7 @@ public abstract class TickProcess extends Observable implements Runnable {
 			average = cumulative / count;
 			count = 0;
 			cumulative = 0;
-			ConnectionManager.getInstance().sendPacketToConnectionsWithRights(
+			ModuleManager.getModule(ConnectionManager.class).sendPacketToConnectionsWithRights(
 					new ServerModuleStatusPacket(null, name, average / (Config.MILLISECONDS_PER_TICK * 1000000.0f)),
 					Rights.ADMIN);
 		}

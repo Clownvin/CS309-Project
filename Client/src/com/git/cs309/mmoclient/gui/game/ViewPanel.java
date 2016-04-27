@@ -3,13 +3,14 @@ package com.git.cs309.mmoclient.gui.game;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.geom.AffineTransform;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,12 +26,13 @@ import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
 import com.git.cs309.mmoclient.gui.interfaces.GameInterface;
 import com.git.cs309.mmoclient.gui.interfaces.RightClickOptionsInterface;
-import com.git.cs309.mmoclient.entity.EntityType;
+import com.git.cs309.mmoclient.entity.EntityType; 
+
+import com.git.cs309.mmoserver.packets.EntityClickPacket;
 import com.git.cs309.mmoserver.packets.MovePacket;
 
 public class ViewPanel extends JPanel {
 	public static final Color WATER_COLOR = new Color(40, 40, 240);
-	
 	
 	private static final Thread PAINT_THREAD = new Thread(new Runnable() {
 
@@ -51,7 +53,6 @@ public class ViewPanel extends JPanel {
 	});
 	
 	private static final ViewPanel INSTANCE = new ViewPanel();
-
 	
 	public static final ViewPanel getInstance() {
 		return INSTANCE;
@@ -64,8 +65,25 @@ public class ViewPanel extends JPanel {
 	private ViewPanel() {
 		this.setLayout(null);
 		this.add(ChatBox.getInstance());
-		//this.add();
 		this.setBackground(new Color(0, 0, 0, 0.0f));
+		addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				System.out.println("Pressed");
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				System.out.println("Released");
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				System.out.println("Typed");
+			}
+			
+		});
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -92,7 +110,12 @@ public class ViewPanel extends JPanel {
 					options.add("Cancel");
 					addInterface(new RightClickOptionsInterface(e.getX(), e.getY(), options.toArray(new String[options.size()])));
 				} else {
-					Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
+					Entity[] entities = Client.getMap().getEntities(gameX, gameY);
+					if (entities.length > 0) {
+						Client.getConnection().addOutgoingPacket(new EntityClickPacket(null, entities[0].getStaticID(), entities[0].getUniqueID(), gameX, gameY, 0));
+					} else {
+						Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
+					}
 				}
 				ViewPanel.this.repaint();
 			}
@@ -129,11 +152,17 @@ public class ViewPanel extends JPanel {
 	    Graphics offscreenGraphics = offscreenImage.getGraphics();
 		if (Client.getSelf() == null || Client.getMap() == null)
 			return;
+		Graphics2D g2d = (Graphics2D) offscreenGraphics;
+		AffineTransform trans = new AffineTransform();
+		AffineTransform oldTrans = g2d.getTransform();
+		trans.setToIdentity();
+		g2d.setTransform(trans);
 		Sprite water = SpriteDatabase.getInstance().getSprite("waterbg");
-		offscreenGraphics.drawImage(water.getImage(), 0, 0, getWidth(), getHeight(), null);
-		Client.getMap().paint(offscreenGraphics);
+		g2d.drawImage(water.getImage(), 0, 0, getWidth(), getHeight(), null);
+		Client.getMap().paint(g2d);
 		//Client.getSelf().paint(offscreenGraphics);
 		offscreenGraphics.setColor(Color.RED);
+		g2d.setTransform(oldTrans);
 		super.paint(offscreenGraphics);
 		offscreenGraphics.dispose();
 		g.drawImage(offscreenImage, 0, 0, null);

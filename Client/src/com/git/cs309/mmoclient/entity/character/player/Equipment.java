@@ -22,11 +22,13 @@ public class Equipment extends ItemContainer {
 	public Equipment() {
 		super(9);
 	}
-
+	
+	//Use the static final integers for the slot argument.
 	public ItemStack getEquipment(int slot) {
 		return getItemStack(slot);
 	}
-
+	
+	//Use the static final integers for the slot argument.
 	private void putInSlot(ItemStack item, int slot) {
 		items[slot] = item;
 		if (item == null) {

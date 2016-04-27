@@ -5,7 +5,8 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.UnknownHostException;
 
-import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.Server;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.packets.ErrorPacket;
 
 /**
@@ -46,12 +47,13 @@ public final class ConnectionAcceptor implements Runnable {
 	 */
 	@Override
 	public void run() {
+		final Server server = ModuleManager.getModule(Server.class);
 		ServerSocket acceptorSocket; // Declare new ServerSocket variable.
 		try {
 			acceptorSocket = new ServerSocket(port); // Try and create socket.
 		} catch (IOException e) {
 			e.printStackTrace();
-			Main.requestExit(); // It failed, so might as well just exit.
+			server.requestExit(); // It failed, so might as well just exit.
 			return;
 		}
 		if (acceptorSocket != null && !acceptorSocket.isClosed()) { // If it's not null and not closed, proceed.
@@ -60,7 +62,7 @@ public final class ConnectionAcceptor implements Runnable {
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 			}
-			while (Main.isRunning() && !acceptorSocket.isClosed()) { // While open and server is running..
+			while (server.isRunning() && !acceptorSocket.isClosed()) { // While open and server is running..
 				try {
 					addConnection(new Connection(acceptorSocket.accept())); // Accept new socket, and immediately encapsulate.
 				} catch (IOException e) {
@@ -79,21 +81,14 @@ public final class ConnectionAcceptor implements Runnable {
 	}
 
 	private void addConnection(Connection connection) throws IOException {
+		ConnectionManager connectionManager = ModuleManager.getModule(ConnectionManager.class);
 		//For now, allowing multiple connections from same IP
-		/*
-		 * if (Main.getConnectionManager().ipConnected(connection.getIP())) { //
-		 * Is a socket with same IP already connected?
-		 * connection.forceOutgoingPacket(new ErrorPacket(null,
-		 * ErrorPacket.GENERAL_ERROR,
-		 * "Failed to connect because your ip is already logged in.")); // Send
-		 * error packet. connection.close(); // Close connection. return; }
-		 */
-		if (ConnectionManager.getInstance().full()) { // Are we at max connections?
+		if (connectionManager.full()) { // Are we at max connections?
 			connection.forceOutgoingPacket(
 					new ErrorPacket(null, ErrorPacket.GENERAL_ERROR, "Failed to connect because server is full.")); // Send error packet
 			connection.close(); // Close
 			return;
 		}
-		ConnectionManager.getInstance().addConnection(connection); // Made it to end, so add to manager.
+		connectionManager.addConnection(connection); // Made it to end, so add to manager.
 	}
 }

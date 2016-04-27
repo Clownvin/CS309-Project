@@ -4,13 +4,15 @@ import java.awt.EventQueue;
 import java.util.Queue;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.Server;
 import com.git.cs309.mmoserver.combat.CombatManager;
 import com.git.cs309.mmoserver.entity.Entity;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.Map;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.map.MapManager;
 import com.git.cs309.mmoserver.map.PathFinder;
 import com.git.cs309.mmoserver.map.PathFinder.Tile;
+import com.git.cs309.mmoserver.packets.CharacterStatusPacket;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 import com.git.cs309.mmoserver.util.CycleQueue;
 
@@ -38,6 +40,7 @@ public abstract class Character extends Entity {
 	protected transient volatile boolean walking = false;
 	protected transient volatile boolean inCombat = false;
 	protected transient volatile int opponentId = -1;
+	protected transient volatile Runnable onFinishedWalking = null;
 
 	public Character() {
 		super();
@@ -49,7 +52,7 @@ public abstract class Character extends Entity {
 
 			@Override
 			public void run() {
-				CharacterManager.getInstance().addCharacter(Character.this);
+				ModuleManager.getModule(CharacterManager.class).addCharacter(Character.this);
 			}
 
 		});
@@ -67,6 +70,8 @@ public abstract class Character extends Entity {
 		}
 		onDeath();
 	}
+	
+	public abstract CharacterStatusPacket getCharacterStatusPacket();
 
 	public void applyRegen(int regenAmount) {
 		if (isDead) {
@@ -107,7 +112,7 @@ public abstract class Character extends Entity {
 	}
 	
 	public final void walkTo(int x, int y) {
-		Map map = MapHandler.getInstance().getMapContainingPosition(instanceNumber, getX(), getY(), getZ());
+		Map map = ModuleManager.getModule(MapManager.class).getMapContainingPosition(instanceNumber, getX(), getY(), getZ());
 		if (map.containsPoint(x, y))
 			walkingQueue = PathFinder.getPathToPoint(map, getX(), getY(), x, y);
 	}
@@ -123,14 +128,22 @@ public abstract class Character extends Entity {
 		if (!walking && !walkingQueue.isEmpty()) {
 			walking = true;
 		}
-		if (walking && !walkingQueue.isEmpty() && Main.getTickCount() - walkingTick >= Config.TICKS_PER_WALK) {
-			walkingTick = Main.getTickCount();
+		if (walking && !walkingQueue.isEmpty() && ModuleManager.getModule(Server.class).getTickCount() - walkingTick >= Config.TICKS_PER_WALK) {
+			walkingTick = ModuleManager.getModule(Server.class).getTickCount();
 			Tile t = walkingQueue.remove();
 			setPosition(t.getX(), t.getY(), getZ());
 		}
 		if (walking && walkingQueue.isEmpty()) {
 			walking = false;
+			if (onFinishedWalking != null) {
+				onFinishedWalking.run();
+				onFinishedWalking = null;
+			}
 		}
+	}
+	
+	public void setOnFinishedWalking(final Runnable onFinishedWalking) {
+		this.onFinishedWalking = onFinishedWalking;
 	}
 	
 	public void setOponentId(final int opponentId) {

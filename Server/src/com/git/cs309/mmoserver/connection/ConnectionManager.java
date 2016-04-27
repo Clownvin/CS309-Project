@@ -28,11 +28,6 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         work, so it can still take on new connections.
  */
 public final class ConnectionManager extends TickProcess {
-	private static final ConnectionManager INSTANCE = new ConnectionManager();
-
-	public static final ConnectionManager getInstance() {
-		return INSTANCE;
-	}
 
 	private final Map<String, Connection> connectionMap = new HashMap<>(); // Could hold both username -> connection and ip -> connection. But will probably only hold ip -> connection, since that's all that's needed.
 	private final List<Connection> connections = new ArrayList<>(Config.MAX_CONNECTIONS);
@@ -41,7 +36,7 @@ public final class ConnectionManager extends TickProcess {
 	private long packetTotals;
 
 	public ConnectionManager() {
-		super("ConnectionManager");
+		
 	}
 
 	/**
@@ -208,5 +203,10 @@ public final class ConnectionManager extends TickProcess {
 		packetTotals += packets.size();
 		ticks++;
 		packets.clear();
+	}
+
+	@Override
+	public String getVariableName() {
+		return "ConnectionManager";
 	}
 }

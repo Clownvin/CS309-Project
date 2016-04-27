@@ -1,13 +1,19 @@
 package com.git.cs309.mmoserver.entity;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.lang.AnnotationWrapper;
+import com.git.cs309.mmoserver.lang.OnClose;
+import com.git.cs309.mmoserver.lang.OnGarbageCollection;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
+import com.git.cs309.mmoserver.map.MapManager;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem.IDTag;
 
-public abstract class Entity implements Serializable {
+public abstract class Entity extends AnnotationWrapper implements Serializable {
 	/**
 	 * 
 	 */
@@ -40,6 +46,7 @@ public abstract class Entity implements Serializable {
 
 	public abstract boolean canWalkThrough();
 
+	@OnClose
 	public final void cleanUp() {
 		needsDisposal = true;
 		if (idTag != null) {
@@ -89,7 +96,8 @@ public abstract class Entity implements Serializable {
 	public final int getZ() {
 		return z;
 	}
-
+	
+	@OnClose
 	public final boolean needsDisposal() {
 		return needsDisposal;
 	}
@@ -99,14 +107,18 @@ public abstract class Entity implements Serializable {
 	}
 
 	public final void setPosition(final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(getUniqueID(), instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		if (!ModuleManager.getModule(MapManager.class).moveEntity(getUniqueID(), instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z)) {
+			return;
+		}
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
 
 	public final void setPosition(final int instanceNumber, final int x, final int y, final int z) {
-		MapHandler.getInstance().moveEntity(getUniqueID(), this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z);
+		if (!ModuleManager.getModule(MapManager.class).moveEntity(getUniqueID(), this.instanceNumber, this.x, this.y, this.z, instanceNumber, x, y, z)) {
+			return;
+		}
 		this.instanceNumber = instanceNumber;
 		this.x = x;
 		this.y = y;
@@ -115,5 +127,18 @@ public abstract class Entity implements Serializable {
 
 	protected final void setIDTag(final IDTag idTag) {
 		this.idTag = idTag;
+	}
+	
+	/**
+	 * Blah blah blah. Yea, finalizers are dangerous
+	 */
+	public void finalize() {
+		for (Method method : this.getAnnotatedMethod(OnGarbageCollection.class)) {
+			try {
+				method.invoke(this, new Object[] {});
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

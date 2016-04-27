@@ -1,12 +1,13 @@
 package com.git.cs309.mmoserver.packets;
 
-import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.Server;
 import com.git.cs309.mmoserver.connection.Connection;
 import com.git.cs309.mmoserver.connection.ConnectionManager;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler;
 import com.git.cs309.mmoserver.entity.characters.user.ModerationHandler.ModerationType;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.entity.characters.user.Rights;
 import com.git.cs309.mmoserver.entity.characters.user.User;
 import com.git.cs309.mmoserver.entity.characters.user.UserManager;
@@ -27,19 +28,19 @@ public final class CommandHandler {
 			User user = null;
 			switch (adminPacket.getCommand()) {
 			case AdminCommandPacket.RESTART_SERVER:
-				Main.requestExit();
+				ModuleManager.getModule(Server.class).requestExit();
 				break;
 			case AdminCommandPacket.RESTART_CHARACTER_MANAGER:
-				CharacterManager.getInstance().forceStop();
-				CharacterManager.getInstance().start();
+				ModuleManager.getModule(CharacterManager.class).forceStop();
+				ModuleManager.getModule(CharacterManager.class).start();
 				break;
 			case AdminCommandPacket.RESTART_CONNECTION_MANAGER:
-				ConnectionManager.getInstance().forceStop();
-				ConnectionManager.getInstance().start();
+				ModuleManager.getModule(ConnectionManager.class).forceStop();
+				ModuleManager.getModule(ConnectionManager.class).start();
 				break;
 			case AdminCommandPacket.RESTART_CYCLE_PROCESS_MANAGER:
-				CycleProcessManager.getInstance().forceStop();
-				CycleProcessManager.getInstance().start();
+				ModuleManager.getModule(CycleProcessManager.class).forceStop();
+				ModuleManager.getModule(CycleProcessManager.class).start();
 				break;
 			case AdminCommandPacket.BAN_USER:
 				user = UserManager.getUserForUserID(userID);

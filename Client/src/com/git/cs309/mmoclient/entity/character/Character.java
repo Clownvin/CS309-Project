@@ -1,10 +1,5 @@
 package com.git.cs309.mmoclient.entity.character;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-
-import com.git.cs309.mmoclient.Config;
 import com.git.cs309.mmoclient.entity.Entity;
 
 /**
@@ -32,6 +27,7 @@ public abstract class Character extends Entity {
 			walking = false;
 		}
 	};
+	
 	//Current health.
 	protected volatile int health = 0;
 	protected volatile int maxHealth = 0;
@@ -41,7 +37,6 @@ public abstract class Character extends Entity {
 	protected volatile boolean inCombat = false;
 	protected volatile int opponentId = -1;
 
-	
 	public Character(final int x, final int y, final int uniqueId, final int entityID, final String name) {
 		super(x, y, uniqueId, entityID, name);
 	}
@@ -100,7 +95,8 @@ public abstract class Character extends Entity {
 		return inCombat;
 	}
 	
-	public final void setPosition(final int x, final int y) {
+	@Override
+	public void setPosition(final int x, final int y) {
 		super.setPosition(x, y);
 		walking = true;
 		new Thread(walkingRunnable).start();

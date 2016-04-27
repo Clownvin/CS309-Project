@@ -52,8 +52,6 @@ public abstract class Entity extends Component {
 	public void paint(Graphics g) {
 		Sprite sprite = getSprite();
 		if (sprite != null) {
-			int spriteWidth = sprite.getImage().getWidth(null);
-			int spriteHeight = sprite.getImage().getWidth(null);
 				//Handling animations here
 				/*if (System.currentTimeMilliseconds() - lastTime >= 100 && lastTime != -1) {
 					a + 1
@@ -197,11 +195,13 @@ public abstract class Entity extends Component {
 	}
 	
 	public int getPaintX() {
-		return ((x - Client.getSelf().getX()) * Config.DEFAULT_SPRITE_WIDTH) + (ViewPanel.getInstance().getWidth() / 2) - (Config.DEFAULT_SPRITE_WIDTH / 2);
+		double rotX = ((Math.cos(Client.getRotation()) * (x - Client.getSelf().getX())) - (Math.sin(Client.getRotation()) * (y - Client.getSelf().getY())));// + Client.getSelf().getX();
+		return (int) (((rotX) * Config.DEFAULT_SPRITE_WIDTH) + (ViewPanel.getInstance().getWidth() / 2) - (Config.DEFAULT_SPRITE_WIDTH / 2));
 	}
 	
 	public int getPaintY() {
-		return ((y - Client.getSelf().getY()) * Config.DEFAULT_SPRITE_HEIGHT) + (ViewPanel.getInstance().getHeight() / 2) - (Config.DEFAULT_SPRITE_HEIGHT / 2);
+		double rotY = ((Math.sin(Client.getRotation()) * (x - Client.getSelf().getX())) + (Math.cos(Client.getRotation()) * (y - Client.getSelf().getY())));// + Client.getSelf().getY();
+		return (int) (((rotY) * Config.DEFAULT_SPRITE_HEIGHT) + (ViewPanel.getInstance().getHeight() / 2) - (Config.DEFAULT_SPRITE_HEIGHT / 2));
 	}
 
 	public final int getX() {

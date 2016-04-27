@@ -3,7 +3,6 @@ package com.git.cs309.mmoserver.map;
 import java.util.Queue;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
 import com.git.cs309.mmoserver.util.CycleQueue;
 import com.git.cs309.mmoserver.util.MathUtils;
 
@@ -44,15 +43,23 @@ public final class PathFinder {
 			final int y2) {
 		return getPath(map, x1, y1, x2, y2);
 	}
+	
+	public static void printGrid(int[][] grid) {
+		System.out.println();
+		for (int x = 0; x < grid.length; x++) {
+			for (int y = 0; y < grid[x].length; y++) {
+				System.out.print("["+grid[x][y]+"]");
+			}
+			System.out.println();
+		}
+		System.out.println();
+	}
 
 	//Uses an implementation of Lee's algorithm
 	private static final Queue<Tile> getPath(final Map map, final int x1, final int y1, final int x2, final int y2) {
 		int[][] grid = map.getPathingMap();
 		int originX = (x1 - map.getXOrigin());
 		int originY = (y1 - map.getYOrigin());
-		if (grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] != EMPTY) {
-			return new CycleQueue<Tile>(0);
-		}
 		grid[x2 - map.getXOrigin()][y2 - map.getXOrigin()] = DESTINATION;
 		grid[originX][originY] = START;
 		boolean stop = false;
@@ -125,9 +132,6 @@ public final class PathFinder {
 				}
 			}
 			if (closestDistance == grid.length * 2) {
-				if (Main.isDebug()) {
-					System.err.println("Error: Returned walking queue because no tile was found in step");
-				}
 				return new CycleQueue<Tile>(0);
 			}
 			walkingQueue.add(new Tile(tX + map.getXOrigin(), tY + map.getYOrigin()));

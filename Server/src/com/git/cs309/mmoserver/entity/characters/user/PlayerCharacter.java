@@ -1,7 +1,7 @@
 package com.git.cs309.mmoserver.entity.characters.user;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
+import com.git.cs309.mmoserver.Server;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.EntityType;
@@ -9,8 +9,11 @@ import com.git.cs309.mmoserver.entity.characters.Character;
 import com.git.cs309.mmoserver.entity.characters.CharacterManager;
 import com.git.cs309.mmoserver.items.ItemContainer;
 import com.git.cs309.mmoserver.items.ItemStack;
+import com.git.cs309.mmoserver.lang.OnClose;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.Map;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.map.MapManager;
+import com.git.cs309.mmoserver.packets.CharacterStatusPacket;
 import com.git.cs309.mmoserver.packets.ExtensivePlayerCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 
@@ -120,15 +123,16 @@ public class PlayerCharacter extends Character {
 	public void enterGame(final User user) {
 		assert created;
 		setIDTag(user.getIdTag());
-		CharacterManager.getInstance().addCharacter(this);
+		ModuleManager.getModule(CharacterManager.class).addCharacter(this);
 		user.getConnection().addOutgoingPacket(getExtensivePacket());
 	}
 
 	/**
 	 * Nulls the ID Tag and removes character from manages.
 	 */
+	@OnClose
 	public void exitGame() {
-		CharacterManager.getInstance().removeCharacter(this);
+		ModuleManager.getModule(CharacterManager.class).removeCharacter(this);
 		setIDTag(null);
 	}
 
@@ -191,12 +195,13 @@ public class PlayerCharacter extends Character {
 
 	@Override
 	protected void onDeath() {
-		Map map = MapHandler.getInstance().getMapContainingEntity(PlayerCharacter.this);
+		Map map = ModuleManager.getModule(MapManager.class).getMapContainingEntity(PlayerCharacter.this);
 		for (ItemStack stack : inventory.removeAllAsList()) {
 			map.putItemStack(getX(), getY(), stack);
 		}
-		CycleProcessManager.getInstance().addProcess(new CycleProcess() {
-			final long startTick = Main.getTickCount();
+		ModuleManager.getModule("CycleProcessManager", CycleProcessManager.class).addProcess(new CycleProcess() {
+			final Server server = ModuleManager.getModule("Server", Server.class);
+			final long startTick = server.getTickCount();
 
 			@Override
 			public void end() {
@@ -208,7 +213,7 @@ public class PlayerCharacter extends Character {
 
 			@Override
 			public boolean finished() {
-				return Main.getTickCount() - startTick >= Config.TICKS_BEFORE_PLAYER_RESPAWN;
+				return server.getTickCount() - startTick >= Config.TICKS_BEFORE_PLAYER_RESPAWN;
 			}
 
 			@Override
@@ -217,6 +222,12 @@ public class PlayerCharacter extends Character {
 			}
 
 		});
+	}
+
+	@Override
+	public CharacterStatusPacket getCharacterStatusPacket() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
