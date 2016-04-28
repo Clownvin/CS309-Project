@@ -1,11 +1,11 @@
 package com.git.cs309.mmoclient.gui.characterselection;
 
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
-import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
 import com.git.cs309.mmoserver.packets.CharacterSelectionDataPacket;
 
 public class CharacterSelectionGUI extends JFrame {
@@ -33,6 +33,11 @@ public class CharacterSelectionGUI extends JFrame {
 		}
 	}
 	
+	@Override
+	public void paint(Graphics g) {
+		//Do paint background
+		super.paint(g);
+	}
 	public void updateComponents(CharacterSelectionDataPacket packet) {
 		components[packet.getIndex()].updateSelectionCharacter(packet);
 		this.repaint();

@@ -12,6 +12,7 @@ import com.git.cs309.mmoclient.Config;
 import com.git.cs309.mmoclient.graphics.Sprite;
 import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoclient.gui.game.ViewPanel;
+import com.git.cs309.mmoclient.entity.character.Character;
 
 public abstract class Entity extends Component {
 	
@@ -23,6 +24,10 @@ public abstract class Entity extends Component {
 	protected int entityID = -1;
 	protected final int uniqueId;
 	protected String name = "Null";
+	protected int previousX = 0;
+	protected int previousY = 0;
+	protected int direction = 3;
+	protected int stop = 1;
 
 	public Entity(final int x, final int y, final int uniqueId, final int entityID, final String name) {
 		this.x = x;
@@ -47,13 +52,116 @@ public abstract class Entity extends Component {
 	public void paint(Graphics g) {
 		Sprite sprite = getSprite();
 		if (sprite != null) {
-			int spriteWidth = sprite.getImage().getWidth(null);
-			int spriteHeight = sprite.getImage().getWidth(null);
-			if ((spriteWidth * spriteHeight) > (Config.DEFAULT_SPRITE_WIDTH * Config.DEFAULT_SPRITE_HEIGHT)) {
-				g.drawImage(sprite.getImage(), getPaintX() - ((sprite.getImage().getWidth(null) - Config.DEFAULT_SPRITE_WIDTH) / 2), getPaintY() - ((sprite.getImage().getHeight(null) - Config.DEFAULT_SPRITE_HEIGHT) / 2), sprite.getImage().getWidth(null), sprite.getImage().getHeight(null), null);
-			} else {
-				g.drawImage(sprite.getImage(), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
-			}
+				//Handling animations here
+				/*if (System.currentTimeMilliseconds() - lastTime >= 100 && lastTime != -1) {
+					a + 1
+					lastTime = System.currentTimeMillis();
+				}
+				if (a == end of walk anim) {
+					lastTime == -1;
+				}*/
+				if(getEntityType() == EntityType.PLAYER){
+					long a =System.currentTimeMillis();
+					Character player = (Character) this;
+					if(player.isInCombat()==true){
+						if (getEntityType() == EntityType.NPC || getEntityType() == EntityType.PLAYER) {
+							Character character = (Character) this;
+							if (character.isInCombat() && character.getOpponentId() != Character.NO_OPPONENT) {
+								Entity opponent = Client.getMap().getEntity(character.getOpponentId());
+								if(x-opponent.x>0){
+									if(y-opponent.y>0){
+										if((x-opponent.x)>=(y-opponent.y)){
+											direction = 2;
+										}else{
+											direction = 1;
+										}
+									}else if(y-opponent.y<0){
+										if((x-opponent.x)>=(opponent.y-y)){
+											direction = 2;
+										}else{
+											direction = 3;
+										}
+									}else{
+										direction = 2;
+									}
+								}else if(x-opponent.x<0){
+									if(y-opponent.y>0){
+										if((opponent.x-x)>=(y-opponent.y)){
+											direction = 4;
+										}else{
+											direction = 1;
+										}
+									}else if(y-opponent.y<0){
+										if((opponent.x-x)>=(opponent.y-y)){
+											direction = 4;
+										}else{
+											direction = 3;
+										}
+									}else{
+										direction = 4;
+									}
+								}else{
+									if(y-opponent.y>0){
+										direction = 1;
+									}else if(y-opponent.y<0){
+										direction = 3;
+									}
+								}
+								g.drawString("In Combat", 0, 0);
+							}
+						}
+					}
+					if(direction == 3){
+						if(player.isWalking()==false){
+							g.drawImage(sprite.getImage(0,3), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+						}else{
+							if((a/400%2)==0){
+								g.drawImage(sprite.getImage(1,3), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}else{
+								g.drawImage(sprite.getImage(3,3), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}
+						}
+					}else if(direction == 2){
+						if(player.isWalking()==false){
+							g.drawImage(sprite.getImage(0,2), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+						}else{
+							if((a/400%2)==0){
+								g.drawImage(sprite.getImage(1,2), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}else{
+								g.drawImage(sprite.getImage(3,2), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}
+						}
+						
+					}else if(direction == 1){
+						if(player.isWalking()==false){
+							g.drawImage(sprite.getImage(0,0), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+						}else{
+							if((a/400%2)==0){
+								g.drawImage(sprite.getImage(1,0), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}else{
+								g.drawImage(sprite.getImage(3,0), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}
+						}
+					}if(direction == 4){
+						if(player.isWalking()==false){
+							g.drawImage(sprite.getImage(0,1), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+						}else{
+							if((a/400%2)==0){
+								g.drawImage(sprite.getImage(1,1), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}else{
+								g.drawImage(sprite.getImage(3,1), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+							}
+						}
+					}	
+				}else{
+					g.drawImage(sprite.getImage(), getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT, null);
+				}
+				if (getEntityType() == EntityType.NPC || getEntityType() == EntityType.PLAYER) {
+					Character character = (Character) this;
+					if (character.isInCombat() && character.getOpponentId() != Character.NO_OPPONENT) {
+						Entity opponent = Client.getMap().getEntity(character.getOpponentId());
+					}
+				}
 		} else {
 			g.setColor(Color.BLACK);
 			g.drawRect(getPaintX(), getPaintY(), Config.DEFAULT_SPRITE_WIDTH, Config.DEFAULT_SPRITE_HEIGHT);
@@ -87,11 +195,13 @@ public abstract class Entity extends Component {
 	}
 	
 	public int getPaintX() {
-		return ((x - Client.getSelf().getX()) * Config.DEFAULT_SPRITE_WIDTH) + (ViewPanel.getInstance().getWidth() / 2) - (Config.DEFAULT_SPRITE_WIDTH / 2);
+		double rotX = ((Math.cos(Client.getRotation()) * (x - Client.getSelf().getX())) - (Math.sin(Client.getRotation()) * (y - Client.getSelf().getY())));// + Client.getSelf().getX();
+		return (int) (((rotX) * Config.DEFAULT_SPRITE_WIDTH) + (ViewPanel.getInstance().getWidth() / 2) - (Config.DEFAULT_SPRITE_WIDTH / 2));
 	}
 	
 	public int getPaintY() {
-		return ((y - Client.getSelf().getY()) * Config.DEFAULT_SPRITE_HEIGHT) + (ViewPanel.getInstance().getHeight() / 2) - (Config.DEFAULT_SPRITE_HEIGHT / 2);
+		double rotY = ((Math.sin(Client.getRotation()) * (x - Client.getSelf().getX())) + (Math.cos(Client.getRotation()) * (y - Client.getSelf().getY())));// + Client.getSelf().getY();
+		return (int) (((rotY) * Config.DEFAULT_SPRITE_HEIGHT) + (ViewPanel.getInstance().getHeight() / 2) - (Config.DEFAULT_SPRITE_HEIGHT / 2));
 	}
 
 	public final int getX() {
@@ -102,10 +212,59 @@ public abstract class Entity extends Component {
 		return y;
 	}
 
-	public final void setPosition(final int x, final int y) {
+	public void setPosition(final int x, final int y) {
+		//Animation walk = new Animation(uniqueId, this.x, this.y, x, y);
 		//TODO handle walking
+		if(this.x == x&&this.y == y){
+			stop =1;
+		}else{
+			stop =0;
+		}
+		previousX = this.x;
+		previousY = this.y;
 		this.x = x;
 		this.y = y;
-		ViewPanel.getInstance().repaint();
+		if(x-previousX>0){
+			if(y-previousY>0){
+				if((x-previousX)>=(y-previousY)){
+					direction = 2;
+				}else{
+					direction = 1;
+				}
+			}else if(y-previousY<0){
+				if((x-previousX)>=(previousY-y)){
+					direction = 2;
+				}else{
+					direction = 3;
+				}
+			}else{
+				direction = 2;
+			}
+		}else if(x-previousX<0){
+			if(y-previousY>0){
+				if((previousX-x)>=(y-previousY)){
+					direction = 4;
+				}else{
+					direction = 1;
+				}
+			}else if(y-previousY<0){
+				if((previousX-x)>=(previousY-y)){
+					direction = 4;
+				}else{
+					direction = 3;
+				}
+			}else{
+				direction = 4;
+			}
+		}else{
+			if(y-previousY>0){
+				direction = 1;
+			}else if(y-previousY<0){
+				direction = 3;
+			}
+		}
+		
+		//this.lastTime = System.currentTimeMillis();
+		//ViewPanel.getInstance().repaint();
 	}
 }

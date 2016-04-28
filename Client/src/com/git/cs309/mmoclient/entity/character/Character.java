@@ -1,10 +1,5 @@
 package com.git.cs309.mmoclient.entity.character;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-
-import com.git.cs309.mmoclient.Config;
 import com.git.cs309.mmoclient.entity.Entity;
 
 /**
@@ -22,6 +17,16 @@ public abstract class Character extends Entity {
 	private static final long serialVersionUID = 4707730413469521334L;
 
 	public static final int NO_OPPONENT = -1;
+	
+	private final Runnable walkingRunnable = new Runnable(){
+		public void run(){
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException e) {
+			}
+			walking = false;
+		}
+	};
 	
 	//Current health.
 	protected volatile int health = 0;
@@ -80,6 +85,21 @@ public abstract class Character extends Entity {
 		} else {
 			inCombat = true;
 		}
+	}
+	
+	public int getOpponentId() {
+		return this.opponentId;
+	}
+	
+	public boolean isInCombat(){
+		return inCombat;
+	}
+	
+	@Override
+	public void setPosition(final int x, final int y) {
+		super.setPosition(x, y);
+		walking = true;
+		new Thread(walkingRunnable).start();
 	}
 
 }

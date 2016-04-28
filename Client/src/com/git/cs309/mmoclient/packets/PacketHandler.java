@@ -92,6 +92,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 			System.out.println("No code for test packet");
 			break;
 		case CHARACTER_STATUS_PACKET:
+			//When character in this packet is being attacked, do attack for OTHER character which is attacking
 			break;
 		case ENTITY_UPDATE_PACKET:
 			EntityUpdatePacket entityUpdate = (EntityUpdatePacket) packet;

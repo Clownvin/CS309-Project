@@ -73,10 +73,12 @@ public final class Map {
 	}
 	
 	public Entity getEntity(final int uniqueId) {
+		synchronized (entities) {
 		for (Entity entity : entities) {
 			if (entity.getUniqueID() == uniqueId) {
 				return entity;
 			}
+		}
 		}
 		throw new RuntimeException("No entity for uniqueId: "+uniqueId);
 	}

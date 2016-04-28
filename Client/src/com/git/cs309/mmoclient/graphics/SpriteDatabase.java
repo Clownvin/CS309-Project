@@ -42,6 +42,22 @@ public final class SpriteDatabase {
 		}
 	}
 	
+	public final int getPaintWidth(final BufferedImage image) {
+		if (image.getWidth() < Config.DEFAULT_SPRITE_WIDTH) {
+			return Config.DEFAULT_SPRITE_WIDTH;
+		} else {
+			return image.getWidth();
+		}
+	}
+	
+	public final int getPaintHeight(final BufferedImage image) {
+		if (image.getHeight() < Config.DEFAULT_SPRITE_HEIGHT) {
+			return Config.DEFAULT_SPRITE_HEIGHT;
+		} else {
+			return image.getHeight();
+		}
+	}
+	
 	public final Sprite getSprite(final String name) {
 		return spriteTable.get(name.toLowerCase());
 	}
