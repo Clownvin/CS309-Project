@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import com.git.cs309.mmoserver.Config;
-import com.git.cs309.mmoserver.Main;
-import com.git.cs309.mmoserver.entity.EntityType;
-import com.git.cs309.mmoserver.map.MapHandler;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
+import com.git.cs309.mmoserver.map.MapManager;
 import com.git.cs309.mmoserver.util.TickProcess;
 
 /**
@@ -26,8 +25,8 @@ public final class CharacterManager extends TickProcess {
 
 	private final Set<Character> characterSet = new HashSet<>(); // All registered characters
 
-	private CharacterManager() {
-		super("CharacterManager");
+	public CharacterManager() {
+		
 	}
 
 	/**
@@ -40,7 +39,7 @@ public final class CharacterManager extends TickProcess {
 	public void addCharacter(final Character character) { // Add new character to characterSet
 		synchronized (characterSet) {
 			characterSet.add(character);
-			MapHandler.getInstance().putEntityAtPosition(character.getInstanceNumber(), character.getX(),
+			ModuleManager.getModule(MapManager.class).putEntityAtPosition(character.getInstanceNumber(), character.getX(),
 					character.getY(), character.getZ(), character);
 		}
 	}
@@ -58,7 +57,7 @@ public final class CharacterManager extends TickProcess {
 	public void removeCharacter(final Character character) {
 		synchronized (characterSet) {
 			characterSet.remove(character);
-			MapHandler.getInstance().removeEntityAtPosition(character.getInstanceNumber(), character.getX(),
+			ModuleManager.getModule(MapManager.class).removeEntityAtPosition(character.getInstanceNumber(), character.getX(),
 					character.getY(), character.getZ(), character);
 		}
 	}
@@ -91,7 +90,12 @@ public final class CharacterManager extends TickProcess {
 
 	@Override
 	protected void tickTask() {
-		processCharacters(Main.getTickCount() % Config.TICKS_PER_REGEN == 0); // Process characters.
+		processCharacters(server.getTickCount() % Config.TICKS_PER_REGEN == 0); // Process characters.
+	}
+
+	@Override
+	public String getVariableName() {
+		return "CharacterManager";
 	}
 
 }
