@@ -4,6 +4,8 @@ import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.JFrame;
 
@@ -27,11 +29,24 @@ public class GameGUI extends JFrame {
 				Component chatBox = ChatBox.getInstance();
 				Component viewPanel = ViewPanel.getInstance();
 				ChatBox.getInstance().setLocation(0, viewPanel.getHeight() - chatBox.getHeight());
-				
-				//Component PlayerInventoryGUI = PlayerInventoryGUI.getInstance();
-				//PlayerInventoryGUI playGUI = new PlayerInventoryGUI();
-				//PlayerInventoryGUI.getInstance().setLocation(0, viewPanel.getHeight() - 400);
-				//PlayerInventoryGUI.getInstance().show();
+			}
+			
+		});
+		addKeyListener(new KeyListener() {
+
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				System.out.println("Pressed");
+			}
+
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				System.out.println("Released");
+			}
+
+			@Override
+			public void keyTyped(KeyEvent arg0) {
+				System.out.println("Typed");
 			}
 			
 		});
