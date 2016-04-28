@@ -10,10 +10,9 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
 import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
-<<<<<<< HEAD
-=======
+
 import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
->>>>>>> jeffery_experiments
+
 
 public class GameGUI extends JFrame {
 
