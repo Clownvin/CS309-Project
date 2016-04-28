@@ -164,9 +164,7 @@ public class ViewPanel extends JPanel {
 
 					} else {
 						Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
-					}
-					} else {
-						Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
+					
 					}
 					Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
 					DungeonGUI.getInstance().hide();
@@ -179,7 +177,6 @@ public class ViewPanel extends JPanel {
 		});
 		Component chatBox = ChatBox.getInstance();
 		ChatBox.getInstance().setLocation(0, getHeight() - chatBox.getHeight());
-		PAINT_THREAD.start();
 
 		PAINT_THREAD.start();
 	}
