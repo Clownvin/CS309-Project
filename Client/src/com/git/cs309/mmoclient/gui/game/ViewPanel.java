@@ -3,6 +3,10 @@ package com.git.cs309.mmoclient.gui.game;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> jeffery_experiments
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,6 +15,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 
+<<<<<<< HEAD
+=======
+=======
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ComponentListener;
+>>>>>>> jeffery_experiments
+>>>>>>> jeffery_experiments
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +37,23 @@ import com.git.cs309.mmoclient.entity.character.Character;
 import com.git.cs309.mmoclient.graphics.Sprite;
 import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> jeffery_experiments
 import com.git.cs309.mmoclient.gui.interfaces.GameInterface;
 import com.git.cs309.mmoclient.gui.interfaces.RightClickOptionsInterface;
 import com.git.cs309.mmoclient.entity.EntityType; 
 
 import com.git.cs309.mmoserver.packets.EntityClickPacket;
+<<<<<<< HEAD
+=======
+=======
+import com.git.cs309.mmoclient.gui.interfaces.ClientShopGUIT2;
+import com.git.cs309.mmoclient.gui.interfaces.DungeonGUI;
+import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
+>>>>>>> jeffery_experiments
+>>>>>>> jeffery_experiments
 import com.git.cs309.mmoserver.packets.MovePacket;
 
 public class ViewPanel extends JPanel {
@@ -65,7 +90,23 @@ public class ViewPanel extends JPanel {
 	private ViewPanel() {
 		this.setLayout(null);
 		this.add(ChatBox.getInstance());
+<<<<<<< HEAD
 		this.setBackground(new Color(0, 0, 0, 0.0f));
+=======
+		this.add(DungeonGUI.getInstance());
+		DungeonGUI.getInstance().hide();
+		this.add(ClientShopGUIT2.getInstance());
+		ClientShopGUIT2.getInstance().hide();
+		this.add(PlayerInventoryGUI.getInstance());
+		PlayerInventoryGUI.getInstance().hide();
+		this.setBackground(new Color(0, 0, 0, 0.0f));
+		this.add(DungeonGUI.getInstance());
+		DungeonGUI.getInstance().hide();
+		this.add(ClientShopGUIT2.getInstance());
+		ClientShopGUIT2.getInstance().hide();
+		this.add(PlayerInventoryGUI.getInstance());
+		PlayerInventoryGUI.getInstance().hide();
+>>>>>>> jeffery_experiments
 		addKeyListener(new KeyListener() {
 
 			@Override
@@ -105,6 +146,30 @@ public class ViewPanel extends JPanel {
 						} else {
 							options.add(entity.getName());
 						}
+<<<<<<< HEAD
+=======
+						if(entity.getStaticID()== 2 && entity.getEntityType() ==EntityType.OBJECT)
+						{
+							DungeonGUI.getInstance().show();
+							//System.out.println("dungion gui");
+						}
+						else if((entity.getStaticID()== 2 || entity.getStaticID()== 3) && entity.getEntityType() ==EntityType.NPC)
+						{
+							
+							ClientShopGUIT2.getInstance().show();
+							//System.out.println("shop gui");
+						}
+						else if (entity.getEntityType() == EntityType.PLAYER)
+						{
+							PlayerInventoryGUI.getInstance().show();
+						}
+						else 
+						{
+							DungeonGUI.getInstance().hide();
+							ClientShopGUIT2.getInstance().hide();
+							PlayerInventoryGUI.getInstance().hide();
+						}
+>>>>>>> jeffery_experiments
 					}
 					options.add("Walk here");
 					options.add("Cancel");
@@ -113,16 +178,33 @@ public class ViewPanel extends JPanel {
 					Entity[] entities = Client.getMap().getEntities(gameX, gameY);
 					if (entities.length > 0) {
 						Client.getConnection().addOutgoingPacket(new EntityClickPacket(null, entities[0].getStaticID(), entities[0].getUniqueID(), gameX, gameY, 0));
+<<<<<<< HEAD
 					} else {
 						Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
 					}
+=======
+					
+					} else {
+						Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
+					}
+					Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
+					DungeonGUI.getInstance().hide();
+					ClientShopGUIT2.getInstance().hide();
+					PlayerInventoryGUI.getInstance().hide();
+>>>>>>> jeffery_experiments
 				}
 				ViewPanel.this.repaint();
 			}
 		});
 		Component chatBox = ChatBox.getInstance();
 		ChatBox.getInstance().setLocation(0, getHeight() - chatBox.getHeight());
+<<<<<<< HEAD
 		PAINT_THREAD.start();
+=======
+
+		PAINT_THREAD.start();
+
+>>>>>>> jeffery_experiments
 	}
 	
 	public void addInterface(GameInterface newInterface) {
@@ -152,6 +234,10 @@ public class ViewPanel extends JPanel {
 	    Graphics offscreenGraphics = offscreenImage.getGraphics();
 		if (Client.getSelf() == null || Client.getMap() == null)
 			return;
+<<<<<<< HEAD
+=======
+
+>>>>>>> jeffery_experiments
 		Graphics2D g2d = (Graphics2D) offscreenGraphics;
 		AffineTransform trans = new AffineTransform();
 		AffineTransform oldTrans = g2d.getTransform();
@@ -163,6 +249,10 @@ public class ViewPanel extends JPanel {
 		//Client.getSelf().paint(offscreenGraphics);
 		offscreenGraphics.setColor(Color.RED);
 		g2d.setTransform(oldTrans);
+<<<<<<< HEAD
+=======
+
+>>>>>>> jeffery_experiments
 		super.paint(offscreenGraphics);
 		offscreenGraphics.dispose();
 		g.drawImage(offscreenImage, 0, 0, null);
