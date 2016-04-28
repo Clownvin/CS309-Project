@@ -11,6 +11,9 @@ import javax.swing.JFrame;
 
 import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
 
+import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
+
+
 public class GameGUI extends JFrame {
 
 	/**
