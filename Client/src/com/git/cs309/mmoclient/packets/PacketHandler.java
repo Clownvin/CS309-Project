@@ -108,6 +108,7 @@ public final class PacketHandler extends AbstractPacketHandler {
 					Client.getMap().getEntity(entityUpdate.getUniqueID()).setPosition(entityUpdate.getX(), entityUpdate.getY());
 					break;
 				case EntityUpdatePacket.REMOVED:
+					System.out.println("Entity removed, ");
 					Client.getMap().removeEntity(entityUpdate.getX(), entityUpdate.getY());
 					break;
 				}

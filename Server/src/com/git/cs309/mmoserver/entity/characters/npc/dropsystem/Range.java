@@ -13,7 +13,7 @@ public final class Range {
 		if (minimum == maximum) {
 			return minimum;
 		}
-		return (int) (minimum + (Math.random() * (minimum - maximum)));
+		return (int) (minimum + (Math.random() * (maximum - minimum)));
 	}
 
 	/**

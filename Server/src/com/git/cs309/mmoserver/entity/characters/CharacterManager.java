@@ -17,11 +17,6 @@ import com.git.cs309.mmoserver.util.TickProcess;
  *         TickProcess implementation that manages all Character objects.
  */
 public final class CharacterManager extends TickProcess {
-	private static final CharacterManager INSTANCE = new CharacterManager();
-
-	public static final CharacterManager getInstance() {
-		return INSTANCE;
-	}
 
 	private final Set<Character> characterSet = new HashSet<>(); // All registered characters
 
@@ -59,6 +54,7 @@ public final class CharacterManager extends TickProcess {
 			characterSet.remove(character);
 			ModuleManager.getModule(MapManager.class).removeEntityAtPosition(character.getInstanceNumber(), character.getX(),
 					character.getY(), character.getZ(), character);
+			character.cleanUp();
 		}
 	}
 
@@ -86,6 +82,18 @@ public final class CharacterManager extends TickProcess {
 		for (Character character : toRemove) {
 			removeCharacter(character);
 		}
+	}
+	
+	public Character getCharacter(final int uniqueId) {
+		synchronized (characterSet) {
+			for (Character character : characterSet) {
+				if (character.getUniqueID() != uniqueId) {
+					continue;
+				}
+				return character;
+			}
+		}
+		return null;
 	}
 
 	@Override

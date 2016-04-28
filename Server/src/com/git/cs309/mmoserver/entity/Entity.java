@@ -97,9 +97,13 @@ public abstract class Entity extends AnnotationWrapper implements Serializable {
 		return z;
 	}
 	
-	@OnClose
 	public final boolean needsDisposal() {
 		return needsDisposal;
+	}
+	
+	@OnClose
+	public final void requestDisposal() {
+		needsDisposal = true;
 	}
 
 	public final void setInstanceNumber(int instanceNumber) {

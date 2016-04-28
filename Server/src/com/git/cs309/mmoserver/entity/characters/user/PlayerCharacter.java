@@ -2,6 +2,7 @@ package com.git.cs309.mmoserver.entity.characters.user;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Server;
+import com.git.cs309.mmoserver.combat.CombatStyle;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
 import com.git.cs309.mmoserver.entity.EntityType;
@@ -228,6 +229,11 @@ public class PlayerCharacter extends Character {
 	public CharacterStatusPacket getCharacterStatusPacket() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public CombatStyle getCombatStyle() {
+		return CombatStyle.MELEE;
 	}
 
 }

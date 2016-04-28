@@ -11,9 +11,9 @@ public final class Config {
 	
 	public static final String SPRITE_FOLDER = "./data/sprites/";
 	
-	public static final int DEFAULT_SPRITE_WIDTH = 96;
+	public static final int DEFAULT_SPRITE_WIDTH = 32;
 	
-	public static final int DEFAULT_SPRITE_HEIGHT = 96;
+	public static final int DEFAULT_SPRITE_HEIGHT = 32;
 	
 	public static final float ROTATION_INCREMENT = 1;
 }

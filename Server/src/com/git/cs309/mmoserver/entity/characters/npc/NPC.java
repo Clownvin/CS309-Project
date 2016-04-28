@@ -2,8 +2,10 @@ package com.git.cs309.mmoserver.entity.characters.npc;
 
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Server;
+import com.git.cs309.mmoserver.combat.CombatStyle;
 import com.git.cs309.mmoserver.cycle.CycleProcess;
 import com.git.cs309.mmoserver.cycle.CycleProcessManager;
+import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.entity.EntityType;
 import com.git.cs309.mmoserver.entity.characters.Character;
 import com.git.cs309.mmoserver.entity.characters.npc.dropsystem.DropSystem;
@@ -15,6 +17,7 @@ import com.git.cs309.mmoserver.packets.CharacterStatusPacket;
 import com.git.cs309.mmoserver.packets.ExtensiveCharacterPacket;
 import com.git.cs309.mmoserver.packets.Packet;
 import com.git.cs309.mmoserver.util.ClosedIDSystem;
+import com.git.cs309.mmoserver.util.MathUtils;
 
 /**
  * 
@@ -58,12 +61,6 @@ public class NPC extends Character {
 		this.definition = definition;
 		this.instanceNumber = instanceNumber;
 		this.autoRespawn = autoRespawn;
-	}
-	
-	public void handleNearbyCharacter(Character character) {
-		if(definition.aggressive() && character.getEntityType() == EntityType.PLAYER) {
-			
-		}
 	}
 
 	@Override
@@ -114,7 +111,21 @@ public class NPC extends Character {
 
 	@Override
 	protected void characterProcess() {
-		
+		if(definition.aggressive() && !inCombat) {
+			for (Entity entity : ModuleManager.getModule(MapManager.class).getMapContainingEntity(this).getEntitySet()) {
+				if (entity.getEntityType() != EntityType.NPC || entity.equals(this)) {
+					continue;
+				}
+				Character character = (Character) entity;
+				if (character.inCombat()) {
+					continue;
+				}
+				if (MathUtils.distance(entity.getX(), entity.getY(), getX(), getY()) < 5) {
+					attack((Character) entity);
+					break;
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -142,10 +153,12 @@ public class NPC extends Character {
 
 	@Override
 	protected void onDeath() {
+		System.out.println(this+" has died.");
 		Map map = ModuleManager.getModule(MapManager.class).getMapContainingEntity(this);
 		for (ItemStack stack : DropSystem.getInstance().getDropsForNPC(getName())) {
 			map.putItemStack(getX(), getY(), stack);
 		}
+		NPC.this.requestDisposal();
 		if (isAutoRespawn()) {
 			ModuleManager.getModule(CycleProcessManager.class).addProcess(new CycleProcess() {
 				final Server server = ModuleManager.getModule("Server", Server.class);
@@ -154,7 +167,7 @@ public class NPC extends Character {
 
 				@Override
 				public void end() {
-					NPCFactory.getInstance().createNPC(NPC.this.getName(), NPC.this.getSpawnX(), NPC.this.getY(), NPC.this.getZ(),
+					NPCFactory.getInstance().createNPC(NPC.this.getName(), NPC.this.getSpawnX(), NPC.this.getSpawnY(), NPC.this.getSpawnZ(),
 							NPC.this.getInstanceNumber());
 				}
 
@@ -176,6 +189,11 @@ public class NPC extends Character {
 	public CharacterStatusPacket getCharacterStatusPacket() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public CombatStyle getCombatStyle() {
+		return definition.getCombatStyle();
 	}
 
 }

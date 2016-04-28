@@ -6,6 +6,7 @@ import java.util.Queue;
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.Server;
 import com.git.cs309.mmoserver.combat.CombatManager;
+import com.git.cs309.mmoserver.combat.CombatStyle;
 import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.lang.module.ModuleManager;
 import com.git.cs309.mmoserver.map.Map;
@@ -41,6 +42,7 @@ public abstract class Character extends Entity {
 	protected transient volatile boolean inCombat = false;
 	protected transient volatile int opponentId = -1;
 	protected transient volatile Runnable onFinishedWalking = null;
+	protected transient volatile long attackTimer = System.currentTimeMillis();
 
 	public Character() {
 		super();
@@ -58,7 +60,16 @@ public abstract class Character extends Entity {
 		});
 	}
 	
+	public boolean canAttack() {
+		return System.currentTimeMillis() - Config.ATTACK_DELAY > attackTimer;
+	}
+	
+	public void resetAttackTimer() {
+		attackTimer = System.currentTimeMillis();
+	}
+	
 	public void resetCombat() {
+		System.out.println(this+" is resetting combat.");
 		inCombat = false;
 		opponentId = NO_OPPONENT;
 	}
@@ -67,8 +78,8 @@ public abstract class Character extends Entity {
 		health -= damageAmount;
 		if (health <= 0) {
 			isDead = true;
+			onDeath();
 		}
-		onDeath();
 	}
 	
 	public abstract CharacterStatusPacket getCharacterStatusPacket();
@@ -105,6 +116,12 @@ public abstract class Character extends Entity {
 	public boolean isDead() {
 		return isDead || health <= 0;
 	}
+	
+	public abstract CombatStyle getCombatStyle();
+	
+	public boolean inCombat() {
+		return inCombat;
+	}
 
 	public void kill() {
 		isDead = true;
@@ -131,7 +148,9 @@ public abstract class Character extends Entity {
 		if (walking && !walkingQueue.isEmpty() && ModuleManager.getModule(Server.class).getTickCount() - walkingTick >= Config.TICKS_PER_WALK) {
 			walkingTick = ModuleManager.getModule(Server.class).getTickCount();
 			Tile t = walkingQueue.remove();
-			setPosition(t.getX(), t.getY(), getZ());
+			Character opponent = inCombat ? ModuleManager.getModule(CharacterManager.class).getCharacter(this.getOpponentId()) : null;
+			if (!inCombat || !(opponent.getX() == t.getX() && opponent.getY() == t.getY()))
+				setPosition(t.getX(), t.getY(), getZ());
 		}
 		if (walking && walkingQueue.isEmpty()) {
 			walking = false;
@@ -146,13 +165,16 @@ public abstract class Character extends Entity {
 		this.onFinishedWalking = onFinishedWalking;
 	}
 	
-	public void setOponentId(final int opponentId) {
-		this.opponentId = opponentId;
-		if (opponentId == NO_OPPONENT) {
-			inCombat = false;
-		} else {
-			inCombat = true;
-		}
+	public void attack(final Character character) {
+		this.opponentId = character.getUniqueID();
+		character.inCombat = true;
+		character.opponentId = this.getUniqueID();
+		inCombat = true;
+		System.out.println(this+" is attacking "+character);
+	}
+	
+	public int getOpponentId() {
+		return opponentId;
 	}
 	
 	protected abstract void characterProcess();

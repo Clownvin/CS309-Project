@@ -159,8 +159,8 @@ public final class Map {
 		assert containsPoint(x, y) && walkable(x, y);
 		GroundItemStack stack = getGroundItemStack(x, y);
 		if (stack == null) {
-			groundItems[x][y] = new GroundItemStack(x, y, this);
-			groundItems[x][y].addItemStack(items);
+			groundItems[globalToLocalX(x)][globalToLocalY(y)] = new GroundItemStack(x, y, this);
+			groundItems[globalToLocalX(x)][globalToLocalY(y)].addItemStack(items);
 		} else {
 			stack.addItemStack(items);
 		}
@@ -179,6 +179,10 @@ public final class Map {
 		}
 	}
 	
+	public Set<Entity> getEntitySet() {
+		return entitySet;
+	}
+	
 	public ItemStack removeItemStack(final int x, final int y, final int index) {
 		assert containsPoint(x, y) && walkable(x, y);
 		GroundItemStack stack = getGroundItemStack(x, y);
@@ -193,13 +197,15 @@ public final class Map {
 	
 	public void itemStackChanged(final int x, final int y) {
 		GroundItemStack stack = getGroundItemStack(x, y);
-		assert stack != null;
+		if (stack == null) {
+			return;
+		}
 		sendPacketToPlayers(stack.getExtensivePacket());
 	}
 	
 	public GroundItemStack getGroundItemStack(final int x, final int y) {
 		assert containsPoint(x, y) && walkable(x, y);
-		return groundItems[x][y];
+		return groundItems[globalToLocalX(x)][globalToLocalY(y)];
 	}
 
 	public void putEntity(final int x, final int y, final Entity entity) {

@@ -79,6 +79,8 @@ public final class Config {
 	public static final int TICKS_BEFORE_PLAYER_RESPAWN = (TICKS_PER_MINUTE / 60) * 5;
 	
 	public static final int TICKS_TILL_ITEM_DESPAWN = TICKS_PER_MINUTE * 5;
+	
+	public static final long ATTACK_DELAY = MILLISECONDS_PER_SECOND * 4;
 
 	public static final String USER_FILE_PATH = "./data/users/";
 }

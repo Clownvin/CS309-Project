@@ -13,7 +13,9 @@ public final class ItemStack {
 	}
 	
 	public ItemStack(final ItemDefinition definition, int count) {
-		assert definition != null && ((count > 0 && definition.isStackable()) || count == 1);
+		if (definition == null || ((count > 0 && !definition.isStackable()) || count != 1)) {
+			System.out.println("Count: "+0+", definition: "+definition.getItemName()+", stackable: "+definition.isStackable());
+		}
 		this.definition = definition;
 		this.count = count;
 	}
