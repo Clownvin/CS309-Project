@@ -14,25 +14,26 @@ import com.git.cs309.mmoclient.items.ItemContainer;
 import com.git.cs309.mmoclient.gui.game.ViewPanel;
 
 public class PlayerInventoryGUI extends JPanel{
-	//private static final PlayerInventoryGUI INSTANCE = new PlayerInventoryGUI();
+	private static final PlayerInventoryGUI INSTANCE = new PlayerInventoryGUI();
 	
-	//public static final PlayerInventoryGUI getInstance() {
-	//	return INSTANCE;
-	//}
+	public static final PlayerInventoryGUI getInstance() {
+		return INSTANCE;
+	}
 	
 	
 	public PlayerInventoryGUI()
 	{
-		Color background = new Color(153, 102, 51, 0x7F);
-		this.setBackground(background);
+		this.setLocation(100, 100);
+		//Color background = new Color(153, 102, 51, 0x7F);
+		//this.setBackground(background);
 		this.setSize(400, 400);
 		
 		setLayout(new BorderLayout());
 		
 		JTextField title= new JTextField("Player invnetory");
-		title.setBackground(background);
-		title.setForeground(Color.YELLOW);
-		add(title, BorderLayout.CENTER);
+		//title.setBackground(background);
+		//title.setForeground(Color.YELLOW);
+		this.add(title);
 		
 		/*
 		ItemContainer inventoryStack=Client.getSelf().getInventory();
@@ -50,23 +51,23 @@ public class PlayerInventoryGUI extends JPanel{
 		//Create a JList 
 		JList <String>myList = new JList<String>(data);
 		JScrollPane scrollPane = new JScrollPane(myList);
-		scrollPane.setBackground(background);
-		scrollPane.setForeground(Color.YELLOW);
-		add(scrollPane, BorderLayout.CENTER);
+		//scrollPane.setBackground(background);
+		//scrollPane.setForeground(Color.YELLOW);
+		this.add(scrollPane);
 		
 		
 		//this.setLayout(null);
 		//this.setOpaque(false);
 		//this.setLayout(null);
-		//this.setVisible(true);
+		this.setVisible(true);
 	}
 	
 	
 	public void show(){
-		this.setPreferredSize(new Dimension(500, 500));
+		this.setSize(new Dimension(500, 500));
 	}
 	
 	public void hide(){
-		this.setPreferredSize(new Dimension(0, 0));
+		this.setSize(new Dimension(0, 0));
 	}
 }

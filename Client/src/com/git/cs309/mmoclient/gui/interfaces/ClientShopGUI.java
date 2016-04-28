@@ -18,6 +18,7 @@ import com.git.cs309.mmoserver.packets.LoginPacket;
 
 public class ClientShopGUI extends JPanel{
 	
+	//do not use this one
 	int shopID;
 	ClientShop guiShop;
 	

@@ -21,48 +21,58 @@ import com.git.cs309.mmoserver.packets.InterfaceClickPacket;
 import com.git.cs309.mmoserver.packets.LoginPacket;
 
 public class ClientShopGUIT2 extends JPanel{
+	private static final ClientShopGUIT2 INSTANCE = new ClientShopGUIT2();
 	
-	int shopID;
-	ClientShop guiShop;
+	public static final ClientShopGUIT2 getInstance() {
+		return INSTANCE;
+	}
 	
-	public ClientShopGUIT2(String shopName, int shopID)
+	public ClientShopGUIT2()
 	{
+		String shopName="shop";
+		int shopID=1;
+		this.setLocation(50, 50);
 		this.setSize(400, 400);
 		ClientShop guiShop=new ClientShop(shopName, shopID);
 		
-		JTextArea nameOfShop = new JTextArea(guiShop.getName());
+		JTextArea nameOfShop = new JTextArea(shopName);
 		this.add(nameOfShop);
 		
-		int shopInventorySize=guiShop.getNumberOfItems();
+		//nt shopInventorySize=guiShop.getNumberOfItems();
 
-		ItemContainer inventoryStack=Client.getSelf().getInventory();
-		int playerinvSize=inventoryStack.getFirstEmptyIndex();
+		//ItemContainer inventoryStack=Client.getSelf().getInventory();
+		//int playerinvSize=inventoryStack.getFirstEmptyIndex();
 		 
 		JTextArea shopArea= new JTextArea();//shop inventory
-		for(int i=0; i<shopInventorySize; i++)
+		
+		//for(int i=0; i<shopInventorySize; i++)
+		for(int i=0; i<5; i++)
 		{
-			shopArea.append(guiShop.getItemName(i));
+			shopArea.append("item"+i+"\n");
+			//shopArea.append(guiShop.getItemName(i));
 		}
+		
 		JScrollPane shopSidescrollPane = new JScrollPane(shopArea);
 		shopSidescrollPane.setBounds(0,0,150,400); //left side of screen
 		this.add(shopSidescrollPane);
 		
 		JTextArea playerArea= new JTextArea();//shop inventory
-		for(int i=0; i<shopInventorySize; i++)
+		for(int i=0; i<3; i++)
 		{
-			Client.getSelf().getInventory().getItemStack(i).getItemName();
+			playerArea.append("item"+i+"\n");
+			//Client.getSelf().getInventory().getItemStack(i).getItemName();
 		} 
 		JScrollPane playerSidescrollPane = new JScrollPane(playerArea);//player inventory 
 		playerSidescrollPane.setBounds(250,0,400,150); //right side of screen
 		this.add(playerSidescrollPane);
-		
+		/*
 		JTextField shopInventory = new JTextField();
 		for(int i=0; i<playerinvSize; i++)
 		{
 			shopInventory.setText(shopInventory.getText()+guiShop.getItemName(i));
 		}
 		this.add(shopInventory);
-		
+		*/
 		JTextField whatItemToBuy =new JTextField("whatItem");
 		this.add(whatItemToBuy);
 		
@@ -96,24 +106,24 @@ public class ClientShopGUIT2 extends JPanel{
 		this.add(amountArea);
 		
 		
-		this.setLayout(null);
+		//this.setLayout(null);
 		this.setVisible(true);
 	}
 	
 	
 	public void addtems(ItemStack items) {
 		
-		guiShop.addItem(items);
+		//guiShop.addItem(items);
 		//chatArea.append(message + "\n");
 		//chatArea.setCaretPosition(chatArea.getText().length());
 	}
 	
 	public void show(){
-		this.setPreferredSize(new Dimension(500, 500));
+		this.setSize(new Dimension(500, 500));
 	}
 	
 	public void hide(){
-		this.setPreferredSize(new Dimension(0, 0));
+		this.setSize(new Dimension(0, 0));
 	}
 	
 

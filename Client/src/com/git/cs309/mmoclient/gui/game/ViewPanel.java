@@ -23,6 +23,7 @@ import com.git.cs309.mmoclient.entity.character.Character;
 import com.git.cs309.mmoclient.graphics.Sprite;
 import com.git.cs309.mmoclient.graphics.SpriteDatabase;
 import com.git.cs309.mmoclient.gui.interfaces.ChatBox;
+import com.git.cs309.mmoclient.gui.interfaces.ClientShopGUIT2;
 import com.git.cs309.mmoclient.gui.interfaces.DungeonGUI;
 import com.git.cs309.mmoclient.gui.interfaces.PlayerInventoryGUI;
 import com.git.cs309.mmoclient.gui.interfaces.GameInterface;
@@ -52,6 +53,10 @@ public class ViewPanel extends JPanel {
 		//this.add(playGUI);
 		this.add(DungeonGUI.getInstance());
 		DungeonGUI.getInstance().hide();
+		this.add(ClientShopGUIT2.getInstance());
+		ClientShopGUIT2.getInstance().hide();
+		this.add(PlayerInventoryGUI.getInstance());
+		PlayerInventoryGUI.getInstance().hide();
 		//this.add(PlayerInventoryGUI.getInstance());
 		//PlayerInventoryGUI.getInstance().show();
 		this.setBackground(new Color(0, 0, 0, 0.0f));
@@ -76,10 +81,26 @@ public class ViewPanel extends JPanel {
 						} else {
 							options.add(entity.getName());
 						}
-						if(entity.getStaticID()== 2)
+						if(entity.getStaticID()== 2 && entity.getEntityType() ==EntityType.OBJECT)
 						{
 							DungeonGUI.getInstance().show();
-							//System.out.println("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+							//System.out.println("dungion gui");
+						}
+						else if((entity.getStaticID()== 2 || entity.getStaticID()== 3) && entity.getEntityType() ==EntityType.NPC)
+						{
+							
+							ClientShopGUIT2.getInstance().show();
+							//System.out.println("shop gui");
+						}
+						else if (entity.getEntityType() == EntityType.PLAYER)
+						{
+							PlayerInventoryGUI.getInstance().show();
+						}
+						else 
+						{
+							DungeonGUI.getInstance().hide();
+							ClientShopGUIT2.getInstance().hide();
+							PlayerInventoryGUI.getInstance().hide();
 						}
 					}
 					options.add("Walk here");
@@ -87,6 +108,9 @@ public class ViewPanel extends JPanel {
 					addInterface(new RightClickOptionsInterface(e.getX(), e.getY(), options.toArray(new String[options.size()])));
 				} else {
 					Client.getConnection().addOutgoingPacket(new MovePacket(null, gameX, gameY));
+					DungeonGUI.getInstance().hide();
+					ClientShopGUIT2.getInstance().hide();
+					PlayerInventoryGUI.getInstance().hide();
 				}
 				ViewPanel.this.repaint();
 			}
