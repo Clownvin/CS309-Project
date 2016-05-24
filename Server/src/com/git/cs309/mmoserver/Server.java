@@ -104,7 +104,7 @@ public class Server extends Module {
 				System.out.println("Saved everything before going down.");
 			}
 		});
-		ConnectionAcceptor.startAcceptor(43594);
+		ConnectionAcceptor.startAcceptor(6667);
 	}
 	
 	/**

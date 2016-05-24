@@ -6,6 +6,7 @@ import java.util.Set;
 import com.git.cs309.mmoserver.Config;
 import com.git.cs309.mmoserver.entity.Entity;
 import com.git.cs309.mmoserver.lang.module.Module;
+import com.git.cs309.mmoserver.lang.module.ModuleManager;
 
 public final class MapManager extends Module {
 

@@ -52,9 +52,18 @@ public final class CharacterManager extends TickProcess {
 	public void removeCharacter(final Character character) {
 		synchronized (characterSet) {
 			characterSet.remove(character);
-			ModuleManager.getModule(MapManager.class).removeEntityAtPosition(character.getInstanceNumber(), character.getX(),
+			try {
+				ModuleManager.getModule(MapManager.class).removeEntityAtPosition(character.getInstanceNumber(), character.getX(),
 					character.getY(), character.getZ(), character);
-			character.cleanUp();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					character.cleanUp();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -76,7 +85,11 @@ public final class CharacterManager extends TickProcess {
 				if (regenTick) {
 					character.applyRegen(Config.REGEN_AMOUNT);
 				}
-				character.process();
+				try {
+					character.process();
+				} catch (RuntimeException e) {
+					toRemove.add(character);
+				}
 			}
 		}
 		for (Character character : toRemove) {
