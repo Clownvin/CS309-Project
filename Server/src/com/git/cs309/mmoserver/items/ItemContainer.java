@@ -86,10 +86,6 @@ public class ItemContainer implements Serializable {
 		}
 	}
 	
-	public boolean full() {
-		return count == size;
-	}
-	
 	public boolean hasItemId(int itemId) {
 		for (int i = 0; i < size; i++) {
 			if (items[i] != null && items[i].getId() == itemId) {
